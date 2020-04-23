@@ -1,30 +1,29 @@
 
 <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_person_wd/context> {
-  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_person_wd> <http://www.metaphacts.com/ontology/fields#insertPattern>
-      "t255";
-    <http://www.metaphacts.com/ontology/fields#selectPattern> "t257";
-    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
-    <http://www.metaphacts.com/ontology/fields#autosuggestionPattern> "t256";
-    a <http://www.metaphacts.com/ontology/fields#Field>;
-    <http://www.w3.org/2000/01/rdf-schema#comment> "Find and match a person on WikiData";
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_person_wd> a <http://www.metaphacts.com/ontology/fields#Field>;
     <http://www.w3.org/2000/01/rdf-schema#label> "Equivalent Person (WikiData)" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t257> <http://spinrdf.org/sp#text>
-      """SELECT ?value ?label WHERE {
+  _:genid-be20e4b5a2604d3fb8ba0286131ea90f-23i94 <http://spinrdf.org/sp#text> "INSERT { $subject owl:sameAs $value} WHERE {}" .
+  
+  _:genid-be20e4b5a2604d3fb8ba0286131ea90f-n6rx4g a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_person_wd> <http://www.metaphacts.com/ontology/fields#xsdDatatype>
+      <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Find and match a person on WikiData";
+    <http://www.metaphacts.com/ontology/fields#insertPattern> _:genid-be20e4b5a2604d3fb8ba0286131ea90f-23i94 .
+  
+  _:genid-be20e4b5a2604d3fb8ba0286131ea90f-n6rx4g <http://spinrdf.org/sp#text> """SELECT ?value ?label WHERE {
   $subject owl:sameAs ?value
-  # SERVICE <https://wikidata.metaphacts.com/sparql>
-  # {  
-  #     OPTIONAL {?value rdfs:label ?label }
-  # }
 }""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t256> <http://spinrdf.org/sp#text>
-      """SELECT distinct ?value ?label (year(?dateOfBirth) as ?yearOfBirth) (year(?dateOfDeath) as ?yearOfDeath) ?description WHERE {
+  _:genid-be20e4b5a2604d3fb8ba0286131ea90f-23i94 a <http://spinrdf.org/sp#Query> .
+  
+  _:genid-be20e4b5a2604d3fb8ba0286131ea90f-xth9gb <http://spinrdf.org/sp#text> """SELECT distinct ?value ?label (year(?dateOfBirth) as ?yearOfBirth) (year(?dateOfDeath) as ?yearOfDeath) ?description WHERE {
      SERVICE <https://wikidata.metaphacts.com/sparql?repository=ephedra> {
          ?value <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5> .
          SERVICE <http://www.metaphacts.com/ontologies/platform/repository/federation#wikidata-text>  {
 
-                             ?value <http://www.metaphacts.com/ontology/hasWikidataSearchToken> "?token".
+                             ?value <http://www.metaphacts.com/ontology/hasWikidataSearchToken> \"?token\".
                              ?value rdfs:label ?label;
                                <http://schema.org/description> ?description ;
                                <http://www.metaphacts.com/ontology/orderNr> ?orderNr .
@@ -42,18 +41,15 @@
  ORDER BY ?q
  LIMIT 10""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t255> <http://spinrdf.org/sp#text>
-      "INSERT { $subject owl:sameAs $value} WHERE {}" .
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_person_wd> <http://www.metaphacts.com/ontology/fields#selectPattern>
+      _:genid-be20e4b5a2604d3fb8ba0286131ea90f-n6rx4g;
+    <http://www.metaphacts.com/ontology/fields#autosuggestionPattern> _:genid-be20e4b5a2604d3fb8ba0286131ea90f-xth9gb .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t256> a <http://spinrdf.org/sp#Query> .
-  
-  <http://localhost:8080/blazegraph/namespace/sphaera/t257> a <http://spinrdf.org/sp#Query> .
-  
-  <http://localhost:8080/blazegraph/namespace/sphaera/t255> a <http://spinrdf.org/sp#Query> .
+  _:genid-be20e4b5a2604d3fb8ba0286131ea90f-xth9gb a <http://spinrdf.org/sp#Query> .
   
   <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_person_wd> a <http://www.w3.org/ns/prov#Entity>;
     <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
-    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.557+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-23T17:39:13.600+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
   
   <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
       <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_person_wd> .

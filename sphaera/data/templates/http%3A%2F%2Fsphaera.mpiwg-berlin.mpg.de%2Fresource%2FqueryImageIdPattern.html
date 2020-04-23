@@ -1,0 +1,2 @@
+BIND(STRAFTER(STR(?imageIRI), 'online/') as ?unescaped)
+BIND(REPLACE(?unescaped, '/', '!') AS ?imageID)

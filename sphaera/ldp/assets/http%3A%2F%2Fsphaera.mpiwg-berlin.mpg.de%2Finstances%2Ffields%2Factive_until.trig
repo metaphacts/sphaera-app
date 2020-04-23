@@ -1,0 +1,39 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/active_until/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/active_until> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      "t1020";
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "0";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> "t1021";
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#integer>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#label> "Active until (year)" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t1020> <http://spinrdf.org/sp#text>
+      """INSERT { 
+	$subject ecrm:P11i_participated_in ?activity .
+    ?activity ecrm:P2_has_type sphType:periodOfActivity ;
+      ecrm:P4_has_time-span ?activity_period .
+    ?activity_period ecrm:P82b_end_of_the_end ?activity_year .
+} WHERE {
+    BIND(URI(CONCAT(STR($subject), \"/activity\")) as ?activity)
+    BIND(URI(CONCAT(STR($subject), \"/activity/date\")) as ?activity_period)
+    BIND(STRDT(CONCAT(STR($value), \"-12-31\"), xsd:date) as ?activity_year )
+}""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t1021> a <http://spinrdf.org/sp#Query>;
+    <http://spinrdf.org/sp#text> """SELECT (xsd:integer(?value_str) as ?value) WHERE {
+	$subject ecrm:P11i_participated_in/ecrm:P4_has_time-span/ecrm:P82b_end_of_the_end ?value_raw .
+    BIND(STRBEFORE(STR(?value_raw), \"-12\") as ?value_str)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/active_until> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:19.641+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/active_until> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/active_until> a <http://www.w3.org/ns/ldp#Resource> .
+}

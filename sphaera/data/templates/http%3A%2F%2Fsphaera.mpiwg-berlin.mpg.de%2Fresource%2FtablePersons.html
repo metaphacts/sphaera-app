@@ -1,0 +1,18 @@
+<semantic-table
+	id="table_persons"
+	query='SELECT DISTINCT [[> :queryPersonsSelect ]] WHERE {
+
+		[[> :queryPersons]]
+
+  } GROUP BY [[> :queryPersonsGroup]]
+	ORDER BY ?sort_label'
+
+	column-configuration='[
+		[[> :colConfPersons ]]
+	]'
+
+	options='{
+		"resultsPerPage":100
+	}'
+>
+</semantic-table>

@@ -1,0 +1,39 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      "t67";
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> "t66";
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "A fingerprint identifier for the book";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Fingerprint" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t66> <http://spinrdf.org/sp#text>
+      """SELECT ?value WHERE {
+  $subject ecrm:P1_is_identified_by ?identifier .
+  ?identifier ecrm:P2_has_type sphaera:fingerprint ;
+      ecrm:P3_has_note ?value .
+}""" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t67> <http://spinrdf.org/sp#text>
+      """INSERT { 
+  $subject ecrm:P1_is_identified_by ?identifier .
+  ?identifier ecrm:P2_has_type sphaera:fingerprint ;
+      ecrm:P3_has_note $value .
+} WHERE {
+  BIND(URI(CONCAT(STR($subject), \"/fingerprint\")) as ?identifier)
+}""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t66> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.068+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint> a <http://www.w3.org/ns/ldp#Resource> .
+}

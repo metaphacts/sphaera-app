@@ -1,0 +1,51 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listPersons") label="Persons"]]
+  [[> :templateBreadcrumbEditResource personiri="true" tab="relatives"]]
+</ol>
+
+<semantic-query
+  query='SELECT ?person_name WHERE
+    {
+      BIND(<[[urlParam "personiri"]]> as ?person)
+      ?person ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?person_name .
+    } LIMIT 1'
+  template='<h2>{{#each bindings}}Add new relationship to {{person_name.value}}{{/each}}</h2>'
+  >
+</semantic-query>
+
+<semantic-form
+  persistence="LDP"
+	browser-persistence="false"
+  post-action="http://sphaera.mpiwg-berlin.mpg.de/resource/addRelationshipToPerson"
+  fields="[[fieldDefinitions
+    property="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/relationship_property"
+    record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/attribute_assignment_record_type"
+    type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/relationship_assignment_type"
+  ]]"
+  urlqueryparam-attributeassignmentiri="[[urlParam "attributeassignmentiri"]]"
+  urlqueryparam-personiri="[[urlParam "personiri"]]"
+  subject="[[urlParam "attributeassignmentiri"]]"
+
+>
+  <semantic-form-select-input for="property">
+  </semantic-form-select-input>
+
+  <div class="disabled hidden-field">
+    <semantic-form-text-input for="record_type"></semantic-form-text-input>
+    <semantic-form-text-input for="type"></semantic-form-text-input>
+  </div>
+
+  <div class="text-right form-submit">
+    <semantic-link
+      iri="[[urlParam "personiri"]]"
+      urlqueryparam-tab="relatives"
+      class="btn btn-default btn-md">Cancel</semantic-link>
+    <button name="submit" class="btn btn-primary btn-md">Add</button>
+  </div>
+
+</semantic-form>
+
+[[> :footer]]

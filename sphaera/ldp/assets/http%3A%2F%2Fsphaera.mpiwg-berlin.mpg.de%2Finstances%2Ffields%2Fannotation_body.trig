@@ -1,0 +1,39 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_body/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_body> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/rrl04hxxsz9kgyq1if6r>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/j29q7l7xutr8rgt4kj4i>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Body of an annotation";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Annotation Body" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/j29q7l7xutr8rgt4kj4i> <http://spinrdf.org/sp#text>
+      """SELECT ?value WHERE {
+  $subject oa:hasBody/cnt:chars ?value .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/rrl04hxxsz9kgyq1if6r> <http://spinrdf.org/sp#text>
+      """INSERT { 
+  $subject oa:hasBody ?annotation_body .
+	?annotation_body a cnt:ContentAsText ;
+      cnt:chars $value .
+} WHERE {
+  BIND(URI(CONCAT(STR($subject), \"/body\")) as ?annotation_body)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/j29q7l7xutr8rgt4kj4i> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/rrl04hxxsz9kgyq1if6r> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_body> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.399+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_body> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_body> a <http://www.w3.org/ns/ldp#Resource> .
+}

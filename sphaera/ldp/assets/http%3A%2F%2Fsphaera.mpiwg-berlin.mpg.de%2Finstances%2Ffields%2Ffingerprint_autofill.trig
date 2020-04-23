@@ -1,0 +1,58 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_autofill/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_autofill> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      "t860";
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> "t859";
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Adds the 7 part fingerprint as label";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Fingerprint Autofill" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t859> a <http://spinrdf.org/sp#Query>;
+    <http://spinrdf.org/sp#text> """SELECT ?value WHERE {
+	$subject ecrm:P1_is_identified_by ?identifier .
+    ?identifier ecrm:P2_has_type sphaera:fingerprint ;
+      ecrm:P106_is_composed_of ?fp1 ;
+      ecrm:P106_is_composed_of ?fp2 ;
+      ecrm:P106_is_composed_of ?fp3 ;
+      ecrm:P106_is_composed_of ?fp4 ;
+      ecrm:P106_is_composed_of ?fp5 ;
+      ecrm:P106_is_composed_of ?fp6 ;
+      ecrm:P106_is_composed_of ?fp7 .
+    ?fp1 ecrm:P1_is_identified_by \"1\" ;
+      ecrm:P3_has_note ?fp1_value .
+    ?fp2 ecrm:P1_is_identified_by \"2\" ;
+      ecrm:P3_has_note ?fp2_value .
+    ?fp3 ecrm:P1_is_identified_by \"3\" ;
+      ecrm:P3_has_note ?fp3_value .
+    ?fp4 ecrm:P1_is_identified_by \"4\" ;
+      ecrm:P3_has_note ?fp4_value .
+    ?fp5 ecrm:P1_is_identified_by \"5\" ;
+      ecrm:P3_has_note ?fp5_value .
+    ?fp6 ecrm:P1_is_identified_by \"6\" ;
+      ecrm:P3_has_note ?fp6_value .
+    ?fp7 ecrm:P1_is_identified_by \"7\" ;
+      ecrm:P3_has_note ?fp7_value .
+    BIND(CONCAT(?fp1_value, \" \", ?fp2_value, \" \", ?fp3_value, \" \", ?fp4_value, \" \", ?fp5_value, \" \", ?fp6_value, \" \", ?fp7_value) as ?value)  
+}""" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t860> <http://spinrdf.org/sp#text>
+      """INSERT { 
+  $subject ecrm:P1_is_identified_by ?identifier .
+  ?identifier ecrm:P2_has_type sphaera:fingerprint ;
+      ecrm:P3_has_note $value .
+} WHERE {
+  BIND(URI(CONCAT(STR($subject), \"/fingerprint\")) as ?identifier)
+}""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_autofill> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.037+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_autofill> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_autofill> a <http://www.w3.org/ns/ldp#Resource> .
+}

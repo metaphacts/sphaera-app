@@ -1,0 +1,34 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_content_type_member/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_content_type_member> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      "t675";
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> "t674";
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Defaults to adding instance to member of part content type";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Part Content Type Member" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t675> <http://spinrdf.org/sp#text>
+      """INSERT {
+   sphType:partContentType skos:member $subject
+} WHERE {
+  BIND(?value as ?dummy)
+}""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t674> a <http://spinrdf.org/sp#Query>;
+    <http://spinrdf.org/sp#text> """SELECT ?value WHERE {
+  BIND(\"sphType:partContentType skos:member $subject\" as ?value)
+  BIND(?subject as ?dummy)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_content_type_member> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.776+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_content_type_member> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_content_type_member> a <http://www.w3.org/ns/ldp#Resource> .
+}

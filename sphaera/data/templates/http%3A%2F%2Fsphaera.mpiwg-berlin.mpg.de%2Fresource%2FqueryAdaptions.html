@@ -1,0 +1,27 @@
+?subject a sphaera:Part_Adaption ;
+  ecrm:P3_has_note ?label ;
+  ecrm:P2_has_type/ecrm:P3_has_note ?adaption_type
+
+OPTIONAL {
+  ?subject ecrm:P1_is_identified_by ?identifier .
+  ?identifier ecrm:P2_has_type sphaera:customIdentifier ;
+    ecrm:P3_has_note ?custom_identifier .
+}
+
+OPTIONAL {
+  ?subject efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range/ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?author_label .
+  [[> :queryFormatName input="?author_label" output="?author_name"]]
+  BIND(LCASE(?author_label) AS ?sort_author_name)
+}
+
+OPTIONAL {
+  ?book ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P148_has_component/efrbroo:R15i_is_fragment_of? ?subject ;
+    ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:P4_has_time-span/ecrm:P82a_begin_of_the_beginning ?book_date .
+}
+
+OPTIONAL {
+  ?subject ((ecrm:P106_is_composed_of/ecrm:P165_incorporates)|(ecrm:P165_incorporrates/efrbroo:R3i_realises/^efrbroo:R40i_is_representative_expression_for))+ ?original_part .
+  ?original_part a sphaera:Part ;
+    efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range/ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?original_author_label .
+    [[> :queryFormatName input="?original_author_label" output="?original_author_name"]]
+}

@@ -1,0 +1,67 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":manageTerms") label="Manage Terms" tab="languages"]]
+</ol>
+
+<semantic-query
+  query='SELECT ?language_label WHERE
+    {
+      ?language ecrm:P3_has_note ?language_label .
+      BIND(<[[urlParam "languageiri"]]> as ?language)
+     }'
+  template="<h3>{{#each bindings}}{{language_label.value}}{{/each}}</h3>">
+</semantic-query>
+
+[[#if (hasPermission "forms:ldp:*")]]
+  <semantic-link
+    iri="[[urlParam "languageiri"]]"
+    class="btn btn-md btn-primary gap-bottom" >Edit</semantic-link>
+[[/if]]
+
+<div class="content">
+  <h4 style="margin:2em 0">Books in this language</h4>
+  <div id="table_books_container">
+    <semantic-table
+      query='SELECT DISTINCT [[> :queryBooksSelect ]]  WHERE {
+
+        BIND(<[[urlParam "languageiri"]]> as ?language)
+        ?subject ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P72_has_language ?language .
+
+        [[> :queryBooks]]
+      } GROUP BY [[> :queryBooksGroup]]
+      ORDER BY ?year_published_from ?date_text'
+
+      options='{
+          "showFilter" : false,
+          "resultsPerPage":10
+        }'
+
+      column-configuration='[
+        [[> :colConfBooks]]
+      ]'
+    >
+    </semantic-table>
+  </div>
+
+  <h4>Parts in this language</h4>
+
+  [[#> :tableParts]]
+      BIND(<[[urlParam "languageiri"]]> as ?language)
+      ?subject ecrm:P72_has_language ?language .
+  [[/ :tableParts]]
+
+  <h4>Adaptions in this language</h4>
+
+  [[#> :tableAdaptions]]
+      BIND(<[[urlParam "languageiri"]]> as ?language)
+      ?subject ecrm:P72_has_language ?language .
+  [[/ :tableAdaptions]]
+
+  <dl>
+
+    [[> :identifier iri="languageiri"]]
+
+  </dl>
+</div>

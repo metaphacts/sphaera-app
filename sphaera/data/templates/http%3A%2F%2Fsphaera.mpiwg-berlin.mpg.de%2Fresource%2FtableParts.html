@@ -1,0 +1,18 @@
+<semantic-table
+	id="table_parts"
+	query='SELECT DISTINCT
+			[[> :queryPartsSelect]]
+		WHERE {
+			[[> @partial-block ]]
+			[[> :queryParts]]
+		} GROUP BY [[> :queryPartsGroup]] ORDER BY ?label'
+
+  options='{
+    "resultsPerPage":100
+  }'
+
+	column-configuration='[
+		[[> :colConfParts]]
+	]'
+>
+</semantic-table>

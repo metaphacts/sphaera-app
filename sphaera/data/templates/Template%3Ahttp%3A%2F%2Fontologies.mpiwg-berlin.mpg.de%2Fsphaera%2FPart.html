@@ -1,0 +1,327 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+
+  [[#if (urlParam "bookiri")]]
+    [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+    [[> :templateBreadcrumbEditResource bookiri="true" tab="parts"]]
+
+    [[#if (urlParam "returniri")]]
+
+      <li class="breadcrumb-item">
+        <semantic-link
+          iri="[[urlParam "returniri"]]"
+          [[#if (urlParam "returntab" )]]
+            urlqueryparam-tab="[[urlParam "returntab"]]"
+          [[/if]]
+          [[#if (urlParam "attributeassignmentiri" )]]
+            urlqueryparam-attributeassignmentiri="[[urlParam "attributeassignmentiri"]]"
+          [[/if]]
+          [[#if (urlParam "bookiri" )]]
+            urlqueryparam-bookiri="[[urlParam "bookiri"]]"
+          [[/if]]
+        >Add Part to Book</semantic-link>
+      </li>
+
+    [[/if]]
+
+  [[else]]
+
+    [[> :templateBreadcrumb iri=(resolvePrefix ":listParts") label="Parts"]]
+    <li class="breadcrumb-item">
+      <semantic-query
+        query='SELECT ?part_name WHERE
+          {
+            ?? ecrm:P3_has_note ?part_name .
+          } LIMIT 1'
+        template='{{#each bindings}}
+            <semantic-link iri="[[resolvePrefix ":viewPart"]]" urlqueryparam-partiri="[[this]]">
+              {{part_name.value}}
+            </semantic-link>
+          </li>{{/each}}'
+        >
+      </semantic-query>
+    </li>
+
+  [[/if]]
+
+
+</ol>
+
+<h1>
+  <semantic-query query='SELECT ?label WHERE { ?? ecrm:P3_has_note ?label }'></semantic-query></h1>
+
+<semantic-form
+  persistence='LDP'
+  browser-persistence='true'
+
+  [[#if (urlParam "returniri")]]
+    post-action="[[urlParam "returniri"]]"
+  [[/if]]
+
+  [[#if (urlParam "returntab")]]
+    urlqueryparam-tab="[[urlParam "returntab"]]"
+    urlqueryparam-returntab="[[urlParam "returntab"]]"
+  [[/if]]
+
+  [[#if (urlParam "bookiri")]]
+    urlqueryparam-bookiri="[[urlParam "bookiri"]]"
+  [[/if]]
+
+  [[#if (urlParam "attributeassignmentiri" )]]
+    urlqueryparam-attributeassignmentiri="[[urlParam "attributeassignmentiri"]]"
+  [[/if]]
+
+  fields="[[fieldDefinitions
+    custom_identifier="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/custom_identifier"
+    doi="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/doi"
+    expression_creation="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_expression_creation"
+    expression_record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/F22_self-contained_expression_record_type"
+    influences="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_influences"
+    part_content_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_content_type"
+    part_language="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_or_adaption_language"
+    part_type_default="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_type_default"
+    primary_title="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/primary_part_title"
+    record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_record_type"
+    short_title="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/short_title"
+    work_record="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/work_record"
+  ]]"
+  subject="[[this]]"
+>
+
+  <bs-tab-container id="part-edit-form" class="bs-left-vertical-tabs" default-active-key="[[#if (urlParam "tab" )]][[urlParam "tab"]][[else]]description[[/if]]">
+    <bs-row class="clearfix">
+      <bs-col sm="2" >
+        <bs-nav bs-style="tabs" stacked="true">
+          <bs-nav-item event-key="description">
+            Description
+          </bs-nav-item>
+          <bs-nav-item event-key="author">
+            Authors
+          </bs-nav-item>
+          <bs-nav-item event-key="influence">
+            Influence
+          </bs-nav-item>
+          <bs-nav-item event-key="meta">
+            Annotations
+          </bs-nav-item>
+
+          [[#if (hasPermission "api:config")]]
+            <bs-nav-item event-key="delete">
+              Delete
+            </bs-nav-item>
+            <bs-nav-item event-key="hidden" class="hidden-field">
+              Hidden
+            </bs-nav-item>
+            <bs-nav-item event-key="statements">
+              Statements
+            </bs-nav-item>
+          [[/if]]
+
+          </bs-nav>
+      </bs-col>
+      <bs-col sm="10">
+
+        <bs-tab-content animation="true">
+
+          <bs-tab-pane event-key="description">
+            <h3>Description</h3>
+
+            <semantic-form-text-input for="short_title">
+            </semantic-form-text-input>
+
+            <semantic-form-text-input for="primary_title" multiline="true">
+            </semantic-form-text-input>
+
+            <semantic-form-text-input for="custom_identifier"></semantic-form-text-input>
+
+            <semantic-form-select-input for="part_content_type">
+            </semantic-form-select-input>
+
+            <semantic-form-select-input for="part_language">
+            </semantic-form-select-input>
+
+          </bs-tab-pane>
+
+          <bs-tab-pane event-key="author">
+            <h3>Authors</h3>
+            <semantic-table
+              query='SELECT ?carried_out_by ?author_name WHERE {
+                  ?? efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+                  ?carried_out_by ecrm:PC02_has_range ?author .
+                  ?author ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?author_name .
+
+                 }
+                 LIMIT 1000'
+
+                column-configuration='[
+                 {
+                    "displayName" : "Author",
+                    "cellTemplate" : "<semantic-link
+                      iri=\"[[resolvePrefix ":addAuthorToPart"]]\"
+                      urlqueryparam-carriedoutbyiri=\"{{carried_out_by.value}}\"
+                      urlqueryparam-partiri=\"[[this]]\"
+                      [[#if (urlParam "bookiri")]]
+                        urlqueryparam-bookiri=\"[[urlParam "bookiri"]]\"
+                      [[/if]]
+                      [[#if (urlParam "attributeassignmentiri")]]
+                        urlqueryparam-attributeassignmentiri=\"[[urlParam "attributeassignmentiri"]]\"
+                      [[/if]]\">
+                      {{author_name.value}}
+                    </semantic-link>"
+                 },
+                 {
+                   "displayName" : "&nbsp;",
+                   "cellTemplate" : "<div>
+                                       <mp-ldp-remove-from-container-action
+                                         iri=\"{{carried_out_by.value}}/container\"
+                                         container=\"http://www.metaphacts.com/ontologies/platform#formContainer\">
+
+                                          <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>
+
+                                       </mp-ldp-remove-from-container-action>
+
+                                   </div>"
+                 }
+               ]'
+
+               options='{
+                   "showFilter":false
+                 }'
+             >
+             </semantic-table>
+
+            <semantic-link
+              class="btn btn-md btn-default"
+              iri="http://sphaera.mpiwg-berlin.mpg.de/resource/addAuthorToPart"
+              urlqueryparam-partiri="[[this]]"
+              [[#if (urlParam "bookiri")]]
+                urlqueryparam-bookiri="[[urlParam "bookiri"]]"
+              [[/if]]
+              [[#if (urlParam "attributeassignmentiri")]]
+                urlqueryparam-attributeassignmentiri="[[urlParam "attributeassignmentiri"]]"
+              [[/if]]
+              [[#if (urlParam "returniri")]]
+                urlqueryparam-returniri="[[urlParam "returniri"]]"
+              [[/if]]
+              urlqueryparam-returntab="author"
+              >
+                Add creator
+              </semantic-link>
+          </bs-tab-pane>
+
+          <bs-tab-pane event-key="influence">
+            <h3>Influences</h3>
+            <p>If other parts have influenced the creation of this part, they can be linked here. For example, if this part is an adaption of an existing part.</p>
+            <semantic-form-select-input for="influences"></semantic-form-select-input>
+          </bs-tab-pane>
+
+          <bs-tab-pane event-key="meta">
+            <h3>Annotations</h3>
+            <semantic-table
+              query='SELECT ?annotation ?annotation_body WHERE {
+                  ?annotation oa:hasTarget ?target ;
+                  oa:hasBody/cnt:chars ?annotation_body .
+                  BIND(?? as ?target)
+                }'
+
+              column-configuration='[
+                  {
+                    "displayName" : "Annotation",
+                    "variableName" : "annotation_body"
+                  },
+                  {
+                    "displayName" : "&nbsp;",
+                    "cellTemplate" : "
+                      <div>
+                        <semantic-link iri=\"{{annotation.value}}\" class=\"btn-default btn-xs\">Edit</semantic-link>
+                        <mp-ldp-remove-from-container-action
+                          iri=\"{{annotation.value}}/container\"
+                          container=\"http://www.metaphacts.com/ontologies/platform#formContainer\">
+                            <a class=\"btn-default btn-xs\">Delete</a>
+                        </mp-ldp-remove-from-container-action>
+                      </div>"
+                  }
+                ]'
+
+                options='{
+                    "showFilter":false
+                  }'
+            >
+            </semantic-table>
+            <semantic-link iri="http://sphaera.mpiwg-berlin.mpg.de/resource/createAnnotation"
+              urlqueryparam-resourceiri="[[this]]"
+             class="btn btn-default btn-sm"
+            >Add Annotation</semantic-link>
+          </bs-tab-pane>
+
+          <bs-tab-pane event-key="delete">
+            <h3>Delete</h3>
+            <p>Use the button below if you like to delete this book from the database</p>
+
+            <semantic-link
+                class="btn bn-md btn-danger"
+                iri="[[resolvePrefix ":deleteResource"]]"
+                urlqueryparam-resiri="[[this]]"
+                urlqueryparam-back="[[this]]"
+                urlqueryparam-backtitle="Parts"
+                urlqueryparam-redirect=":listParts"
+              >
+                Delete Part
+              </semantic-link>
+          </bs-tab-pane>
+
+          <bs-tab-pane event-key="hidden">
+            <div class="disabled hidden-field">
+              <h3>Hidden</h3>
+              <span class="disabled hidden-field">
+                <semantic-form-text-input for="doi"></semantic-form-text-input>
+                <semantic-form-text-input for="expression_creation"></semantic-form-text-input>
+                <semantic-form-text-input for="expression_record_type"></semantic-form-text-input>
+                <semantic-form-text-input for="record_type"></semantic-form-text-input>
+                <semantic-form-text-input for="part_type_default"></semantic-form-text-input>
+                <semantic-form-text-input for="work_record"></semantic-form-text-input>
+              </span>
+            </div>
+          </bs-tab-pane>
+
+          <bs-tab-pane event-key="statements">
+
+            [[> :statements]]
+          </bs-tab-pane>
+
+        </bs-tab-content>
+      </bs-col>
+    </bs-row>
+  </bs-tab-container>
+  <bs-row>
+    <bs-col sm="12" class="text-right form-submit">
+
+            [[#if (urlParam "returniri" )]]
+              <semantic-link iri="[[urlParam "returniri"]]"
+                [[#if (urlParam "returntab" )]]
+                  urlqueryparam-tab="[[urlParam "returntab"]]"
+                [[/if]]
+                [[#if (urlParam "attributeassignmentiri" )]]
+                  urlqueryparam-attributeassignmentiri="[[urlParam "attributeassignmentiri"]]"
+                [[/if]]
+                [[#if (urlParam "bookiri" )]]
+                  urlqueryparam-bookiri="[[urlParam "bookiri"]]"
+                [[/if]]
+                class="btn btn-default btn-md">Cancel</semantic-link>
+
+              [[else]]
+
+                <semantic-link iri="[[resolvePrefix ":listParts"]]" class="btn btn-default btn-md">Cancel</semantic-link>
+
+            [[/if]]
+
+            <button name="submit" class="btn btn-primary btn-md">Save</button>      <semantic-form-recover-notification class="alert alert-info"></semantic-form-recover-notification>
+    </bs-col>
+   </bs-row>
+</semantic-form>
+
+[[> :identifier]]
+
+[[> :footer]]

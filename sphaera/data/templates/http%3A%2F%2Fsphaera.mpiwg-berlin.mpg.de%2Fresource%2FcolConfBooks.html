@@ -1,0 +1,63 @@
+{
+  "displayname" : "",
+  "variableName" : "source_url",
+  "cellTemplate" : " {{#if mpiwg_source.value}}<a href=\"{{source_url.value}}\" target=\"_blank\"><img src=\"https://www.mpiwg-berlin.mpg.de/themes/custom/mpiwg_theme/logo.png\" width=\"20px\"></a>{{/if}}"
+},
+{
+  "displayName" : "Short Title",
+  "variableName" : "label",
+  "cellTemplate" : "<semantic-link iri=\"http://sphaera.mpiwg-berlin.mpg.de/resource/viewBook\" urlqueryparam-bookiri=\"{{subject.value}}\">{{label.value}}</semantic-link>"
+},
+{
+  "displayName" : "Full Title",
+  "variableName" : "full_title",
+  "cellTemplate" : "<div style=\"width:200px;\">
+      <mp-text-truncate truncate=\"...\">
+        {{full_title.value}}
+      </mp-text-truncate>
+    </div>
+  "
+},
+{
+  "displayName" : "Year published",
+  "variableName" : "year_published_from",
+  "cellTemplate" : "{{#if date_text.value}}{{date_text.value}}{{else}}{{year_published_from.value}}{{/if}}"
+},
+{
+  "displayName" : "Parts",
+  "variableName" : "num_parts"
+},
+{
+  "displayName" : "Custom Identifier",
+  "variableName" : "custom_identifier"
+},
+{
+  "displayName" : "Fingerprint",
+  "variableName" : "fingerprint"
+},
+{
+  "displayName" : "Converted",
+  "variableName" : "fingerprint_converted"
+},
+{
+  "displayName" : "Pages",
+  "variableName" : "page",
+  "cellTemplate" : "<small><semantic-link iri=\"[[resolvePrefix ":viewBookPages"]]\" urlqueryparam-bookiri=\"{{subject.value}}\"><semantic-query
+    query=\"SELECT ?page WHERE { <{{subject.value}}> efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page} LIMIT 1\"
+    template=\"Pages\"></semantic-query></semantic-link></small>"
+},
+{
+  "displayName" : "Regions",
+  "variableName" : "region",
+  "cellTemplate" : "<small><semantic-link iri=\"[[resolvePrefix ":viewBookRegions"]]\" urlqueryparam-bookiri=\"{{subject.value}}\"><semantic-query
+    query=\"SELECT (COUNT(?region) as ?num_regions) WHERE { <{{subject.value}}> efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of/^crmDig:L49_is_primary_area_of ?region} LIMIT 1\"
+    template=\"{{#each bindings}}{{num_regions.value}}{{/each}}\"></semantic-query></semantic-link></small>"
+}
+
+[[#if (hasPermission "forms:ldp:*")]]
+,
+{
+  "displayName" : "&nbsp;",
+  "cellTemplate" : "<semantic-link iri=\"{{subject.value}}\">Edit</semantic-link>"
+}
+[[/if]]

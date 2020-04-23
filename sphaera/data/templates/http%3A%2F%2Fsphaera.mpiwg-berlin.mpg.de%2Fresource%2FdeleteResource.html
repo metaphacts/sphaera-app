@@ -1,0 +1,107 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[#if (urlParam "back")]]
+    <li class="breadcrumb-item">
+      [[#if (urlParam "backtitle")]]
+        <semantic-link iri="[[urlParam "back"]]">[[urlParam "backtitle"]]</semantic-link>
+      [[else]]
+        <semantic-link iri="[[urlParam "back"]]">Resource</semantic-link>
+      [[/if]]
+    </li>
+  [[/if]]
+</ol>
+
+
+[[#if (urlParam "resiri")]]
+
+<h1>Delete Resource</h1>
+
+  [[#if (hasPermission "api:config")]]
+    <div class="alert alert-danger">
+      <strong>Warning!</strong> Deleting a resource from the database is final. This action cannot be undone!
+    </div>
+    <semantic-query
+      query='SELECT ?resource_label WHERE
+        {
+          ?resource ecrm:P3_has_note ?resource_label .
+          BIND(<[[urlParam "resiri"]]> as ?resource)
+         } LIMIT 1'
+      template="<p>{{#each bindings}}Are you sure you want to delete the resource <strong>{{resource_label.value}}</strong>?{{/each}}</p>">
+    </semantic-query>
+
+    <bs-row>
+      <bs-col sm=6>
+        [[#if (urlParam "back")]]
+          <semantic-link iri="[[urlParam "back"]]" class="btn btn-default btn-md">No, cancel</semantic-link>
+        [[else]]
+          <semantic-link iri="[[urlParam "resiri"]]" class="btn btn-default btn-md">No, cancel</semantic-link>
+        [[/if]]
+      </bs-col>
+      <bs-col sm=6 class="text-right">
+        <semantic-query
+          query='SELECT DISTINCT ?container WHERE {
+            ?container a <http://www.w3.org/ns/ldp#Resource> .
+            FILTER(STRSTARTS(STR(?container), "[[urlParam "resiri"]]"))
+            FILTER(STRENDS(STR(?container), "/container"))
+          }'
+          template='<span>{{#each bindings}}<mp-ldp-remove-from-container-action iri="{{container.value}}" container="http://www.metaphacts.com/ontologies/platform#formContainer"><div>{{#if @last}}<button class="btn btn-danger btn-md">Yes, delete</button>{{/if}}{{/each}}{{#each bindings}}</div></mp-ldp-remove-from-container-action>{{/each}}</span>'
+        >
+        </semantic-query>
+      </bs-col>
+    </bs-row>
+
+    <semantic-query
+      query='SELECT DISTINCT ?container WHERE {
+        ?container a <http://www.w3.org/ns/ldp#Resource> .
+        FILTER(STRSTARTS(STR(?container), "[[urlParam "resiri"]]"))
+        FILTER(STRENDS(STR(?container), "/container"))
+      } ORDER BY ?container'
+      template="<div class='well' style='font-size:0.8em;margin-top:2em;'><p>This action will delete the following containers:</p>
+        <ul>
+          {{#each bindings}}
+            <li>{{container}}</li>
+          {{/each}}
+        </ul></div>">
+    </semantic-query>
+
+    <bs-row>
+    </bs-row>
+
+    <div class="deleted">
+      <semantic-query
+        query='SELECT ?type WHERE {
+          <[[urlParam "resiri"]]> a ?type .
+        }'
+        template="<span>{{#each bindings}}{{/each}}</span>"
+        no-result-template='
+        <div>
+          <div class="modal-backdrop in"></div>
+          <div class="modal-dialogmodal-lg modal-dialog overlay-modal in modal" id="deletedModal" style="display:block;">
+            <div class="modal-content">
+              <div class="modal-body">
+                <p>The resource has been deleted</p>
+                [[#if (urlParam "redirect")]]
+                  <semantic-link iri="[[urlParam "redirect"]]" urlqueryparam-tab=[[urlParam "tab"]] class="btn btn-default btn-md">Back</semantic-link>
+                [[else]]
+                  <semantic-link iri="[[urlParam "back"]]" urlqueryparam-tab=[[urlParam "tab"]] class="btn btn-default btn-md">Back</semantic-link>
+                [[/if]]
+              </div>
+            </div>
+          </div>
+        </div>'>
+        </semantic-query>
+    </div>
+  [[else]]
+    <p>No Permission</p>
+  [[/if]]
+[[else]]
+
+  <div class="alert alert-warning">
+    You can only access this page via resource
+  </div>
+
+[[/if]]
+
+[[> :footer]]

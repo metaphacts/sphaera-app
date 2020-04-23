@@ -1,0 +1,51 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_place_printed/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_place_printed>
+    <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/ckzmbpr3vl3c4cdte29>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/zusjp9vkz6aerr0h33di>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The name of the place a book has been printed as stated in the book";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Name of place printed as stated in the book" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/ckzmbpr3vl3c4cdte29> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/zusjp9vkz6aerr0h33di> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/ckzmbpr3vl3c4cdte29> <http://spinrdf.org/sp#text>
+      """INSERT {
+	?place_name a ecrm:E48_Place_Name ;
+  		ecrm:P3_has_note $value ;
+  		ecrm:P70i_is_documented_in ?publication_expression .
+    ?manifestation_place ecrm:P1_is_identified_by ?place_name .
+}
+WHERE {
+  ?manifestation_event ecrm:P7_took_place_at ?manifestation_place .
+  BIND(URI(CONCAT(STR($subject), \"/manifestation/place\")) as ?place_name)  
+  BIND(URI(CONCAT(STR($subject), \"/manifestation/event\")) as ?manifestation_event)  
+  BIND(URI(CONCAT(STR($subject), \"/publication/expression\")) as ?publication_expression)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/zusjp9vkz6aerr0h33di> <http://spinrdf.org/sp#text>
+      """SELECT ?value WHERE {
+	?place_name ecrm:P3_has_note ?value ;
+  		ecrm:P70i_is_documented_in ?publication_expression .
+    ?manifestation_place ecrm:P1_is_identified_by ?place_name .
+  ?manifestation_event ecrm:P7_took_place_at ?manifestation_place .
+  BIND(URI(CONCAT(STR($subject), \"/manifestation/place\")) as ?place_name)  
+  BIND(URI(CONCAT(STR($subject), \"/manifestation/event\")) as ?manifestation_event)  
+  BIND(URI(CONCAT(STR($subject), \"/publication/expression\")) as ?publication_expression)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_place_printed>
+    a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:19.865+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_place_printed> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_place_printed>
+    a <http://www.w3.org/ns/ldp#Resource> .
+}

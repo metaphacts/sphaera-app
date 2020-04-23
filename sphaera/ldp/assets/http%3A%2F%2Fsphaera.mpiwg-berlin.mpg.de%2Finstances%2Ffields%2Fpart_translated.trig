@@ -1,0 +1,77 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_translated/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_translated> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/pd7syc>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/d02046>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/h03tii>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Select the part that is being translated";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Part Translated" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/pd7syc> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/h03tii> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/d02046> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+  $subject efrbroo:R3i_realises ?value .
+  ?value ^efrbroo:R40i_is_representative_expression_for/ecrm:P3_has_note ?label .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/h03tii> <http://spinrdf.org/sp#text>
+      """SELECT DISTINCT
+    ?value 
+    (GROUP_CONCAT(DISTINCT ?author; SEPARATOR=\", \") as ?authors) 
+    (COUNT(DISTINCT ?book) as ?num_books)
+    (GROUP_CONCAT(DISTINCT ?part_type; SEPARATOR=\"/\") as ?part_types) 
+(CONCAT(?part_label, \" (\", ?part_types, \" by \", ?authors,  \")\", \" in \", STR(?num_books), \" books\") as ?label)
+WHERE { 
+    ?part a ?type ; 
+      ecrm:P3_has_note ?part_label ;
+      efrbroo:R40i_is_representative_expression_for ?value . 
+
+    OPTIONAL { 
+        ?part efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range/ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?author .
+    } 
+
+    OPTIONAL {
+      ?book ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P148_has_component/
+    (efrbroo:R15i_is_fragment_of?/
+    (efrbroo:R3i_realises|ecrm:P165_incorporates)?)*/
+    ^efrbroo:R40i_is_representative_expression_for? ?part
+    }
+
+    OPTIONAL {
+      ?part ecrm:P2_has_type/ecrm:P3_has_note ?part_type .
+    }
+
+    OPTIONAL {
+      ?part ecrm:P165_incorporates/ecrm:P72_has_language/ecrm:P3_has_note ?language .
+    }
+
+    VALUES(?type) { (sphaera:Part) (sphaera:Part_Adaption) }
+
+} GROUP BY ?value ?part_label ORDER BY DESC(?num_books) ?type ?part_label""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/pd7syc> <http://spinrdf.org/sp#text>
+      """INSERT { 
+  $subject efrbroo:R3i_realises ?value .
+  ?adaption efrbroo:R3i_realises ?value .
+} WHERE {
+  BIND(URI(STRBEFORE(STR($subject), \"/translation\")) as ?adaption)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/d02046> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_translated> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:19.882+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_translated> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_translated> a <http://www.w3.org/ns/ldp#Resource> .
+}

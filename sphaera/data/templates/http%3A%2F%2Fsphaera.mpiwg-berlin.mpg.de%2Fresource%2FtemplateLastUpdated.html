@@ -1,0 +1,25 @@
+<semantic-query
+  query='SELECT
+      (YEAR(?date_edited) as ?year)
+      (MONTH(?date_edited) as ?month)
+      (DAY(?date_edited) as ?day)
+    WHERE {
+    <http://www.metaphacts.com/ontologies/platform#formContainer> <http://www.w3.org/ns/ldp#contains> ?container .
+    ?container <http://www.w3.org/ns/prov#generatedAtTime> ?date_edited_raw .
+
+      [[#if bookiri]]
+        FILTER(REGEX(STR(?container), "[[urlParam "bookiri"]]", "i"))
+      [[/if]]
+      BIND(xsd:dateTime(?date_edited_raw) as ?date_edited)
+    }
+    ORDER BY DESC(?date_edited_raw)
+    LIMIT 1'
+  template='<div>
+    <dt>Last Updated</dt>
+      {{#each bindings}}
+        <dd>
+          On {{day.value}}.{{month.value}}.{{year.value}}
+        </dd>
+      {{/each}}
+    </div>'>
+</semantic-query>

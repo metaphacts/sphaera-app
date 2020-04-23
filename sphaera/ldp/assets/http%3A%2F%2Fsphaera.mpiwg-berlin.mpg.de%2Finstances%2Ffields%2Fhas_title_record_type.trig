@@ -1,0 +1,38 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_title_record_type/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_title_record_type> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/wwtk0hq61my9yzqcl3di>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/ftik5l7222jznkc81if6r>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Defaults to the has title record type";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Has Title Record Type" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/wwtk0hq61my9yzqcl3di> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/ftik5l7222jznkc81if6r> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/wwtk0hq61my9yzqcl3di> <http://spinrdf.org/sp#text>
+      """INSERT { 
+  $subject rdf:type $value .
+} WHERE {}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/ftik5l7222jznkc81if6r> <http://spinrdf.org/sp#text>
+      """SELECT $value WHERE { 
+  BIND(?subject as ?dummy) 
+  VALUES ($value) { 
+    (<http://erlangen-crm.org/current/PC102_has_title>) } }
+
+""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_title_record_type> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.357+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_title_record_type> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_title_record_type> a <http://www.w3.org/ns/ldp#Resource> .
+}

@@ -1,0 +1,92 @@
+{
+  "displayName" : "Item",
+  "variableName" : "label",
+  "cellTemplate" : "<span>
+    {{#if is_book.value}}
+      <semantic-link
+        iri=\"[[resolvePrefix ":viewBook"]]\"
+        urlqueryparam-bookiri=\"{{subject.value}}\">
+        {{label.value}}</semantic-link>
+    {{/if}}
+    {{#if is_element.value}}
+      <semantic-link
+        iri=\"[[resolvePrefix ":viewElement"]]\"
+        urlqueryparam-elementiri=\"{{subject.value}}\">
+        {{label.value}}</semantic-link>
+    {{/if}}
+    {{#if is_part.value}}
+      <semantic-link
+        iri=\"[[resolvePrefix ":viewPart"]]\"
+        urlqueryparam-partiri=\"{{subject.value}}\">
+        {{label.value}}</semantic-link>
+    {{/if}}
+    {{#if is_region.value}}
+      <semantic-link
+        iri=\"[[resolvePrefix ":viewPageRegions"]]\"
+        urlqueryparam-pageiri=\"{{page.value}}\">
+        Region</semantic-link> on
+      <semantic-link
+        iri=\"[[resolvePrefix ":viewPage"]]\"
+        urlqueryparam-pageiri=\"{{page.value}}\">
+        {{page_label.value}}</semantic-link> in
+      <semantic-link
+        iri=\"[[resolvePrefix ":viewBook"]]\"
+        urlqueryparam-bookiri=\"{{page_book.value}}\"
+      >{{page_book_label.value}}</semantic-link>
+    {{/if}}
+    {{#if is_annotation.value}}
+      {{#if annotates_book.value}}
+      <semantic-link
+        iri=\"[[resolvePrefix ":viewBook"]]\"
+        urlqueryparam-bookiri=\"{{annotation_target.value}}\"
+        urlqueryparam-tab=\"meta\"
+      >Annotation</semantic-link>
+      {{else}}
+      <semantic-link
+        iri=\"[[resolvePrefix ":viewPart"]]\"
+        urlqueryparam-partiri=\"{{annotation_target.value}}\"
+        urlqueryparam-tab=\"meta\"
+      >Annotation</semantic-link>
+      {{/if}}
+      on
+      {{#if annotates_book.value}}
+      <semantic-link
+        iri=\"[[resolvePrefix ":viewBook"]]\"
+        urlqueryparam-bookiri=\"{{annotation_target.value}}\"
+      >{{annotation_target_label.value}}</semantic-link>
+      {{else}}
+      <semantic-link
+        iri=\"[[resolvePrefix ":viewPart"]]\"
+        urlqueryparam-partiri=\"{{annotation_target.value}}\"
+      >{{annotation_target_label.value}}</semantic-link>
+      {{/if}}
+    {{/if}}</span>"
+},
+{
+  "displayName" : "Type",
+  "variableName" : "type",
+  "cellTemplate" : "
+  {{type_label.value}}
+  {{#if is_book.value}}Book{{/if}}
+  {{#if is_element.value}}Element{{/if}}
+  {{#if is_part.value}}Part{{/if}}
+  {{#if is_region.value}}Region{{/if}}
+  {{#if is_annotation.value}}Annotation
+    {{#if annotates_book.value}}on Book{{/if}}
+    {{#if annotates_part.value}}on Part{{/if}}
+  {{/if}}"
+},
+{
+  "displayName": "Other Keywords",
+  "variableName": "other_keywords"
+},
+{
+  "displayName" : "&nbsp",
+  "cellTemplate" : "{{#if imageID.value}}
+    <img src=\"{{IIIFPath.value}}{{imageID.value}}/{{boundingBox.value}}/!100,100/0/default.jpg\" />
+  {{/if}}
+  {{#if elImageIIIFUrlBeforeSize.value}}
+    <img src=\"{{elImageIIIFUrlBeforeSize.value}}/!100,100/0/default.jpg\" />
+  {{/if}}
+  "
+}

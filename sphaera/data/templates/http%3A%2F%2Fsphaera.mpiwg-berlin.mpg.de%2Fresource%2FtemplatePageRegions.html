@@ -1,0 +1,112 @@
+<div>
+  {{#each bindings}}
+    <div class="panel row">
+      <div class="col-md-3">
+        <semantic-link
+          iri="[[resolvePrefix ":viewPage"]]"
+          urlqueryparam-pageiri="{{page.value}}"
+          class="thumbnail">
+
+          <img src="{{IIIFPath.value}}{{imageID.value}}/{{boundingBox.value}}/!300,300/0/default.jpg" />
+
+      </semantic-link>
+    </div>
+    <div class="col-md-9">
+      <dl>
+        <!-- Element -->
+        <dt>
+          Element
+        </dt>
+        <dd>
+          {{#if element.value}}
+            <semantic-link
+              iri="[[resolvePrefix ":viewElement"]]"
+              urlqueryparam-elementiri="{{element.value}}"
+            >{{element_label.value}}</semantic-link><br/>
+          {{else}}
+            No element selected
+          {{/if}}
+        </dd>
+
+        <!-- Type -->
+        <dt>
+          Type
+        </dt>
+        <dd>
+          {{#if type.value}}
+            <semantic-link
+                iri="[[resolvePrefix ":viewRegionType"]]"
+                urlqueryparam-regiontypeiri="{{type.value}}"
+              >{{type_label.value}}</semantic-link>
+          {{else}}
+            No type assigned
+          {{/if}}
+        </dd>
+
+
+        <!-- Element Keywords -->
+        {{#if element_keywords.value}}
+        <dt>
+          Element Keywords
+        </dt>
+        <dd>
+          {{element_keywords.value}}
+        </dd>
+        {{/if}}
+
+        <!-- Part -->
+
+        {{#if part_or_adaption.value}}
+        <dt>
+          Part
+        </dt>
+        <dd>
+            {{#if part_or_adaption_is_adaption.value}}
+              <semantic-link
+                iri="[[resolvePrefix ":viewAdaption"]]"
+                urlqueryparam-adaptioniri="{{part_or_adaption.value}}"
+              >{{part_or_adaption_label.value}}</semantic-link><br/>
+            {{else}}
+              <semantic-link
+                iri="[[resolvePrefix ":viewPart"]]"
+                urlqueryparam-partiri="{{part_or_adaption.value}}"
+              >{{part_or_adaption_label.value}}</semantic-link><br/>
+            {{/if}}
+        </dd>
+        {{/if}}
+
+        <!-- Notes -->
+        {{#if notes.value}}
+        <dt>
+          Notes
+        </dt>
+        <dd>
+          {{notes.value}}
+        </dd>
+        {{/if}}
+
+          <!-- Notes -->
+          {{#if notes.value}}
+          <dt>
+            Notes
+          </dt>
+          <dd>
+            {{notes.value}}
+          </dd>
+          {{/if}}
+
+          [[# if (hasPermission "forms:ldp:*")]]
+            <!-- Edit -->
+            <dt></dt>
+            <dd>
+              <semantic-link class="btn btn-xs btn-primary"
+                iri="{{subject.value}}"
+                urlqueryparam-redirect="[[redirect]]"
+              >Edit</semantic-link>
+            </dd>
+          [[/if]]
+        </dl>
+      </div>
+    </div>
+  {{/each}}
+</div>

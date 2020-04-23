@@ -1,0 +1,24 @@
+?subject a sphaera:Part .
+?subject ecrm:P3_has_note ?label .
+
+OPTIONAL {
+  ?subject ecrm:P1_is_identified_by ?identifier .
+  ?identifier ecrm:P2_has_type sphaera:customIdentifier ;
+    ecrm:P3_has_note ?custom_identifier .
+}
+
+
+OPTIONAL {
+  ?subject ecrm:PC01_is_domain_of ?has_title .
+  ?has_title a ecrm:PC102_has_title ;
+    ecrm:P102.1_has_type sphType:primary ;
+    ecrm:PC02_has_range/ecrm:P3_has_note ?part_title .
+}
+
+
+OPTIONAL {
+  ?subject efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range/ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?author_label .
+  [[> :queryFormatName input="?author_label" output="?author_name"]]
+  BIND(LCASE(?author_label) AS ?sort_author_name)
+}
+BIND( IF(BOUND(?part_title), ?part_title, "&nbsp;") as ?title )

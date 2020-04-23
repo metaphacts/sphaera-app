@@ -1,0 +1,33 @@
+
+?subject a efrbroo:F10_Person ;
+  ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?label ;
+  ecrm:P2_has_type/skos:prefLabel ?role .
+
+OPTIONAL {
+  ?book ((ecrm:P128_carries/efrbroo:R24i_was_created_through)|(ecrm:P128_carries/ecrm:P165_incorporates/efrbroo:R17i_was_created_by)|efrbroo:R28i_was_produced_by)
+    /ecrm:PC01_is_domain_of/ecrm:PC02_has_range
+  ?subject .
+}
+
+OPTIONAL {
+  ?subject ecrm:P98i_was_born/ecrm:P4_has_time-span/ecrm:P3_has_note ?date_birth
+  BIND("TRUE" as ?has_birth_data)
+}
+OPTIONAL {
+  ?subject ecrm:P100i_died_in/ecrm:P4_has_time-span/ecrm:P3_has_note ?date_death
+  BIND("TRUE" as ?has_birth_data)
+}
+
+OPTIONAL {
+  ?subject ecrm:P11i_participated_in ?activity .
+  ?activity ecrm:P2_has_type sphType:periodOfActivity .
+  BIND("TRUE" as ?has_activity_data)
+  OPTIONAL {
+    ?activity ecrm:P4_has_time-span/ecrm:P82a_begin_of_the_beginning ?date_activity_from
+  }
+  OPTIONAL {
+    ?activity ecrm:P4_has_time-span/ecrm:P82b_end_of_the_end ?date_activity_to
+  }
+}
+
+BIND(LCASE(?label) AS ?sort_label)

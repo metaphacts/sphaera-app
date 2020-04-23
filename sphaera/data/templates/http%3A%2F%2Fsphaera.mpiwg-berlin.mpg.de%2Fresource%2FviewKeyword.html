@@ -1,0 +1,155 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":manageTerms") label="Manage Terms" tab="keywords"]]
+</ol>
+
+<semantic-query
+  query='SELECT ?type_name WHERE
+    {
+      ?type ecrm:P3_has_note ?type_name .
+      BIND(<[[urlParam "keywordiri"]]> as ?type)
+     }'
+  template="<h3>{{#each bindings}}{{type_name.value}}{{/each}}</h3>">
+</semantic-query>
+
+<semantic-query
+  query="SELECT ?description_body WHERE {
+    BIND(<[[urlParam "keywordiri"]]> as ?keyword)
+    ?keyword ecrm:P129i_is_subject_of ?description .
+    ?description ecrm:P2_has_type sphType:description ;
+      ecrm:P3_has_note ?description_body .
+  }"
+  template="<p class='lead'>{{#each bindings}}{{description_body.value}}{{/each}}</p>"
+>
+</semantic-query>
+
+[[#if (hasPermission "forms:ldp:*")]]
+  <semantic-link
+    iri="[[resolvePrefix ":addKeyword"]]"
+    urlqueryparam-resiri="[[urlParam "keywordiri"]]"
+    class="btn btn-md btn-primary gap-bottom" >Edit</semantic-link>
+[[/if]]
+
+<div id="view-record-body" class="content">
+  <h4 style="margin:2em 0">Entities that carry this keyword</h4>
+  <semantic-table
+    query="SELECT
+        ?annotates_book
+        ?annotates_part
+        ?annotation_target
+        ?annotation_target_label
+        ?boundingBox
+        ?label
+        ?IIIFPath
+        ?imageID
+        ?is_annotation
+        ?is_book
+        ?is_element
+        ?is_part
+        ?is_region
+        (GROUP_CONCAT(DISTINCT ?other_keyword_label; SEPARATOR=', ') as ?other_keywords)
+        ?page
+        ?page_book_label
+        ?page_label
+        ?subject
+        ?type
+        ?type_label
+        (SAMPLE(?elImageIIIFUrlBeforeSize) as ?elImageIIIFUrlBeforeSize)
+  			WHERE {
+          BIND(<[[urlParam "keywordiri"]]> as ?keyword)
+          ?subject a ?type ;
+            ecrm:P2_has_type ?keyword .
+          OPTIONAL {
+            ?subject ecrm:P3_has_note ?label .
+          }
+          OPTIONAL {
+            ?subject ecrm:P2_has_type ?other_keyword .
+            sphType:keywords skos:member ?other_keyword .
+            FILTER(?other_keyword != ?keyword)
+            ?other_keyword ecrm:P3_has_note ?other_keyword_label .
+          }
+          OPTIONAL {
+            ?subject oa:hasTarget ?annotation_target .
+            ?annotation_target a ?annotation_target_type ;
+              ecrm:P3_has_note ?annotation_target_label
+            VALUES (?annotation_target_type) {
+              (sphaera:Book)
+              (sphaera:Part)
+            }
+            BIND(IF(?annotation_target_type = sphaera:Book, 'true', '') as ?annotates_book)
+            BIND(IF(?annotation_target_type = sphaera:Part, 'true', '') as ?annotates_part)
+          }
+          OPTIONAL {
+            ?subject a crmDig:D35_Area ;
+              crmDig:L49_is_primary_area_of ?page ;
+              rs:boundingBox ?bbox .
+            ?page ecrm:P3_has_note ?page_label ;
+              ^ecrm:P106_is_composed_of/^ecrm:P128_carries/^efrbroo:R30_produced/^efrbroo:R29i_was_reproduced_by ?page_book .
+            ?page_book ecrm:P3_has_note ?page_book_label .
+
+            :configIIIFPath ecrm:P3_has_note ?IIIFPath .
+            BIND(STRAFTER(?bbox, 'xywh=') as ?boundingBox)
+            BIND(?page as ?imageIRI) .
+            [[> :queryImageIdPattern]]
+          }
+          OPTIONAL {
+            ?subject a sphaera:Element .
+            ?elRegion ecrm:P138_represents ?subject ;
+              crmDig:L49_is_primary_area_of ?elPage ;
+              rs:boundingBox ?elBbox .
+            :configIIIFPath ecrm:P3_has_note ?elIIIFPath .
+            BIND(STRAFTER(?elBbox, 'xywh=') as ?elBoundingBox)
+            BIND(STRAFTER(STR(?elPage), 'online/') as ?elUnescaped)
+            BIND(REPLACE(?elUnescaped, '/', '!') AS ?elImageID)
+            BIND(CONCAT(?elIIIFPath, ?elImageID, '/', ?elBoundingBox) as ?elImageIIIFUrlBeforeSize)
+          }
+          VALUES (?type) {
+            (sphaera:Book)
+            (sphaera:Part)
+            (sphaera:Element)
+            (crmDig:D35_Area)
+            (oa:Annotation)
+          }
+          BIND(IF(?type = sphaera:Book, 'true', '') as ?is_book)
+          BIND(IF(?type = sphaera:Part, 'true', '') as ?is_part)
+          BIND(IF(?type = sphaera:Element, 'true', '') as ?is_element)
+          BIND(IF(?type = crmDig:D35_Area, 'true', '') as ?is_region)
+          BIND(IF(?type = oa:Annotation, 'true', '') as ?is_annotation)
+          BIND(IF(?is_book,'Book','something else') as ?type_label)
+  	}
+      GROUP BY
+        ?annotates_book
+        ?annotates_part
+        ?annotation_target
+        ?annotation_target_label
+        ?boundingBox
+        ?label
+        ?IIIFPath
+        ?imageID
+        ?is_annotation
+        ?is_book
+        ?is_element
+        ?is_part
+        ?is_region
+        ?page
+        ?page_book_label
+        ?page_label
+        ?subject
+        ?type
+        ?type_label
+        ORDER BY ?label"
+    options='{
+      "resultsPerPage":100
+    }'
+    column-configuration='[ [[> :colConfKeywords ]] ]'
+  >
+  </semantic-table>
+
+
+
+  <dl>
+    [[> :identifier iri="keywordiri"]]
+  </dl>
+</div>

@@ -1,0 +1,136 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+  [[> :templateBreadcrumbViewResource
+    iri=(resolvePrefix ":viewBook")
+    urlqueryparam="bookiri"
+    bookiri="true" ]]
+</ol>
+
+<semantic-query
+  query='SELECT ?book_title ?label WHERE
+    {
+      ?book ecrm:P3_has_note ?label .
+      BIND(<[[urlParam "bookiri"]]> as ?book)
+     }'
+  template="<h3>{{#each bindings}}{{label.value}}{{/each}}</h3>">
+</semantic-query>
+
+<bs-tab-container default-active-key="pages">
+  <bs-row>
+    <bs-col sm="2" sm-push="10" class="tab-bar">
+      [[#if (hasPermission "forms:ldp:*")]]
+        <semantic-link
+          iri="[[urlParam "bookiri"]]"
+          class="btn btn-md btn-primary pull-right"
+          style="margin-bottom:3px;">Edit</semantic-link>
+      [[/if]]
+    </bs-col>
+    <bs-col sm="10" sm-pull="2" class="tab-bar">
+      <bs-nav bs-style="tabs" >
+
+        <li role="presentation">
+
+          <semantic-link
+            iri="[[resolvePrefix ":viewBook"]]"
+            urlqueryparam-bookiri="[[urlParam "bookiri"]]"
+          ><i class="fa fa-long-arrow-left"></i> Back</semantic-link>
+
+        </li>
+
+        <bs-nav-item event-key="pages">
+          Pages
+        </bs-nav-item>
+
+        <li role="presentation">
+
+          <semantic-query
+            query='SELECT (COUNT(?region) as ?num_regions) WHERE {
+              BIND(<[[urlParam "bookiri"]]> as ?book) .
+
+              ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page .
+
+              ?region crmDig:L49_is_primary_area_of ?page .
+            } LIMIT 1'
+            template='{{#each bindings}}
+            <semantic-link
+              iri="[[resolvePrefix ":viewBookRegions"]]"
+              urlqueryparam-bookiri="[[urlParam "bookiri"]]"
+            >Regions ({{num_regions.value}})</semantic-link>
+            {{/each}}'></semantic-query>
+
+        </li>
+      </bs-nav>
+    </bs-col>
+    <div class="content" style="clear:both;">
+      <bs-tab-content animation="true">
+
+        <bs-tab-pane event-key="pages">
+
+          <!-- Pages -->
+          <bs-row>
+            <semantic-query
+              query="SELECT
+                [[> :queryPagesSelect]]
+              WHERE {
+
+                BIND(<[[urlParam "bookiri"]]> as ?book) .
+                [[> :queryPages]]
+
+              } GROUP BY
+                [[> :queryPagesGroup]]
+                ORDER BY xsd:integer(?page_num)"
+              template='<div>
+                {{#each bindings}}
+                  <div class="col-sm-6 col-md-4">
+                    <div class="thumbnail">
+                      <semantic-link
+                        iri="[[resolvePrefix ":viewPage"]]"
+                        urlqueryparam-pageiri="{{page.value}}"
+                      >
+                        <img src="{{IIIFPath.value}}{{imageID.value}}/full/!360,360/0/default.jpg" />
+                        <div class="caption">
+                          <p>
+                            page {{page_num.value}}
+                            {{#if has_regions.value}}
+                              <small>({{num_regions.value}})</small>
+                            {{/if}}
+                          </p>
+                        </div>
+                      </semantic-link>
+                    </div>
+                  </div>
+                {{/each}}
+              </div>'
+            ></semantic-query>
+          </bs-row>
+
+        </bs-tab-pane>
+
+        <bs-tab-pane event-key="viewer">
+          <semantic-query
+            style="height:800px"
+            query='SELECT ?page ?imageIDPattern WHERE {
+              BIND(<[[urlParam "bookiri"]]> as ?book) .
+              ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page_iri .
+              BIND(CONCAT("\"",STR(?page_iri),"\"") as ?page)
+              BIND("BIND(STRAFTER(STR(?imageIRI), \"online/\") as ?unescaped) BIND(REPLACE(?unescaped, \"/\", \"!\") AS ?imageID)" as ?imageIDPattern)
+
+            }'
+            template='
+            <rs-iiif-mirador-side-by-side-comparison
+              compared-images="[{{#each bindings}}{{page.value}}{{#if @last}}{{else}},{{/if}}{{/each}}]"
+              image-id-pattern="{{#each bindings}}{{#if @first}}{{imageIDPattern.value}}{{/if}}{{/each}}"
+              iiif-server-url="[[> :configIIIFPath]]">
+            </rs-iiif-mirador-side-by-side-comparison>'
+          >
+        </bs-tab-pane>
+
+      </bs-tab-content>
+    </div>
+  </bs-row>
+</bs-tab-container>
+
+[[> :footer]]

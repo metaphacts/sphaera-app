@@ -1,0 +1,27 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+</ol>
+
+<h1>All Parts</h1>
+
+<div class="gap-bottom">
+  <semantic-link iri="[[resolvePrefix ":listAdaptions"]]">List Adaptions</semantic-link>
+</div>
+
+[[#if (hasPermission "forms:ldp:*")]]
+  <p class="gap-bottom">
+    <semantic-link iri="http://sphaera.mpiwg-berlin.mpg.de/resource/createPart" class="btn btn-primary btn-md">Add new part</semantic-link>
+  </p>
+[[/if]]
+
+<div class="content">
+  [[#> :tableParts]]
+  [[/ :tableParts]]
+  <div>
+    [[> :csvDownload parts="true"]]
+  </div>
+</div>
+
+[[> :footer]]

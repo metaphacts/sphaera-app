@@ -1,0 +1,30 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+</ol>
+
+<h1>All Books</h1>
+
+<p class="gap-bottom">
+  <bs-row>
+
+    <bs-col md=8>
+      [[#if (hasPermission "forms:ldp:*")]]
+        <semantic-link iri="[[resolvePrefix ":createBook"]]" class="btn btn-primary btn-md">Add new book</semantic-link>
+      [[/if]]
+    </bs-col>
+    <bs-col md=4 class="text-right">
+      <semantic-link iri="[[resolvePrefix ":mapBooks"]]" class="btn btn-default">Show on Map</semantic-link>
+    </bs-col>
+  </bs-row>
+
+</p>
+
+<div class="content">
+  [[> :tableBooks]]
+  <p>
+    [[> :csvDownload books="true"]]
+  </p>
+</div>
+[[> :footer]]

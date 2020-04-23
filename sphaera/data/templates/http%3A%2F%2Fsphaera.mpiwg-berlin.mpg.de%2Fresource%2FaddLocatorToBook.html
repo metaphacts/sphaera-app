@@ -1,0 +1,62 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+  [[> :templateBreadcrumbEditResource bookiri="true" tab="locator" ]]
+</ol>
+
+[[#if (urlParam "locatoriri")]]
+	<h2>Edit locator of book</h2>
+[[else]]
+  <h2>Add locator to book</h2>
+[[/if]]
+
+[[#if (urlParam "bookiri") ]]
+
+  <p>Use this form to assign a locator to the book: <semantic-query
+  	query='SELECT ?book_name WHERE { ?book ecrm:P3_has_note ?book_name . BIND(<[[urlParam "bookiri"]]> as ?book ) } LIMIT 1'
+    template='{{#each bindings}} {{book_name.value}} {{/each}}'
+  	>
+   </semantic-query>
+
+  </p>
+
+   <semantic-form
+    fields="[[fieldDefinitions
+    	locator_context="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/locator_context"
+      manifestation="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/manifestation_of_reference"
+      reference_url="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/reference_url"
+      reference_identifier="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/reference_identifier"
+    	record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/document_record_type"
+    ]]"
+    browser-persistence="false"
+    persistence="LDP"
+  	subject="[[#if (urlParam "locatoriri")]][[urlParam "locatoriri"]][[else]][[urlParam "bookiri"]]/reference/[[singleValueFromSelect "SELECT ?uuid WHERE {BIND(STRUUID() as ?uuid )}"]][[/if]]"
+    post-action="[[urlParam "bookiri"]]"
+    urlqueryparam-tab="locator"
+  >
+
+   <semantic-form-select-input for="locator_context"></semantic-form-select-input>
+   <semantic-link iri="[[resolvePrefix ":addLocatorContextLabel"]]" urlqueryparam-redirect="http://sphaera.mpiwg-berlin.mpg.de/resource/addLocatorToBook" urlqueryparam-bookiri="[[urlParam "bookiri"]]">Add new context</semantic-link>
+
+   <semantic-form-text-input for="reference_url"></semantic-form-text-input>
+
+   <p style="margin-top:2em;">In case no URL is available for the locator, you can provide an alternative identification here:</p>
+   <semantic-form-text-input for="reference_identifier"></semantic-form-text-input>
+
+   <div class="disabled hidden-field">
+     <semantic-form-text-input for="manifestation"></semantic-form-text-input>
+     <semantic-form-text-input for="record_type"></semantic-form-text-input>
+   </div>
+    <div class="text-right form-submit">
+      <a class="btn btn-default" href="/resource?iri=[[urlParam "bookiri"]]&tab=locator">Cancel</a>
+      <button name="submit" class="btn btn-primary btn-md">Save</button>
+    </div>
+  </semantic-form>
+
+[[else]]
+	No book has been selected. This form needs to be accessed via a book record.
+[[/if]]
+
+[[> :footer]]

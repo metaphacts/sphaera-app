@@ -1,0 +1,64 @@
+
+?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page ;
+  ecrm:P3_has_note ?book_label.
+
+?subject crmDig:L49_is_primary_area_of ?page ;
+  rs:boundingBox ?bbox ;
+  rs:displayLabel ?label.
+
+?page a ecrm:E36_Visual_Item ;
+  ecrm:P1_is_identified_by ?page_num .
+
+:configIIIFPath ecrm:P3_has_note ?IIIFPath .
+
+OPTIONAL {
+  ?attribute_assignment ecrm:P140_assigned_attribute_to/^ecrm:P165_incorporates/^ecrm:P128_carries ?book ;
+    ecrm:P141_assigned ?part_or_adaption ;
+    sphaera:pageFrom ?page_from ;
+    sphaera:pageTo ?page_to .
+  FILTER(?page_from <= ?page_num && ?page_to >= ?page_num)
+  ?part_or_adaption ecrm:P3_has_note ?part_or_adaption_label ;
+    a ?part_or_adaption_type .
+  VALUES (?part_or_adaption_type) {
+    (sphaera:Part)
+    (sphaera:Part_Adaption)
+  }
+  BIND(IF(?part_or_adaption_type = sphaera:Part_Adaption,'True','') as ?part_or_adaption_is_adaption)
+}
+
+OPTIONAL {
+  ?subject ecrm:P138_represents ?element .
+  ?element ecrm:P3_has_note ?element_label .
+}
+
+OPTIONAL {
+ {
+   SELECT ?subject (GROUP_CONCAT(DISTINCT ?element_keyword_label; SEPARATOR=', ') as ?element_keywords) WHERE {
+     ?subject ecrm:P138_represents/ecrm:P2_has_type ?element_keyword .
+     ?element_keyword ecrm:P3_has_note ?element_keyword_label .
+     sphType:keywords skos:member ?element_keyword .
+   } GROUP BY ?subject
+ }
+}
+OPTIONAL {
+  ?subject ecrm:P3_has_note ?notes .
+}
+
+OPTIONAL {
+    ?subject ecrm:P2_has_type ?type .
+    sphType:regionType skos:member ?type .
+    ?type ecrm:P3_has_note ?type_label .
+ }
+
+ OPTIONAL {
+   {
+     SELECT ?subject (GROUP_CONCAT(DISTINCT ?keyword_label; SEPARATOR=', ') as ?keywords) WHERE {
+       ?subject ecrm:P2_has_type ?keyword .
+       ?keyword ecrm:P3_has_note ?keyword_label .
+       sphType:keywords skos:member ?keyword .
+     } GROUP BY ?subject
+   }
+ }
+
+BIND(STRAFTER(?bbox, 'xywh=') as ?boundingBox)
+BIND(?page as ?imageIRI) .

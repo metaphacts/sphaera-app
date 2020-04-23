@@ -1,0 +1,21 @@
+<div id="table_books_container">
+	<semantic-table
+		id="table_books"
+		query='SELECT DISTINCT [[> :queryBooksSelect ]] WHERE {
+
+				[[> :queryBooks]]
+
+				}
+				GROUP BY [[> :queryBooksGroup]]
+				ORDER BY ?year_published_from ?date_text'
+
+		options='{
+		"resultsPerPage":100
+	}'
+
+		column-configuration='[
+			[[> :colConfBooks]]
+		]'
+	>
+	</semantic-table>
+<div>

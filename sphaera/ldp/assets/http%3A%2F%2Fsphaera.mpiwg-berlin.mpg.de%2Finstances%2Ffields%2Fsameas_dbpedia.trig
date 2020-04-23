@@ -1,0 +1,34 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/sameas_dbpedia/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/sameas_dbpedia> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/x372aevjrl29os7fd2t9>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#autosuggestionPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/9l3zd51mzeqapjtyy14i>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "A corresponding record on dbPedia";
+    <http://www.w3.org/2000/01/rdf-schema#label> "SameAs (dbPedia)" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/9l3zd51mzeqapjtyy14i> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+	SERVICE <http://dbpedia.org/sparql> {
+    	?value rdfs:label ?label . 
+	    FILTER (lang(?label) = 'en'). 
+    	?label <bif:contains> \"Sacrobosco\" . 
+  	}
+ } LIMIT 10""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/x372aevjrl29os7fd2t9> <http://spinrdf.org/sp#text>
+      "INSERT { $subject owl:sameAs $value} WHERE {}";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/9l3zd51mzeqapjtyy14i> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/sameas_dbpedia> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.147+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/sameas_dbpedia> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/sameas_dbpedia> a <http://www.w3.org/ns/ldp#Resource> .
+}

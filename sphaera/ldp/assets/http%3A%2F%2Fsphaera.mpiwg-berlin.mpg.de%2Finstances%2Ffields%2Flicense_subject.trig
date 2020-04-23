@@ -1,0 +1,31 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/license_subject/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/license_subject> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/av1rpv>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fur3zf>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Subject of a license (defaults to part of URI in subject before \"/license\")";
+    <http://www.w3.org/2000/01/rdf-schema#label> "License Subject" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fur3zf> <http://spinrdf.org/sp#text>
+      """SELECT $value WHERE { 
+  BIND(URI(STRBEFORE(STR($subject), \"/license\")) as $value)
+}""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/av1rpv> <http://spinrdf.org/sp#text>
+      "INSERT { $subject ecrm:P129_is_about $value} WHERE {}";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/license_subject> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.006+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/license_subject> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/license_subject> a <http://www.w3.org/ns/ldp#Resource> .
+}

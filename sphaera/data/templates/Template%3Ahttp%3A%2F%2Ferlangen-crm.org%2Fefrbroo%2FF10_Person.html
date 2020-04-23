@@ -1,0 +1,298 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listPersons") label="Persons"]]
+  <li class="breadcrumb-item">
+    <semantic-query
+      query='SELECT ?person_name WHERE
+        {
+          ?? ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?person_name .
+        } LIMIT 1'
+      template='{{#each bindings}}
+          <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="[[this]]">
+            {{person_name.value}}
+          </semantic-link>
+        </li>{{/each}}'
+      >
+    </semantic-query>
+  </li>
+</ol>
+
+[[> :headerResourceExists]]
+
+[[#if (hasPermission "forms:ldp:*")]]
+
+  <h2><semantic-query query='SELECT ?label WHERE { ?? ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?label }'></semantic-query></h2>
+
+  <semantic-form
+    fields="[[fieldDefinitions
+      active_from="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/active_from"
+      active_until="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/active_until"
+      equivalent_record="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_person_wd"
+      link="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/related_resource"
+      description="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/description"
+      doi="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/doi"
+      person_name="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/main_person_name"
+      person_role="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/person_role"
+      record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/person_record_type"
+      year_of_birth="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/year_of_birth"
+      year_of_death="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/year_of_death"
+    ]]"
+    browser-persistence="false"
+    persistence='LDP'
+    subject='[[this]]'
+  >  
+  <bs-tab-container id="person-edit-form" class="bs-left-vertical-tabs" default-active-key="[[#if (urlParam "tab" )]][[urlParam "tab"]][[else]]description[[/if]]">
+    <bs-row>
+      <bs-col sm="2" >
+        <bs-nav bs-style="tabs" stacked="true">
+          <bs-nav-item event-key="description">
+            Description
+          </bs-nav-item>
+          <bs-nav-item event-key="biography">
+            Biography
+          </bs-nav-item>
+          <bs-nav-item event-key="relatives">
+            Relatives
+
+          </bs-nav-item>
+          [[#if (hasPermission "api:config")]]
+            <bs-nav-item event-key="delete">
+              Delete
+            </bs-nav-item>
+            <bs-nav-item event-key="hidden" class="hidden-field">
+              Hidden
+            </bs-nav-item>
+            <bs-nav-item event-key="statements">
+              Statements
+            </bs-nav-item>
+          [[/if]]
+        </bs-nav>
+      </bs-col>
+      <bs-col sm="10">
+        <bs-tab-content animation="true">
+
+          <bs-tab-pane event-key="description">
+
+            <semantic-form-text-input for="person_name">
+            </semantic-form-text-input>
+
+            <semantic-form-select-input for="person_role">
+            </semantic-form-select-input>
+
+            <semantic-form-text-input for="link">
+            </semantic-form-text-input>
+
+            <bs-tabs>
+              <bs-tab event-key="lookup" title="Look up">
+                <semantic-form-autocomplete-input
+              		for="equivalent_record"
+                  template='<div>{{label.value}} ({{#if yearOfBirth.value}}{{yearOfBirth.value}}{{/if}}&ndash;{{#if yearOfDeath.value}}{{yearOfDeath.value}}{{/if}}) <span style="font-size:0.8em;">{{description.value}}</span></div>'
+              	>
+              </semantic-form-autocomplete-input>
+              </bs-tab>
+              <bs-tab event-key="enter" title="Enter URI">
+                <semantic-form-text-input for="equivalent_record">
+                </semantic-form-text-input>
+              </bs-tab>
+            </bs-tabs>
+
+          </bs-tab-pane>
+
+          <bs-tab-pane event-key="biography">
+
+            <semantic-form-text-input for="description">
+            </semantic-form-text-input>
+
+            <semantic-form-text-input for="year_of_birth">
+            </semantic-form-text-input>
+
+            <semantic-form-text-input for="year_of_death">
+            </semantic-form-text-input>
+
+            <semantic-form-text-input for="active_from">
+            </semantic-form-text-input>
+
+            <semantic-form-text-input for="active_until">
+            </semantic-form-text-input>
+
+          </bs-tab-pane>
+
+          <bs-tab-pane event-key="relatives">
+            <h3>Related people</h3>
+            <p>Use this form to specify relationships this person shares with other persons in the database</p>
+
+            <semantic-table
+              query='SELECT DISTINCT ?attribute_assignment ?relationship_label ?relative_label WHERE {
+                  ?attribute_assignment ecrm:P140_assigned_attribute_to ?? ;
+                    ecrm:P141_assigned ?relationship .
+                  ?relationship rdfs:label ?relationship_label .
+                  OPTIONAL {
+                    ?attribute_assignment ecrm:P16_used_specific_object ?relative .
+                    ?relative ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?relative_label .
+                  }
+                }'
+
+              column-configuration='[
+                  {
+                    "displayName" : "Relationship",
+                    "variableName" : "relationship_label"
+                  },
+                  {
+                    "displayName" : "Related Person",
+                    "cellTemplate" : "
+                      <semantic-link
+                        iri=\"[[resolvePrefix ":addRelationshipToPerson"]]\"
+                        urlqueryparam-attributeassignmentiri=\"{{attribute_assignment.value}}\"
+                        urlqueryparam-personiri=\"[[this]]\"
+                        {{#if relative_label.value}}
+                        {{else}}
+                          class=\"btn btn-default btn-xs\"
+                        {{/if}}
+                        >
+                        {{#if relative_label.value}}
+                          {{relative_label.value}}
+                        {{else}}
+                          Assign
+                        {{/if}}
+                      </semantic-link>
+                      "
+                  },
+                  {
+                    "displayName" : "&nbsp;",
+                    "cellTemplate" : "<div>
+                                        <mp-ldp-remove-from-container-action
+                                          iri=\"{{attribute_assignment.value}}/container\"
+                                          container=\"http://www.metaphacts.com/ontologies/platform#formContainer\">
+                                          <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>
+                                        </mp-ldp-remove-from-container-action>
+                                      </div>"
+                  }
+                ]'
+
+                options='{
+                    "showFilter":false
+                  }'
+            >
+            </semantic-table>
+
+            <semantic-link
+              iri="[[resolvePrefix ":addRelationshipProperty"]]"
+              urlqueryparam-personiri="[[this]]"
+              urlqueryparam-attributeassignmentiri="[[this]]/relationship/[[singleValueFromSelect "SELECT ?uuid WHERE {BIND(STRUUID() as ?uuid )}"]]"
+              class="btn btn-default btn-sm gap-bottom">Add Relationship</semantic-link>
+
+            <h4>Incoming Relationships</h4>
+            <p>Relationships defined through other persons appear here</p>
+            <semantic-table
+              query='SELECT DISTINCT ?attribute_assignment ?relationship_label ?inverse_relationship_label ?relative ?relative_label WHERE {
+                  ?attribute_assignment ecrm:P16_used_specific_object ?? ;
+                    ecrm:P140_assigned_attribute_to ?relative ;
+                    ecrm:P141_assigned ?relationship .
+
+                  ?relationship rdfs:label ?relationship_label .
+                  ?relative ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?relative_label .
+                  OPTIONAL {
+                    ?relationship (owl:inverseOf|^owl:inverseOf)/rdfs:label ?inverse_relationship_label .
+                  }
+                }'
+
+                column-configuration='[
+                  {
+                    "displayName" : "Relationship",
+                    "cellTemplate" : "{{#if inverse_relationship_label.value}}
+                      {{inverse_relationship_label.value}}
+                    {{else}}
+                      {{relationship_label.value}}
+                    {{/if}}"
+                  },
+                  {
+                    "displayName" : "Related Person",
+                    "cellTemplate" : "
+                      <semantic-link
+                        iri=\"[[resolvePrefix ":addRelationshipToPerson"]]\"
+                        urlqueryparam-attributeassignmentiri=\"{{attribute_assignment.value}}\"
+                        urlqueryparam-personiri=\"{{relative.value}}\"
+                        >{{relative_label.value}}
+                      </semantic-link>
+                      "
+                  },
+                  {
+                    "displayName" : "&nbsp;",
+                    "cellTemplate" : "<div>
+                                        <mp-ldp-remove-from-container-action
+                                          iri=\"{{attribute_assignment.value}}/container\"
+                                          container=\"http://www.metaphacts.com/ontologies/platform#formContainer\">
+                                          <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>
+                                        </mp-ldp-remove-from-container-action>
+                                      </div>"
+                  }
+                ]'
+
+                options='{
+                    "showFilter":false
+                  }'
+            >
+            </semantic-table>
+          </bs-tab-pane>
+
+          <bs-tab-pane event-key="delete">
+            <h3>Delete</h3>
+            <p>Use the button below if you like to delete this book from the database</p>
+            <semantic-link
+                iri="[[resolvePrefix ":deleteResource"]]"
+                urlqueryparam-resiri="[[this]]"
+                urlqueryparam-back="[[this]]"
+                urlqueryparam-backtitle="Person"
+                urlqueryparam-redirect=":listPersons"
+              >
+                Delete Person
+              </semantic-link>
+          </bs-tab-pane>
+
+          <bs-tab-pane event-key="hidden">
+            <div class="disabled hidden-field">
+              <h3>Hidden</h3>
+                <semantic-form-text-input for="doi"></semantic-form-text-input>
+                <semantic-form-text-input for="record_type"></semantic-form-text-input>
+            </div>
+          </bs-tab-pane>
+
+          <bs-tab-pane event-key="statements">
+            [[> :statements]]
+          </bs-tab-pane>
+
+        </bs-tab-content>
+      </bs-col>
+    </bs-row>
+  </bs-tab-container>
+
+  <bs-row>
+    <bs-col sm="12" class="text-right form-submit">
+      <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="[[this]]" class="btn btn-default">Cancel</semantic-link>
+      <button name="submit" class="btn btn-primary btn-md">Save</button>
+      <semantic-form-recover-notification class="alert alert-info"></semantic-form-recover-notification>
+    </bs-col>
+   </bs-row>
+</semantic-form>
+
+[[else]]
+
+  <div class="inPageHeader">
+    [[> Platform:DefaultResourceHeader ]]
+  </div>
+
+  <semantic-link
+    iri="[[resolvePrefix ":viewPerson"]]"
+    urlqueryparam-personiri="[[this]]"
+    class="btn btn-primary"
+  >View Person Record</semantic-link>
+
+  [[> Platform:SourceStatements ]]
+
+[[/if]]
+
+[[> :identifier]]
+
+[[> :footer]]

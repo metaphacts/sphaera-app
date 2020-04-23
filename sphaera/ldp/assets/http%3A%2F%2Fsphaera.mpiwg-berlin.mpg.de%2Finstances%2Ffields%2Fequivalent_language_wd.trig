@@ -1,0 +1,60 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_language_wd/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_language_wd> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/0aucgfuor6aelccpiudi>;
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/1l2opzxgt1t9p07r2j4i>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#autosuggestionPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/b6layhs6e3ssey5o8ncdi>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Find and match a language on WikiData";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Equivalent Language (WikiData)" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/0aucgfuor6aelccpiudi> <http://spinrdf.org/sp#text>
+      "INSERT { $subject owl:sameAs $value} WHERE {}" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/1l2opzxgt1t9p07r2j4i> <http://spinrdf.org/sp#text>
+      """PREFIX bds:  <http://www.bigdata.com/rdf/search#>
+
+SELECT ?value ?label WHERE {
+  $subject owl:sameAs ?value
+  SERVICE <https://wikidata.metaphacts.com/sparql>
+  {  
+    ?value rdfs:label ?label .
+  }
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/b6layhs6e3ssey5o8ncdi> <http://spinrdf.org/sp#text>
+      """PREFIX bds:  <http://www.bigdata.com/rdf/search#>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+
+SELECT distinct ?value ?label ?description WHERE {
+  SERVICE <https://wikidata.metaphacts.com/sparql>
+  {  
+    ?value rdfs:label ?label; 
+       wdt:P279* wd:Q20162172 .
+    BIND( xsd:integer(substr(str(?value), 33)) as ?q)
+    FILTER(REGEX(?label, \"?token\", \"i\"))
+    OPTIONAL {
+      ?value <http://schema.org/description> ?description .
+  	}
+  }
+}
+ORDER BY ?q 
+LIMIT 10""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/1l2opzxgt1t9p07r2j4i> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/b6layhs6e3ssey5o8ncdi> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/0aucgfuor6aelccpiudi> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_language_wd> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.241+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_language_wd> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_language_wd> a <http://www.w3.org/ns/ldp#Resource> .
+}

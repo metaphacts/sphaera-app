@@ -1,0 +1,44 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/license_type/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/license_type> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/yh3p8f>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4sgmdf>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/wsa1q2>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The type of the license";
+    <http://www.w3.org/2000/01/rdf-schema#label> "License Type" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4sgmdf> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+  $subject ecrm:P2_has_type ?value .
+  ?value ^skos:member sphType:licenseType ;
+      ecrm:P3_has_note ?label .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/wsa1q2> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+  ?value ^skos:member sphType:licenseType ;
+      ecrm:P3_has_note ?label .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/yh3p8f> <http://spinrdf.org/sp#text>
+      "INSERT { $subject ecrm:P2_has_type $value} WHERE {}" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4sgmdf> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/wsa1q2> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/yh3p8f> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/license_type> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.917+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/license_type> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/license_type> a <http://www.w3.org/ns/ldp#Resource> .
+}

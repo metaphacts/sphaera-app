@@ -1,0 +1,70 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+  [[> :templateBreadcrumbEditResource bookiri="true" tab="printing"]]
+</ol>
+
+[[#if (urlParam "carriedoutbyiri")]]
+  <h2>Edit printer of book</h2>
+[[else]]
+  <h2>Add printer to book</h2>
+[[/if]]
+
+[[#if (urlParam "bookiri")]]
+  <p>Use this form to assign a printer to the book: <semantic-query
+    query='SELECT ?book_name WHERE { ?book ecrm:P3_has_note ?book_name . BIND(<[[urlParam "bookiri"]]> as ?book ) }'
+    template='{{#each bindings}} {{book_name.value}} {{/each}}'
+    >
+   </semantic-query>
+
+  </p>
+  <semantic-form
+    fields="[[fieldDefinitions
+      note="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/note"
+      record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/carried_out_by"
+      printer_role="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/printer_role"
+      printer="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/printer"
+    ]]"
+    browser-persistence="false"
+    persistence="LDP"
+    post-action="[[urlParam "bookiri"]]"
+    urlqueryparam-tab="printing"
+    subject="[[#if (urlParam "carriedoutbyiri")]][[urlParam "carriedoutbyiri"]][[else]][[urlParam "bookiri"]]/manifestation/printer/[[singleValueFromSelect "SELECT ?uuid WHERE {BIND(STRUUID() as ?uuid )}"]][[/if]]"
+  >
+
+    <semantic-form-select-input for="printer"></semantic-form-select-input>
+
+    <div class="gap-bottom">
+      <mp-overlay-dialog title="Create new printer" type="modal" bs-size="large">
+        <mp-overlay-dialog-trigger><a>Create new person</a></mp-overlay-dialog-trigger>
+        <mp-overlay-dialog-content>
+          <div width="800px">
+            <mp-page-loader iri="http://sphaera.mpiwg-berlin.mpg.de/resource/createPerson" urlqueryparam-noredirect="true">
+            </mp-page-loader>
+          </div>
+        </mp-overlay-dialog-content>
+      </mp-overlay-dialog>
+    </div>
+
+    <p>Add a justification for the name assignment, e.g. add a quote from the book.</p>
+    <semantic-form-text-input for="note"></semantic-form-text-input>
+
+    <div class="disabled hidden-field">
+      <semantic-form-text-input for="record_type"></semantic-form-text-input>
+      <semantic-form-text-input for="printer_role"></semantic-form-text-input>
+    </div>
+    <div class="text-right form-submit">
+      <semantic-link iri="[[urlParam "bookiri"]]" urlqueryparam-tab="printing" class="btn btn-default btn-md">Cancel</semantic-link>
+      <button name="submit" class="btn btn-primary btn-md">Save</button>
+    </div>
+  </semantic-form>
+
+  [[> :modalAddAnnotationToBook resourceiri="bookiri"]]
+
+[[else]]
+	No book has been selected. This form needs to be accessed via a book record.
+[[/if]]
+
+[[> :footer]]

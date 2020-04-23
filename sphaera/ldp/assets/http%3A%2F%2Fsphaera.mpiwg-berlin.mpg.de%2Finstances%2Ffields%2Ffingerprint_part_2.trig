@@ -1,0 +1,43 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_part_2/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_part_2> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      "t979";
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> "t980";
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The first part of the fingerprint identifier for the book";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Fingerprint Part 2" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t980> a <http://spinrdf.org/sp#Query> .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t979> <http://spinrdf.org/sp#text>
+      """INSERT {
+  ?fingerprint ecrm:P106_is_composed_of ?part2 .
+  ?part2 a ecrm:E90_Symbolic_Object ;
+      ecrm:P1_is_identified_by \"2\" ;
+      ecrm:P3_has_note $value .
+} WHERE {
+  BIND(URI(CONCAT(STR($subject), \"/fingerprint\")) as ?fingerprint)
+  BIND(URI(CONCAT(STR($subject), \"/fingerprint/2\")) as ?part2)
+}""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t980> <http://spinrdf.org/sp#text>
+      """SELECT ?value WHERE {
+  $subject ecrm:P1_is_identified_by ?fingerprint .
+  ?fingerprint ecrm:P2_has_type sphaera:fingerprint ;
+      ecrm:P106_is_composed_of ?part2 .
+  ?part2 ecrm:P1_is_identified_by \"2\" ;
+      ecrm:P3_has_note ?value .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_part_2> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.632+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_part_2> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_part_2> a <http://www.w3.org/ns/ldp#Resource> .
+}

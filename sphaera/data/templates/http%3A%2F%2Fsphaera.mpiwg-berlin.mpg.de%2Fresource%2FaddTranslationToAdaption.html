@@ -1,0 +1,100 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+
+  [[#if (urlParam "bookiri")]]
+
+    [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+    [[> :templateBreadcrumbEditResource bookiri="true" tab="parts"]]
+
+    [[#if (urlParam "returniri")]]
+      [[> :templateBreadcrumbEditResource adaptioniri="true" returniri="true"]]
+    [[/if]]
+
+  [[else]]
+
+    [[> :templateBreadcrumb iri=(resolvePrefix ":listParts") label="Parts"]]
+    [[> :templateBreadcrumb iri=(resolvePrefix ":listAdaptions") label="Adaptions"]]
+
+    [[#if (urlParam "returntab")]]
+      [[> :templateBreadcrumbEditResource adaptioniri="true" returniri="true" returntab="true"]]
+    [[else]]
+      [[> :templateBreadcrumbEditResource adaptioniri="true" returniri="true"]]
+    [[/if]]
+
+  [[/if]]
+</ol>
+
+
+[[#if (urlParam "expressioniri")]]
+  <h2>Edit translated part</h2>
+[[else]]
+  <h2>Add translated part</h2>
+[[/if]]
+
+[[#if (urlParam "adaptioniri")]]
+  <semantic-query
+    query='SELECT ?adaption_name WHERE { ?adaption ecrm:P3_has_note ?adaption_name . BIND(<[[urlParam "adaptioniri"]]> as ?adaption ) }'
+    template='<p>Use this form to assign a translation of a part to the adaption {{#each bindings}} {{adaption_name.value}} {{/each}}</p>'
+  >
+  </semantic-query>
+
+  <semantic-form
+      fields="[[fieldDefinitions
+        language="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/language"
+        part="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_translated"
+        record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/adaption_translated_part_record_type"
+      ]]"
+      browser-persistence="false"
+      persistence="LDP"
+      post-action="[[urlParam "adaptioniri"]]"
+      [[#if (urlParam "bookiri")]]
+        urlqueryparam-bookiri="[[urlParam "bookiri"]]"
+      [[/if]]
+      [[#if (urlParam "attributeassignmentiri")]]
+        urlqueryparam-attributeassignmentiri="[[urlParam "attributeassignmentiri"]]"
+      [[/if]]
+      [[#if (urlParam "returniri")]]
+        urlqueryparam-returniri="[[urlParam "returniri"]]"
+      [[/if]]
+      [[#if (urlParam "returntab")]]
+        urlqueryparam-tab="[[urlParam "returntab"]]"
+        urlqueryparam-returntab="[[urlParam "returntab"]]"
+      [[/if]]
+      subject="[[#if (urlParam "expressioniri")]][[urlParam "expressioniri"]][[else]][[urlParam "adaptioniri"]]/translation/[[singleValueFromSelect "SELECT ?uuid WHERE {BIND(STRUUID() as ?uuid )}"]][[/if]]"
+    >
+
+      <semantic-form-select-input for="part"></semantic-form-select-input>
+
+      <semantic-form-select-input for="record_type"></semantic-form-select-input>
+
+      <semantic-form-select-input for="language"></semantic-form-select-input>
+
+      <div class="text-right form-submit">
+        <semantic-link iri="[[urlParam "adaptioniri"]]"
+          [[#if (urlParam "bookiri")]]
+            urlqueryparam-bookiri="[[urlParam "bookiri"]]"
+          [[/if]]
+          [[#if (urlParam "attributeassignmentiri")]]
+            urlqueryparam-attributeassignmentiri="[[urlParam "attributeassignmentiri"]]"
+          [[/if]]
+          [[#if (urlParam "returniri")]]
+            urlqueryparam-returniri="[[urlParam "returniri"]]"
+          [[/if]]
+          [[#if (urlParam "returntab")]]
+            urlqueryparam-tab="[[urlParam "returntab"]]"
+            urlqueryparam-returntab="[[urlParam "returntab"]]"
+          [[/if]]
+          class="btn btn-default btn-md">
+          Cancel
+        </semantic-link>
+        <button name="submit" class="btn btn-primary btn-md">Save</button>
+      </div>
+    </semantic-form>
+[[else]]
+	No adaption has been selected. This form needs to be accessed via a adaption record.
+[[/if]]
+
+
+[[> :footer ]]

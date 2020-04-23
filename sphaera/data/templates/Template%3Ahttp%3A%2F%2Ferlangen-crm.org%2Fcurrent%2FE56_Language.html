@@ -1,0 +1,80 @@
+[[> :header]]
+
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":manageTerms") label="Manage Terms" tab="languages"]]
+  <li class="breadcrumb-item">
+    <semantic-query
+      query='SELECT ?language ?language_name WHERE
+        {
+          BIND(?? as ?language)
+          ?language ecrm:P3_has_note ?language_name .
+        } LIMIT 1'
+      template='{{#each bindings}}
+        <semantic-link iri="[[resolvePrefix ":viewLanguage"]]" urlqueryparam-languageiri="{{language.value}}">{{language_name.value}}</semantic-link>
+      {{/each}}'>
+    </semantic-query>
+  </li>
+</ol>
+
+[[> :headerResourceExists]]
+
+[[#if (hasPermission "forms:ldp:*")]]
+
+  <h2>Edit language</h2>
+  <semantic-form
+    persistence='LDP'
+    browser-persistence='false'
+    post-action='http://sphaera.mpiwg-berlin.mpg.de/resource/manageTerms'
+    fields="[[fieldDefinitions
+        equivalent_record="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_language_wd"
+        label="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_note"
+        record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/language_record_type"
+    ]]"
+    subject="[[this]]"
+  >
+    <semantic-form-text-input for="label"></semantic-form-text-input>
+
+    <semantic-form-autocomplete-input for="equivalent_record" template='<div>{{label.value}} <span style="font-size:0.8em;">{{description.value}}</span></div>'></semantic-form-autocomplete-input>
+
+     <div class="disabled hidden-field">
+      <semantic-form-text-input for="record_type"></semantic-form-text-input>
+     </div>
+
+      <div class="text-right form-submit">
+        <semantic-link iri="http://sphaera.mpiwg-berlin.mpg.de/resource/manageTerms" urlqueryparam-tab="languages" class="btn btn-default">Cancel</semantic-link>
+        <button name="submit" class="btn btn-primary btn-md">Save</button>
+      </div>
+
+  </semantic-form>
+
+  <div>
+    <semantic-link
+      iri="[[resolvePrefix ":deleteResource"]]"
+      urlqueryparam-resiri="[[this]]"
+      urlqueryparam-back=":manageTerms"
+      urlqueryparam-tab="languages"
+      urlqueryparam-backtitle="Manage Terms"
+    >
+      Delete Language
+    </semantic-link>
+  </div>
+
+[[else]]
+
+  <div class="inPageHeader">
+    [[> Platform:DefaultResourceHeader ]]
+  </div>
+
+  <semantic-link
+    iri="[[resolvePrefix ":viewLanguage"]]"
+    urlqueryparam-languageiri="[[this]]"
+    class="btn btn-primary"
+  >View Language Record</semantic-link>
+
+  [[> Platform:SourceStatements ]]
+
+[[/if]]
+
+[[> :footer]]

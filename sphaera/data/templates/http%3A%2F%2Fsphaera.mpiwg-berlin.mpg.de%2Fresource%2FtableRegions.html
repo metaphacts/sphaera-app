@@ -1,0 +1,21 @@
+ <semantic-table
+    id="table_regions"
+    query="SELECT
+
+      [[> :queryRegionsSelect]]
+
+      ?book
+      ?book_label
+    WHERE {
+
+      [[> :queryRegionsForPage]]
+
+      [[> :queryImageIdPattern]]
+
+    } ORDER BY xsd:integer(?page_num)
+    LIMIT 1000"
+    number-of-displayed-rows="50"
+    options='{"showFilter": false}'
+    tuple-template='[[> :templatePageRegionsGrid]]'
+    >
+    </semantic-table>

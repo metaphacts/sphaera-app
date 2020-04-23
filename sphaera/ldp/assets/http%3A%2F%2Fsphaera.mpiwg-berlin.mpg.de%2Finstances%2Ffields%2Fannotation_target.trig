@@ -1,0 +1,34 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_target/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_target> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/vabwduhyth1qkbg9zfr>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/dzfgxyzjbq8m76869a4i>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Target of an annotation (defaults to part of URI in subject before \"/annotation\")";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Annotation Target" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/dzfgxyzjbq8m76869a4i> <http://spinrdf.org/sp#text>
+      """SELECT $value WHERE { 
+  BIND(URI(STRBEFORE(STR($subject), \"/annotation\")) as $value)
+}
+""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/vabwduhyth1qkbg9zfr> <http://spinrdf.org/sp#text>
+      "INSERT { $subject oa:hasTarget $value} WHERE {}" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/dzfgxyzjbq8m76869a4i> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/vabwduhyth1qkbg9zfr> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_target> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.936+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_target> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_target> a <http://www.w3.org/ns/ldp#Resource> .
+}

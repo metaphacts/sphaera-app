@@ -1,0 +1,43 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_content_type/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_content_type> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      "t194";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> "t195";
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> "t196";
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The type of the content of the part (paratext, scientific, etc.)";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Part/Adaption Content Type" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t195> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+    $subject ecrm:P2_has_type ?value .
+    ?value ecrm:P3_has_note ?label .
+    sphType:partContentType skos:member ?value .
+}""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t194> a <http://spinrdf.org/sp#Query> .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t196> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+  ?value a ecrm:E55_Type ;
+    ecrm:P3_has_note ?label .
+    sphType:partContentType skos:member ?value .
+}""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t194> <http://spinrdf.org/sp#text>
+      """INSERT {
+    $subject ecrm:P2_has_type $value .
+} WHERE {}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_content_type> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:19.957+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_content_type> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_content_type> a <http://www.w3.org/ns/ldp#Resource> .
+}

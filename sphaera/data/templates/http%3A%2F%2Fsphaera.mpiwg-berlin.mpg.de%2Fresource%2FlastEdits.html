@@ -1,0 +1,50 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+</ol>
+
+
+[[#if (hasPermission "api:config")]]
+
+  <h3>Last Edits</h3>
+
+  <div class="content">
+    <semantic-table
+      query="
+          PREFIX User: <http://www.metaphacts.com/resource/user/>
+          PREFIX sphaera: <http://ontologies.mpiwg-berlin.mpg.de/sphaera/>
+          SELECT ?item ?type ?time ?user WHERE {
+            GRAPH ?g {
+              ?container prov:wasAttributedTo ?user ;
+                prov:generatedAtTime ?time .
+              ?item a ?type .
+              VALUES (?type) {
+                  (sphaera:Book)
+                  (sphaera:Part)
+                  (sphaera:Part_Adaption)
+                  (crmDig:D35_Area)
+                  (ecrm:E13_Attribute_Assignment)
+                  (ecrm:E35_Title)
+                  (ecrm:E55_Type)
+                  (ecrm:E56_Language)
+                  (ecrm:E82_Actor_Appellation)
+                  (ecrm:PC14_carried_out_by)
+                  (efrbroo:F10_Person)
+              }
+            }
+          } ORDER BY DESC(xsd:dateTime(?time)) LIMIT 100"
+      >
+    </semantic-table>
+
+  </div>
+
+[[else]]
+
+  <div class="alert alert-warning">
+    <p>You do not have sufficient privilege to see this page<p>
+  </div>
+
+[[/if]]
+
+[[> :footer ]]

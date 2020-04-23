@@ -1,0 +1,63 @@
+[[!--
+
+Usage examples:
+
+  [[> :templateBreadcrumbEditResource partiri="true"]]
+  [[> :templateBreadcrumbEditResource bookiri="true" tab="author"]]
+  [[> :templateBreadcrumbEditResource personiri="true" tab="relatives"]]
+  [[> :templateBreadcrumbEditResource adaptioniri="true" returniri="true"]]
+
+
+Supported URL params:
+  - adaptioniri
+  - bookiri
+  - partiri
+  - personiri
+  - resourceiri
+
+  - returntab
+
+ --]]
+
+
+<li class="breadcrumb-item">
+  <semantic-query
+    query='SELECT ?subject ?label WHERE {
+      [[#if adaptioniri]]
+        BIND(<[[urlParam "adaptioniri"]]> as ?subject )
+        ?subject ecrm:P3_has_note ?label .
+      [[/if]]
+      [[#if bookiri]]
+        BIND(<[[urlParam "bookiri"]]> as ?subject )
+        ?subject ecrm:P3_has_note ?label .
+      [[/if]]
+      [[#if partiri]]
+        BIND(<[[urlParam "partiri"]]> as ?subject )
+        ?subject ecrm:P3_has_note ?label .
+      [[/if]]
+      [[#if personiri]]
+        BIND(<[[urlParam "personiri"]]> as ?subject )
+        ?subject ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?label .
+      [[/if]]
+      [[#if resourceiri]]
+        BIND(<[[urlParam "resourceiri"]]> as ?subject )
+        ?subject ecrm:P3_has_note ?label .
+      [[/if]]
+    } LIMIT 1'
+    template='{{#each bindings}}
+      <semantic-link
+        iri="{{subject.value}}"
+        [[#if tab]]
+          urlqueryparam-tab="[[tab]]"
+        [[/if]]
+        [[#if returntab]]
+          urlqueryparam-tab="[[urlParam "returntab"]]"
+          urlqueryparam-returntab="[[urlParam "returntab"]]"
+        [[/if]]
+        [[#if returniri]]
+          urlqueryparam-returniri="[[urlParam "returniri"]]"
+        [[/if]]
+        >{{label.value}}</semantic-link>
+    {{/each}}'
+  >
+</semantic-query>

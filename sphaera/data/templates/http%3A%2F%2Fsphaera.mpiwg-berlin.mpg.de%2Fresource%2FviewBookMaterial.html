@@ -1,0 +1,54 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":manageTerms") label="Manage Terms" tab="bookMaterials"]]
+</ol>
+
+<semantic-query
+  query='SELECT ?material_name WHERE
+    {
+      ?material ecrm:P3_has_note ?material_name .
+      BIND(<[[urlParam "bookmaterialiri"]]> as ?material)
+     }'
+  template="<h3>{{#each bindings}}{{material_name.value}}{{/each}}</h3>">
+</semantic-query>
+<!--
+<semantic-link
+  iri="[[resolvePrefix ":addBookMaterial"]]"
+  urlqueryparam-resiri="[[urlParam "bookmaterialiri"]]"
+  class="btn btn-md btn-primary gap-bottom" >Edit</semantic-link>
+-->
+<div class="content">
+
+  <h4 style="margin:2em 0">Books of this material</h4>
+  <div id="table_books_container">
+    <semantic-table
+      query='SELECT DISTINCT [[> :queryBooksSelect ]]  WHERE {
+
+        BIND(<[[urlParam "bookmaterialiri"]]> as ?material)
+        ?subject ecrm:P45_consists_of ?material .
+
+        [[> :queryBooks]]
+      } GROUP BY [[> :queryBooksGroup]]
+      ORDER BY ?year_published_from ?date_text'
+
+      options='{
+        "showFilter" : false,
+        "resultsPerPage":100
+      }'
+
+      column-configuration='[
+        [[> :colConfBooks]]
+      ]'
+    >
+    </semantic-table>
+  </div>
+
+  <dl>
+
+    [[> :identifier iri="bookmaterialiri"]]
+
+  </dl>
+</div>

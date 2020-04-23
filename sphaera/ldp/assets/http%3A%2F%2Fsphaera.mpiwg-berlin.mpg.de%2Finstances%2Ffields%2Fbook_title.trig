@@ -1,0 +1,44 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_title/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_title> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4qpmse>;
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/1cnsad>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The title of the book";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Book Title" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/1cnsad> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4qpmse> a <http://spinrdf.org/sp#Query>;
+    <http://spinrdf.org/sp#text> """INSERT { 
+  ?publication_expression ecrm:P102_has_title ?book_title .
+  ?book_title a sphaera:Book_Title ;
+      ecrm:P3_has_note $value
+} WHERE {
+      BIND(URI(CONCAT(STR($subject), \"/publication/expression\")) as ?publication_expression)
+    OPTIONAL {
+      ?publication_expression ecrm:P102_has_title ?existing_book_title .
+      ?existing_book_title ecrm:P3_has_note $value .
+	}
+      BIND(IF(BOUND(?existing_book_title), ?existing_book_title, URI(CONCAT(STR($subject), \"/publication/title/\", STRUUID()))) as ?book_title)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/1cnsad> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+	$subject ecrm:P128_carries ?publication_expression .
+  		?publication_expression a efrbroo:F24_Publication_Expression ;
+      		ecrm:P102_has_title ?book_title .
+  		?book_title a sphaera:Book_Title ;
+			ecrm:P3_has_note $value
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_title> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.373+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_title> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_title> a <http://www.w3.org/ns/ldp#Resource> .
+}

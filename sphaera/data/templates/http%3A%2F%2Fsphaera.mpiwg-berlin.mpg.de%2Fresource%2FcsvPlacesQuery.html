@@ -1,0 +1,18 @@
+SELECT DISTINCT ?subject ?label ?sameAs (SAMPLE(?coordinates) as ?coordinates) WHERE {
+		?subject a ecrm:E53_Place ;
+			ecrm:P3_has_note ?label .
+
+		OPTIONAL {
+			?subject owl:sameAs ?sameAs .
+			OPTIONAL {
+				SERVICE <https://query.wikidata.org/sparql> {
+					?sameAs wdt:P625 ?coord .
+				}
+				BIND( CONCAT(
+					STRBEFORE(STRAFTER(STR(?coord), ' '), ')'),
+	    		', ',
+          STRBEFORE(STRAFTER(STR(?coord), 'Point('), ' ')
+				) as ?coordinates)
+			}
+		}
+} GROUP BY ?subject ?label ?sameAs

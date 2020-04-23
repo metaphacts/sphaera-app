@@ -1,0 +1,673 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listAdaptions") label="Adaptions"]]
+</ol>
+<bs-row>
+
+  <semantic-query
+    query='SELECT ?adaption_name WHERE
+      {
+        ?adaption ecrm:P3_has_note ?adaption_name .
+        BIND(<[[urlParam "adaptioniri"]]> as ?adaption)
+       }'
+    template="<h3>{{#each bindings}}{{adaption_name.value}}{{/each}}</h3>">
+  </semantic-query>
+
+</bs-row>
+
+<bs-tab-container default-active-key="[[#if (urlParam "tab" )]][[urlParam "tab"]][[else]]details[[/if]]">
+  <bs-row>
+    <bs-col sm="2" sm-push="10" class="tab-bar">
+      <semantic-link iri="[[urlParam "adaptioniri"]]" class="btn btn-md btn-primary pull-right" style="margin-bottom:3px;">Edit</semantic-link>
+    </bs-col>
+    <bs-col sm="10" sm-pull="2" class="tab-bar">
+      <bs-nav bs-style="tabs" >
+        <bs-nav-item event-key="details">
+          Details
+        </bs-nav-item>
+
+        <bs-nav-item event-key="regions">
+          <semantic-query
+            query='SELECT (COUNT(?region) as ?num_regions) WHERE {
+              BIND(<[[urlParam "adaptioniri"]]> as ?part)
+              ?attribute_assignment
+                sphaera:pageFrom ?page_from ;
+                sphaera:pageTo ?page_to ;
+                ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?part ;
+                ecrm:P140_assigned_attribute_to/^ecrm:P165_incorporates/^ecrm:P128_carries ?book .
+
+              ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page .
+              ?page ecrm:P1_is_identified_by ?page_number .
+              FILTER(?page_number >= ?page_from && ?page_number <= ?page_to)
+
+              ?region crmDig:L49_is_primary_area_of ?page .
+            }'
+            template='{{#each bindings}}Regions ({{num_regions.value}}){{/each}}'
+          >
+          </semantic-query>
+        </bs-nav-item>
+
+        <bs-nav-item event-key="meta">
+          <semantic-query query='SELECT (COUNT(?annotation) as ?num_annotations) WHERE {
+            ?annotation a oa:Annotation ;
+              oa:hasTarget ?adaption .
+              BIND(<[[urlParam "adaptioniri"]]> as ?adaption)
+            }'
+            template='{{#each bindings}}Annotations ({{num_annotations.value}}){{/each}}'
+          ></semantic-query>
+        </bs-nav-item>
+      </bs-nav>
+    </bs-col>
+    <div class="content" style="clear:both;">
+      <bs-tab-content animation="true">
+
+        <bs-tab-pane event-key="details">
+
+          <semantic-query
+            query='SELECT ?custom_identifier WHERE {
+              ?adaption ecrm:P1_is_identified_by ?identifier .
+        			?identifier ecrm:P2_has_type sphaera:customIdentifier ;
+        				ecrm:P3_has_note ?custom_identifier .
+              BIND(<[[urlParam "adaptioniri"]]> as ?adaption) .
+            }'
+            template='<dl><dt>Custom Identifier</dt>{{#each bindings}}<dd>{{custom_identifier.value}}</dd>{{/each}}</dl>'>
+          </semantic-query>
+
+          <semantic-query
+            query="SELECT ?adaption_title WHERE {
+              ?adaption ecrm:PC01_is_domain_of ?has_title .
+              ?has_title ecrm:PC02_has_range/ecrm:P3_has_note ?adaption_title ;
+                ecrm:P102.1_has_type sphType:primary .
+              BIND(<[[urlParam "adaptioniri"]]> as ?adaption) .
+            }"
+            template="<dl>
+              <dt>Primary Title</dt>
+              {{#each bindings}}
+                <dd>
+                  {{adaption_title.value}}
+                </dd>
+              {{/each}}
+            </dl>"
+
+          >
+          </semantic-query>
+
+          <semantic-query
+            query='SELECT ?author ?author_name WHERE {
+              ?adaption efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+                ?carried_out_by a ecrm:PC14_carried_out_by ;
+                  ecrm:PC02_has_range ?author .
+                ?author ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?author_label .
+                [[> :queryFormatName input="?author_label" output="?author_name"]]
+              BIND(<[[urlParam "adaptioniri"]]> as ?adaption) .
+            }'
+            template='<dl>
+              <dt>
+              {{#each bindings}}
+                {{#if @first}}
+                  {{#if @last}}
+                    Author
+                  {{else}}
+                    Authors{{/if}}
+                  {{/if}}
+                {{/each}}
+              </dt>
+              {{#each bindings}}
+                <dd>
+                  <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="{{author.value}}">{{author_name.value}}</semantic-link>
+                </dd>
+              {{/each}}
+            </dl>'>
+          </semantic-query>
+
+          <semantic-query
+            query="SELECT ?adaption_type_label WHERE {
+              ?adaption ecrm:P2_has_type ?adaption_type .
+              ?adaption_type ecrm:P3_has_note ?adaption_type_label.
+              sphType:adaptionType skos:member ?adaption_type .
+              BIND(<[[urlParam "adaptioniri"]]> as ?adaption) .
+            }"
+            template="<dl>
+              <dt>Type</dt>
+              {{#each bindings}}
+                <dd>
+                  {{adaption_type_label.value}}
+                </dd>
+              {{/each}}
+            </dl>"
+          >
+          </semantic-query>
+
+          <!-- adaption_name content type -->
+          <semantic-query
+            query='SELECT ?type ?label WHERE {
+              BIND(<[[urlParam "adaptioniri"]]> as ?part)
+              ?part ecrm:P2_has_type ?type .
+              ?type ecrm:P3_has_note ?label .
+              sphType:partContentType skos:member ?type .
+            }'
+            template='<dl>
+            <dt>Part Content Type</dt>
+            {{#each bindings}}
+              <dd>
+                <semantic-link
+                  uri=":viewPartContentType"
+                  urlqueryparam-partcontenttypeiri="{{type.value}}">
+                  {{label.value}}
+                </semantic-link>
+              </dd>
+            {{/each}}</dl>'
+
+          >
+          </semantic-query>
+
+
+          <semantic-query
+            query='SELECT DISTINCT (GROUP_CONCAT(DISTINCT ?adaption_type_label;SEPARATOR="/") as ?adaption_type_labels) ?language ?part ?part_label ?is_adaption (GROUP_CONCAT(DISTINCT ?part_creator_formatted;SEPARATOR="/") as ?part_creator_formatted) WHERE {
+              ?adaption ecrm:P106_is_composed_of/ecrm:P165_incorporates ?part .
+              ?part ecrm:P3_has_note ?part_label ;
+                a ?part_type .
+
+              OPTIONAL {
+                ?part ecrm:P2_has_type ?adaption_type .
+                ?adaption_type ecrm:P3_has_note ?adaption_type_label ;
+                  ^skos:member ?types .
+                VALUES (?types) {
+                  (sphType:partType)
+                  (sphType:adaptionType)
+                }
+
+                OPTIONAL {
+                  ?part ecrm:P165_incorporates/ecrm:P72_has_language/ecrm:P3_has_note ?language .
+                }
+                OPTIONAL {
+                  ?part efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range/ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?part_creator_label .
+                  [[> :queryFormatName input="?part_creator_label" output="?part_creator_formatted"]]
+                }
+              }
+
+              VALUES ( ?part_type ) {
+                ( sphaera:Part )
+                ( sphaera:Part_Adaption )
+              }
+              BIND( IF ( ?part_type = sphaera:Part_Adaption, "true", "" ) as ?is_adaption)
+              BIND(<[[urlParam "adaptioniri"]]> as ?adaption) .
+            } GROUP BY ?adaption_type_labels ?language ?part ?part_label ?is_adaption'
+            template='<dl>
+              <dt>Annotates</dt>
+              {{#each bindings}}
+                <dd>
+                  <semantic-link
+                    {{#if is_adaption.value}}
+                      [[#if workaround]]
+                        iri="[[resolvePrefix ":viewAdaption"]]"
+                      [[else]]
+                        iri="[[resolvePrefix ":viewAdaption-2"]]"
+                      [[/if]]
+                      urlqueryparam-adaptioniri="{{part.value}}"
+                    {{else}}
+                      iri="[[resolvePrefix ":viewPart"]]"
+                      urlqueryparam-partiri="{{part.value}}"
+                    {{/if}}
+                  >{{part_label.value}}</semantic-link>
+                  {{#if adaption_type_labels.value}}
+                    ({{#if language.value}}{{language.value}} {{/if}}{{adaption_type_labels.value}}{{#if part_creator_formatted.value}} by {{part_creator_formatted.value}}{{/if}})
+                  {{/if}}
+                </dd>
+              {{/each}}
+            </dl>'
+          >
+          </semantic-query>
+
+          <semantic-query
+            query='SELECT ?adaption_type_label ?language ?language_label ?part ?part_label ?is_adaption ?is_partial (GROUP_CONCAT(?part_creator_formatted;SEPARATOR=" /") as ?part_creator_formatted) WHERE {
+              ?adaption ecrm:P165_incorporates ?expression .
+              ?expression a ?translation_type ;
+                efrbroo:R3i_realises ?work ;
+                ecrm:P72_has_language ?language .
+              ?part a ?part_type ;
+                efrbroo:R40i_is_representative_expression_for ?work ;
+                ecrm:P3_has_note ?part_label .
+              ?language ecrm:P3_has_note ?language_label .
+
+            OPTIONAL {
+              ?part ecrm:P2_has_type ?adaption_type .
+              ?adaption_type ecrm:P3_has_note ?adaption_type_label ;
+                ^skos:member ?types .
+              VALUES (?types) {
+                (sphType:partType)
+                (sphType:adaptionType)
+              }
+
+              OPTIONAL {
+                ?part ecrm:P165_incorporates/ecrm:P72_has_language/ecrm:P3_has_note ?ancestor_language .
+              }
+              OPTIONAL {
+                ?part efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range/ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?part_creator_label .
+                [[> :queryFormatName input="?part_creator_label" output="?part_creator_formatted"]]
+              }
+            }
+
+              VALUES ( ?part_type ) {
+                ( sphaera:Part )
+                ( sphaera:Part_Adaption )
+              }
+
+              BIND( IF ( ?part_type = sphaera:Part_Adaption, "true", "" ) as ?is_adaption)
+              BIND( IF ( ?translation_type = efrbroo:F23_Expression_Fragment, "true", "" ) as ?is_partial)
+              BIND(<[[urlParam "adaptioniri"]]> as ?adaption) .
+            }
+            GROUP BY  ?adaption_type_label ?language ?language_label ?part ?part_label ?is_adaption ?is_partial'
+            template='<dl>
+              <dt>Translates</dt>
+              {{#each bindings}}
+                <dd>
+                  <semantic-link
+                    {{#if is_adaption.value}}
+                      [[#if workaround]]
+                        iri="[[resolvePrefix ":viewAdaption"]]"
+                      [[else]]
+                        iri="[[resolvePrefix ":viewAdaption-2"]]"
+                      [[/if]]
+                      urlqueryparam-adaptioniri="{{part.value}}"
+                    {{else}}
+                      iri="[[resolvePrefix ":viewPart"]]"
+                      urlqueryparam-partiri="{{part.value}}"
+                    {{/if}}
+                  >{{part_label.value}}</semantic-link>{{#if adaption_type_label.value}}
+                    ({{#if ancestor_language.value}}{{ancestor_language.value}} {{/if}}{{adaption_type_label.value}}{{#if part_creator_formatted.value}} by {{part_creator_formatted.value}}{{/if}})
+                  {{/if}} into <semantic-link iri="[[resolvePrefix ":viewLanguage"]]" urlqueryparam-languageiri="{{language.value}}">{{language_label.value}}</semantic-link>
+                  {{#if is_partial.value}}
+                     <small> (partial translation)</small>
+                  {{/if}}
+                </dd>
+              {{/each}}
+            </dl>'
+          >
+          </semantic-query>
+
+          <semantic-query
+            query='SELECT DISTINCT ?attribute_assignment WHERE {
+              BIND(<[[urlParam "adaptioniri"]]> as ?adaption)
+              ?book ecrm:P128_carries/ecrm:P165_incorporates/^ecrm:P140_assigned_attribute_to ?attribute_assignment .
+              ?attribute_assignment ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?adaption .
+            }'
+            template='<dt>
+              Appears in
+            </dt>'
+          ></semantic-query>
+
+          <dd>
+            <semantic-table
+              query='SELECT DISTINCT
+                    ?adaption_title_in_book
+                  	?attribute_assignment
+                  	?assigned_adaption
+                  	?assigned_adaption_title
+                  	?book
+                  	?book_short_title
+                    ?custom_identifier
+                  	?date_published_text
+                  	?is_fragment
+                    ?is_adaption
+                    ?page_from
+                    ?page_from_page
+                  	(YEAR(?date_published_from) as ?year_published_from)
+                  WHERE {
+
+                    BIND(<[[urlParam "adaptioniri"]]> as ?adaption)
+
+                    ?book ecrm:P128_carries/ecrm:P165_incorporates/^ecrm:P140_assigned_attribute_to ?attribute_assignment ;
+                      ecrm:P3_has_note ?book_short_title .
+
+                    ?attribute_assignment ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?adaption .
+
+                    OPTIONAL {
+                      ?attribute_assignment sphaera:pageFrom ?page_from .
+                    }
+
+                    OPTIONAL {
+                      ?page_from_page ecrm:P1_is_identified_by ?page_from .
+                      ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page_from_page .
+                    }
+
+                    OPTIONAL {
+                      ?book ecrm:P1_is_identified_by ?identifier .
+                      ?identifier ecrm:P2_has_type sphaera:customIdentifier ;
+                        ecrm:P3_has_note ?custom_identifier .
+                    }
+
+                    OPTIONAL {
+                      ?adaption ^efrbroo:R15i_is_fragment_of?/ecrm:PC01_is_domain_of ?has_title .
+                      ?has_title a ecrm:PC102_has_title ;
+                      	ecrm:PC02_has_range/ecrm:P3_has_note ?adaption_title_in_book ;
+                      	ecrm:PC02_has_range/ecrm:P70i_is_documented_in/^ecrm:P128_carries ?book .
+                  	}
+
+                    OPTIONAL {
+                      ?attribute_assignment ecrm:P141_assigned/efrbroo:R15i_is_fragment_of ?adaption .
+
+                      BIND("Fragment" as ?is_fragment)
+                    }
+
+                    OPTIONAL {
+                      ?book ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:P4_has_time-span ?date_published .
+
+                      OPTIONAL {
+                        ?date_published ecrm:P3_has_note ?date_published_text .
+                      }
+                      OPTIONAL {
+                        ?date_published ecrm:P82a_begin_of_the_beginning ?date_published_from .
+                      }
+                    }
+
+                }'
+
+                options='{
+                  "resultsPerPage" : 20,
+                  "showFilter" : true
+                }'
+
+                column-configuration='[
+              		{
+              			"displayName" : "Book",
+                    "variableName" : "book_short_title",
+              			"cellTemplate" : "<semantic-link iri=\"http://sphaera.mpiwg-berlin.mpg.de/resource/viewBook\" urlqueryparam-bookiri=\"{{book.value}}\">{{book_short_title.value}}</semantic-link>"
+              		},
+              		{
+              			"displayName" : "Part Title in Book",
+                    "variableName" : "adaption_title_in_book"
+              		},
+              		{
+              			"displayName" : "On page",
+                    "variableName" : "page_from",
+                    "cellTemplate" : "
+                      {{#if page_from_page.value}}
+                        <semantic-link
+                          iri=\"[[resolvePrefix ":viewPage"]]\"
+                          urlqueryparam-pageiri=\"{{page_from_page.value}}\"
+                        >{{page_from.value}}</semantic-link>
+                      {{else}}
+                        {{page_from.value}}
+                      {{/if}}
+                    "
+              		},
+              		{
+              			"displayName" : "&nbsp;",
+                    "cellTemplate" : "{{#if is_fragment.value}}Fragment {{/if}}"
+              		},
+              		{
+              			"displayName" :  "Date Published",
+                    "variableName" : "year_published_from",
+                    "cellTemplate" : "{{#if date_published_text.value}}{{date_published_text.value}}{{else}}{{year_published_from.value}}{{/if}}"
+              		},
+              		{
+              			"displayName" :  "Custom Identifier",
+                    "variableName" : "custom_identifier"
+              		}
+                ]'
+            >
+            </semantic-table>
+          </dd>
+
+          <semantic-query
+            query='SELECT ?adaption WHERE {
+              ?adaption a sphaera:Part_Adaption ;
+                (ecrm:P106_is_composed_of/ecrm:P165_incorporates)|(ecrm:P165_incorporates/efrbroo:R3i_realises/^efrbroo:R40i_is_representative_expression_for) ?part ;
+              BIND(<[[urlParam "adaptioniri"]]> as ?part)
+            }'
+            template='<dt>
+              Adapted
+            </dt>'
+          ></semantic-query>
+          <dd>
+            <semantic-table
+              query='SELECT ?adaption ?adaption_label ?creator ?creator_name (COUNT(?book) as ?num_books) WHERE {
+                ?adaption a sphaera:Part_Adaption ;
+                  (ecrm:P106_is_composed_of/ecrm:P165_incorporates)|(ecrm:P165_incorporates/efrbroo:R3i_realises/^efrbroo:R40i_is_representative_expression_for) ?part ;
+                    ecrm:P3_has_note ?adaption_label .
+
+                OPTIONAL {
+                  ?adaption efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?creator .
+                  ?creator ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?creator_label.
+                }
+
+                OPTIONAL {
+                  ?book ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P148_has_component ?adaption .
+                }
+
+                [[> :queryFormatName input="?creator_label" output="?creator_name"]]
+                BIND(<[[urlParam "adaptioniri"]]> as ?part)
+              } GROUP BY ?adaption ?adaption_label ?creator ?creator_name'
+
+              options='{
+                "resultsPerPage" : 20,
+                "showFilter" : false
+              }'
+
+              column-configuration='[
+                {
+                  "displayName" : "Creator",
+                  "variableName" : "creator",
+                  "cellTemplate" : "<div>Adapted by <semantic-link iri=\"[[resolvePrefix ":viewPerson"]]\" urlqueryparam-personiri=\"{{creator.value}}\">{{creator_name.value}}</semantic-link></div>"
+                },
+                {
+                  "displayName" : "Part Adaption",
+                  "variableName" : "adaption",
+                  "cellTemplate" : "<div>in <semantic-link
+                    [[#if workaround]]
+                      iri=\"[[resolvePrefix ":viewAdaption"]]\"
+                    [[else]]
+                      iri=\"[[resolvePrefix ":viewAdaption-2"]]\"
+                    [[/if]]
+                    urlqueryparam-adaptioniri=\"{{adaption.value}}\">
+                    {{adaption_label.value}}
+                  </semantic-link></div>"
+                },
+                {
+                  "displayName" : "Appears in books",
+                  "variableName" : "num_books"
+                }
+              ]'
+            >
+            </semantic-table>
+          </dd>
+
+          <!-- Influenced by -->
+          <semantic-query
+            query='SELECT ?part WHERE {
+              ?event ecrm:P15_was_influenced_by ?part .
+              BIND(<[[urlParam "adaptioniri"]]/event> as ?event)
+            }'
+            template='<dt>
+              Influenced by
+            </dt>'
+          ></semantic-query>
+          <dd>
+            <semantic-table
+              query='SELECT ?part ?part_label (GROUP_CONCAT(?part_author; SEPARATOR=", ") as ?part_authors) WHERE {
+                  ?event ecrm:P15_was_influenced_by ?part .
+                  ?part a ?part_type ;
+                    ecrm:P3_has_note ?part_label .
+
+                  OPTIONAL {
+                    ?part efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+                    ?carried_out_by a ecrm:PC14_carried_out_by ;
+                		ecrm:PC02_has_range/ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?part_author .
+                  }
+
+                  VALUES ( ?part_type ) {
+                      ( sphaera:Part )
+                      ( sphaera:Part_Adaption )
+                  }
+                  BIND(<[[urlParam "adaptioniri"]]/event> as ?event)
+                } GROUP BY ?part ?part_label'
+
+                options='{
+                  "resultsPerPage" : 20,
+                  "showFilter" : false
+                }'
+
+                column-configuration='[
+                  {
+                    "displayName" : "Part",
+                    "variableName" : "part",
+                    "cellTemplate" : "<semantic-link iri=\"http://sphaera.mpiwg-berlin.mpg.de/resource/viewPart\" urlqueryparam-partiri=\"{{part.value}}\">{{part_label.value}}</semantic-link>"
+                  },
+                  {
+                    "displayName" : "Authors",
+                    "variableName" : "part_authors"
+                  }
+                ]'
+            >
+            </semantic-table>
+          </dd>
+            <!-- Influenced (reverse of influenced by) -->
+            <semantic-query
+              query='SELECT ?part WHERE {
+                ?event ecrm:P15_was_influenced_by ?adaption .
+                BIND(<[[urlParam "adaptioniri"]]> as ?adaption)
+              }'
+              template='<dt>
+                Influenced
+              </dt>'
+            ></semantic-query>
+            <dd>
+              <semantic-table
+                query='SELECT ?influenced_part ?influenced_part_label (GROUP_CONCAT(?part_author; SEPARATOR=", ") as ?influenced_part_authors) WHERE {
+                    ?event ecrm:P15_was_influenced_by ?adaption ;
+                      ^efrbroo:R17i_was_created_by ?influenced_part .
+
+                    ?influenced_part a ?part_type ;
+                      ecrm:P3_has_note ?influenced_part_label .
+
+                    OPTIONAL {
+                      ?influenced_part efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+                      ?carried_out_by a ecrm:PC14_carried_out_by ;
+                      ecrm:PC02_has_range/ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?influenced_part_author .
+                    }
+
+                    VALUES ( ?part_type ) {
+                        ( sphaera:Part )
+                        ( sphaera:Part_Adaption )
+                    }
+                    BIND(<[[urlParam "adaptioniri"]]> as ?adaption)
+                  } GROUP BY ?influenced_part ?influenced_part_label'
+
+                  options='{
+                    "resultsPerPage" : 20,
+                    "showFilter" : false
+                  }'
+
+
+                  column-configuration='[
+                    {
+                      "displayName" : "Part",
+                      "variableName" : "influenced_part",
+                      "cellTemplate" : "<semantic-link
+                        [[#if workaround]]
+                          iri=\"[[resolvePrefix ":viewPart"]]\"
+                        [[else]]
+                          iri=\"[[resolvePrefix ":viewPart-2"]]\"
+                        [[/if]]
+                        urlqueryparam-partiri=\"{{influenced_part.value}}\">
+                        {{influenced_part_label.value}}
+                        </semantic-link>"
+                    },
+                    {
+                      "displayName" : "Authors",
+                      "variableName" : "influenced_part_authors"
+                    }
+                  ]'
+              >
+              </semantic-table>
+            </dd>
+
+            [[> :templateDOI iri="adaptioniri"]]
+
+          </dl>
+
+          [[> :identifier iri="adaptioniri"]]
+        </bs-tab-pane>
+
+        <bs-tab-pane event-key="regions">
+
+            <semantic-table
+              query="SELECT
+                  [[> :queryRegionsSelect]]
+                  ?book
+                  ?book_label
+                WHERE {
+                BIND(<[[urlParam "adaptioniri"]]> as ?part)
+                ?attribute_assignment
+                  sphaera:pageFrom ?page_from ;
+                  sphaera:pageTo ?page_to ;
+                  ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?part ;
+                  ecrm:P140_assigned_attribute_to/^ecrm:P165_incorporates/^ecrm:P128_carries ?book .
+                FILTER(?page_num >= ?page_from && ?page_num <= ?page_to)
+                [[> :queryRegionsForPage]]
+                [[> :queryImageIdPattern]]
+              } ORDER BY xsd:integer(?page_num)"
+              number-of-displayed-rows="50"
+              options='{"showFilter": false}'
+              tuple-template='[[> :templatePageRegionsGrid]]'
+            >
+            </semantic-table>
+
+        </bs-tab-pane>
+
+        <bs-tab-pane event-key="meta">
+
+          <semantic-query
+            query='SELECT (CONCAT(STR(DAY(?date)),
+             ".",
+             STR(MONTH(?date)),
+             ".",
+            STR(YEAR(?date))) as ?displayDate)
+            	?body
+              ?body_html
+              ?context
+            WHERE {
+              ?annotation a oa:Annotation ;
+              oa:hasTarget ?adaption ;
+              oa:hasBody/cnt:chars ?body .
+              ?container <http://www.w3.org/ns/prov#wasAttributedTo> ?user ;
+                  <http://www.w3.org/ns/prov#generatedAtTime> ?date;
+
+              OPTIONAL {
+                ?annotation ecrm:P3_has_note ?context .
+              }
+              BIND(<[[urlParam "adaptioniri"]]> as ?adaption)
+              BIND(URI(CONCAT(STR(?annotation), "/container")) as ?container)
+              BIND(REPLACE(?body,"\n","<br>") as ?body_html)
+            } ORDER BY ?date'
+
+            template='<dl>
+              {{#each bindings}}
+                <dt>
+                  {{displayDate.value}}
+                </dt>
+                <dd>
+                  {{{body_html.value}}}
+                  {{#if context.value}}
+                    <p><small>{{context.value}}</small></p>
+                  {{/if}}
+                </dd>
+              {{/each}}
+            </dl>'
+
+            no-result-template='<p>No annotations. <semantic-link iri="[[resolvePrefix ":createAnnotation"]]" urlqueryparam-resourceiri="[[urlParam "bookiri"]]">Add Annotation</semantic-link>'
+
+          >
+          </semantic-query>
+
+        </bs-tab-pane>
+
+      </bs-tab-content>
+    </div>
+  </bs-row>
+</bs-tab-container>
+
+[[> :footer]]

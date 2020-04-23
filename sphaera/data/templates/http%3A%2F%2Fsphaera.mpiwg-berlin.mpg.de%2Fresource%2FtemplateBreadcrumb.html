@@ -1,0 +1,26 @@
+[[!--
+
+Usage examples:
+
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":manageTerms") label="Terms" tab="adaptionTypes"]]
+
+ --]]
+
+<li class="breadcrumb-item">
+  <semantic-link
+    iri="[[iri]]"
+    [[#if tab]]
+      urlqueryparam-tab="[[tab]]"
+    [[/if]]
+    [[#if (urlParam "bookiri")]]
+      urlqueryparam-bookiri="[[urlParam "bookiri"]]"
+    [[/if]]
+    [[#if (urlParam "partiri")]]
+      urlqueryparam-partiri="[[urlParam "partiri"]]"
+    [[/if]]
+    [[#if (urlParam "personiri")]]
+      urlqueryparam-personiri="[[urlParam "personiri"]]"
+    [[/if]]
+  >[[label]]</semantic-link>
+</li>

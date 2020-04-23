@@ -1,0 +1,43 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":manageTerms") label="Manage Terms" tab="partContentTypes"]]
+</ol>
+
+<semantic-query
+  query='SELECT ?type_name WHERE
+    {
+      ?type ecrm:P3_has_note ?type_name .
+      BIND(<[[urlParam "partcontenttypeiri"]]> as ?type)
+     }'
+  template="<h3>{{#each bindings}}{{type_name.value}}{{/each}}</h3>">
+</semantic-query>
+
+
+[[#if (hasPermission "forms:ldp:*")]]
+  <semantic-link
+    iri="[[resolvePrefix ":addPartContentType"]]"
+    urlqueryparam-resiri="[[urlParam "partcontenttypeiri"]]"
+    class="btn btn-md btn-primary gap-bottom" >Edit</semantic-link>
+[[/if]]
+
+<div id="view-record-body" class="content">
+  <h4 style="margin:2em 0">Parts with this Content Type</h4>
+
+  [[#> :tableParts]]
+    BIND(<[[urlParam "partcontenttypeiri"]]> as ?type)
+    ?subject ecrm:P2_has_type ?type .
+  [[/ :tableParts]]
+
+  <h4 style="margin:2em 0">Adaptions with this Content Type</h4>
+
+    [[#> :tableAdaptions]]
+      BIND(<[[urlParam "partcontenttypeiri"]]> as ?type)
+      ?subject ecrm:P2_has_type ?type .
+    [[/ :tableAdaptions]]
+
+  <dl>
+    [[> :identifier iri="partcontenttypeiri"]]
+  </dl>
+</div>

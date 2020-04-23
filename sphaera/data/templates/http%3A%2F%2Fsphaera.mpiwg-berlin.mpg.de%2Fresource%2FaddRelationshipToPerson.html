@@ -1,0 +1,47 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listPersons") label="Persons"]]
+  [[> :templateBreadcrumbEditResource personiri="true" tab="relatives"]]
+</ol>
+
+
+<semantic-query
+  query="SELECT ?relationship_label ?person_label WHERE {
+    BIND(<[[urlParam "attributeassignmentiri"]]> as ?attribute_assignment)
+    BIND(<[[urlParam "personiri"]]> as ?person)
+    ?attribute_assignment ecrm:P141_assigned/rdfs:label ?relationship_label .
+    ?person ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?person_label
+  }"
+  template="<h2>{{#each bindings}}Add {{relationship_label.value}} {{person_label.value}}{{/each}}</h2>">
+</semantic-query>
+
+<semantic-form
+  persistence='LDP'
+  browser-persistence='false'
+  post-action='[[urlParam "personiri"]]'
+  urlqueryparam-tab='relatives'
+  fields="[[fieldDefinitions
+      person="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/related_person"
+      property="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/relationship_property"
+      record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/attribute_assignment_record_type"
+      type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/relationship_assignment_type"
+  ]]"
+  subject="[[urlParam "attributeassignmentiri"]]"
+>
+  <semantic-form-select-input for="person"></semantic-form-select-input>
+
+  <div class="disabled hidden-field">
+    <semantic-form-text-input for="record_type"></semantic-form-text-input>
+    <semantic-form-text-input for="property"></semantic-form-text-input>
+    <semantic-form-text-input for="type"></semantic-form-text-input>
+  </div>
+
+  <div class="text-right form-submit">
+    <button name="submit" class="btn btn-primary btn-md">Save</button>
+  </div>
+
+</semantic-form>
+
+[[> :footer ]]

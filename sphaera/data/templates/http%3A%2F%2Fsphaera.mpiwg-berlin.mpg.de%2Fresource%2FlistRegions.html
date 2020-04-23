@@ -1,0 +1,21 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+</ol>
+
+<h1>All Regions</h1>
+
+  <div class="gap-bottom">
+    <semantic-link iri="[[resolvePrefix ":listElements"]]">List Elements</semantic-link>
+  </div>
+  <div class="gap-bottom">
+    <semantic-link iri="[[resolvePrefix ":listUnassignedRegions"]]">List unassigned Content Illustrations</semantic-link>
+  </div>
+  <!-- Regions -->
+  <bs-row>
+    [[> :tableRegions]]
+  </bs-row>
+  [[#> :templateNumRegionsWarning]]
+  [[/ :templateNumRegionsWarning]]
+[[> :footer]]

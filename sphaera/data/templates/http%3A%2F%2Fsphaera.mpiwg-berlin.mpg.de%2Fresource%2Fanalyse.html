@@ -1,0 +1,95 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+</ol>
+
+<h3>Analyse</h3>
+
+<p>
+  Use this page to examine the database using a range of common queries.
+</p>
+
+<div class="content">
+<h4>Possible Editions</h4>
+
+<p>
+  Books that share the same publisher and include the same parts. The query includes books that share the same parts, but may also include other parts.
+</p>
+
+<semantic-table
+  query='SELECT DISTINCT ?book ?otherBook {
+    ?book ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?publisher .
+    ?otherBook ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?publisher .
+
+    ?book ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P148_has_component ?part .
+    ?otherBook ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P148_has_component ?part ;
+        ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P148_has_component ?otherPart .
+
+    BIND(STRAFTER(STR(?book), "http://sphaera.mpiwg-berlin.mpg.de/id/item/") as ?id)
+    BIND(STRAFTER(STR(?otherBook), "http://sphaera.mpiwg-berlin.mpg.de/id/item/") as ?otherId)
+
+    FILTER( ?book != ?otherBook)
+    FILTER( ?id > ?otherId )
+  }'
+>
+</semantic-table>
+
+
+<h4>Authors and Publishers</h4>
+<p>
+  Excludes Johannes de Sacrobosco, includes authors of included parts
+</p>
+
+<semantic-graph
+  height='800px'
+  query='
+    CONSTRUCT {
+      ?s ?p ?o
+    } WHERE {
+      {
+        SELECT ?s ?p ?o WHERE {
+          ?book a sphaera:Book ;
+            ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?s ;
+            (ecrm:P128_carries/ecrm:P165_incorporates/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range)|(ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P148_has_component/[[> :queryPart]]/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range) ?o .
+          OPTIONAL {
+            ?o owl:sameAs ?wd .
+          }
+          FILTER(?wd != <http://www.wikidata.org/entity/Q433841>)
+
+          BIND(sphaera:published as ?p)
+        }
+      }
+    }'>
+  <semantic-graph-layout-cose ideal-edge-length=70></semantic-graph-layout-cose>
+  <semantic-graph-extension-panzoom pan-indicator-min-opacity=0.1></semantic-graph-extension-panzoom>
+</semantic-graph>
+
+<h4>Books and Parts</h4>
+
+<p>
+Excludes the original Tractatus by Sacrobosco
+</p>
+
+<semantic-graph
+height='800px'
+query='
+CONSTRUCT {
+  ?s ?p ?o
+} WHERE {
+  {
+    SELECT ?s ?p ?o WHERE {
+      ?s a sphaera:Book ;
+        ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P148_has_component/(efrbroo:R15i_is_fragment_of|ecrm:P165_incorporates)* ?o .
+      ?o a sphaera:Part ;
+        ecrm:P1_is_identified_by/ecrm:P3_has_note ?custom_identifier .
+      FILTER(?custom_identifier != "100")
+      BIND(sphaera:contains as ?p)
+    }
+  }
+}'>
+<semantic-graph-layout-cose ideal-edge-length=70></semantic-graph-layout-cose>
+<semantic-graph-extension-panzoom pan-indicator-min-opacity=0.1></semantic-graph-extension-panzoom>
+</semantic-graph>
+
+</div>

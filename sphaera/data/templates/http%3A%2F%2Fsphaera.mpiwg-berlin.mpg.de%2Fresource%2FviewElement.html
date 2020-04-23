@@ -1,0 +1,192 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listElements") label="Elements"]]
+</ol>
+
+<semantic-query
+  query='SELECT ?label WHERE
+    {
+      ?element ecrm:P3_has_note ?label .
+      BIND(<[[urlParam "elementiri"]]> as ?element)
+     }'
+  template="<h3>{{#each bindings}}{{label.value}}{{/each}}</h3>">
+</semantic-query>
+<semantic-link iri="[[urlParam "elementiri"]]" class="btn btn-md btn-primary gap-bottom" >Edit</semantic-link>
+
+<div class="content">
+
+  <dl>
+    <!-- Keywords -->
+    <semantic-query
+      query="SELECT ?keyword ?keyword_label WHERE {
+        BIND(<[[urlParam "elementiri"]]> as ?element)
+        ?element ecrm:P2_has_type ?keyword .
+        sphType:keywords skos:member ?keyword .
+        ?keyword ecrm:P3_has_note ?keyword_label .
+      }"
+      template="<dl>
+        <dt>Keywords</dt>
+        {{#each bindings}}
+          <dd><semantic-link iri=':viewKeyword'
+            urlqueryparam-keywordiri='{{keyword.value}}'>
+              {{keyword_label.value}}
+            </semantic-link>
+          </dd>
+        {{/each}}
+      </dl>">
+    </semantic-query>
+    <!-- Regions -->
+    <dt>Regions</dt>
+    <dd class="row">
+
+        <semantic-query
+          query="SELECT
+            ?boundingBox
+            ?element
+            ?element_label
+            ?IIIFPath
+            ?imageID
+            ?label
+            ?region
+            ?page
+            ?page_num
+          WHERE {
+            BIND(<[[urlParam "elementiri"]]> as ?element) .
+
+            ?region ecrm:P138_represents ?element ;
+              crmDig:L49_is_primary_area_of ?page ;
+              rs:boundingBox ?bbox ;
+              rs:displayLabel ?label .
+
+            :configIIIFPath ecrm:P3_has_note ?IIIFPath .
+
+            BIND(STRAFTER(?bbox, 'xywh=') as ?boundingBox)
+            BIND(?page as ?imageIRI) .
+
+            [[> :queryImageIdPattern]]
+
+          } ORDER BY xsd:integer(?page_num)"
+          template='
+            <div>
+              {{#each bindings}}
+                <div class="col-sm-4">
+                  <semantic-link
+                    iri="[[resolvePrefix ":viewPage"]]"
+                    urlqueryparam-pageiri="{{page.value}}"
+                    class="thumbnail">
+
+                    <img src="{{IIIFPath.value}}{{imageID.value}}/{{boundingBox.value}}/!300,300/0/default.jpg" />
+
+                  </semantic-link>
+
+                <semantic-link iri="{{region.value}}" class="btn btn-md btn-primary" style="position:relative;top:-7rem;right:-1rem">Edit</semantic-link>
+
+              </div>
+            {{/each}}'
+        ></semantic-query>
+    </dd>
+
+    <!-- Appears in -->
+    <dt>
+      Books
+    </dt>
+    <dd>
+      <div id="table_books_container">
+        <semantic-table
+          query='SELECT DISTINCT [[> :queryBooksSelect ]] ?page_num WHERE {
+
+              BIND(<[[urlParam "elementiri"]]> as ?element)
+
+              ?subject efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page .
+              ?page a ecrm:E36_Visual_Item ;
+                ecrm:P1_is_identified_by ?page_num .
+
+              ?region ecrm:P138_represents ?element ;
+                crmDig:L49_is_primary_area_of ?page .
+
+              [[> :queryBooks]]
+
+              }
+        			GROUP BY [[> :queryBooksGroup]] ?page_num
+              ORDER BY ?year_published_from ?date_text'
+          options='{
+              "resultsPerPage": 20,
+              "showFilter" : false
+            }'
+
+        	column-configuration='[
+        		[[> :colConfBooks]]
+            ,
+            {
+              "displayName" : "Page",
+              "variableName" : "page_num"
+            }
+          ]'
+        >
+        </semantic-table>
+      </div>
+    </dd>
+    <!-- Appears in -->
+    <dt>
+      Parts or Adaptions
+    </dt>
+    <dd>
+        <semantic-table
+          query="
+            SELECT DISTINCT ?original_part WHERE  {
+
+              BIND(<[[urlParam "elementiri"]]> as ?element)
+
+              ?assigned_part a ?type ;
+            	ecrm:P3_has_note ?assigned_part_label .
+              ?attribute_assignment ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?assigned_part ;
+                  sphaera:pageFrom ?page_from ;
+                  sphaera:pageTo ?page_to ;
+                  ecrm:P140_assigned_attribute_to/^ecrm:P165_incorporates/^ecrm:P128_carries/efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page .
+
+              OPTIONAL {
+                ?assigned_part a sphaera:Part_Adaption ;
+                    (ecrm:P165_incorporates/efrbroo:R3i_realises/^efrbroo:R40i_is_representative_expression_for)*|(ecrm:P106_is_composed_of|ecrm:P165_incorporates)* ?original_part .
+                ?original_part a sphaera:Part ;
+                  ecrm:P3_has_note ?original_part_label .
+              }
+              BIND(IF(!BOUND(?original_part),?assigned_part,?original_part) as ?original_part)
+              BIND(IF(!BOUND(?original_part_label),?assigned_part_label,?original_part_label) as ?original_part_label)
+              ?page ecrm:P1_is_identified_by ?page_num .
+              FILTER(?page_num >= ?page_from && ?page_num <= ?page_to)
+              ?region crmDig:L49_is_primary_area_of ?page ;
+                  ecrm:P138_represents ?element.
+
+
+              ?element ecrm:P3_has_note ?element_label .
+
+              OPTIONAL {
+              	?region ecrm:P138_represents ?subject ;
+                   crmDig:L49_is_primary_area_of ?imageIRI ;
+                   rs:boundingBox ?bbox .
+            	:configIIIFPath ecrm:P3_has_note ?IIIFPath .
+                BIND(STRAFTER(?bbox, 'xywh=') as ?boundingBox)
+                BIND(STRAFTER(STR(?imageIRI), 'online/') as ?unescaped)
+                BIND(REPLACE(?unescaped, '/', '!') AS ?imageID)
+                BIND(CONCAT(?IIIFPath, ?imageID, '/', ?boundingBox, '/!300,300/0/default.jpg') as ?imageIIIFUrls)
+              }
+
+              VALUES(?type) {
+                (sphaera:Part)
+                (sphaera:Part_Adaption)
+              }
+            }"
+            column-configuration='[{
+              "displayName" : "Part",
+              "variableName" : "original_part"
+            }]'
+        >
+        </semantic-table>
+    </dd>
+  </dl>
+
+  [[> :identifier iri="elementiri"]]
+
+</div>

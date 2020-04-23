@@ -1,0 +1,70 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_language/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_language> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/q8qj4n6m3880aa714i>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "unbound";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/ewq0beca1fv87s3jtt9>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/f64zzsppz9we5clbx1or>;
+    <http://www.metaphacts.com/ontology/fields#autosuggestionPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/k1p8e379p0fh17tygy14i>;
+    <http://www.metaphacts.com/ontology/fields#deletePattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/r2pvqc6o48qrdal15rk9>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The language of the publication";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Language" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/f64zzsppz9we5clbx1or> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/q8qj4n6m3880aa714i> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/f64zzsppz9we5clbx1or> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+  ?value a ecrm:E56_Language ;
+  	ecrm:P3_has_note ?label .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/k1p8e379p0fh17tygy14i> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+    ?value a ecrm:E56_Language ; 
+  		ecrm:P3_has_note ?label .
+  FILTER REGEX(STR(?label), \"?token\", \"i\" )
+  } LIMIT 10""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/ewq0beca1fv87s3jtt9> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/k1p8e379p0fh17tygy14i> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/r2pvqc6o48qrdal15rk9> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/ewq0beca1fv87s3jtt9> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+	$subject ecrm:P128_carries ?publication_expression .
+	?publication_expression a efrbroo:F24_Publication_Expression ;
+		ecrm:P165_incorporates ?expression .
+    ?expression a efrbroo:F22_Self-Contained_Expression ;
+      ecrm:P72_has_language ?value .
+	?value ecrm:P3_has_note ?label .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/q8qj4n6m3880aa714i> <http://spinrdf.org/sp#text>
+      """INSERT { 
+	?expression ecrm:P72_has_language $value .
+} WHERE {
+      BIND(URI(CONCAT(STR($subject), \"/expression\")) as ?expression)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/r2pvqc6o48qrdal15rk9> <http://spinrdf.org/sp#text>
+      """DELETE { 
+    ?expression ecrm:P72_has_language $value .
+} WHERE {
+      BIND(URI(CONCAT(STR($subject), \"/expression\")) as ?expression)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_language> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.967+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_language> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_language> a <http://www.w3.org/ns/ldp#Resource> .
+}

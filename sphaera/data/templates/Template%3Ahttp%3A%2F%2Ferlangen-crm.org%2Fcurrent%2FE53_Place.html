@@ -1,0 +1,102 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listPlaces") label="Places"]]
+  <li class="breadcrumb-item">
+    <semantic-query
+      query='SELECT ?place_name WHERE
+        {
+          ?? ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?place_name .
+        } LIMIT 1'
+      template='{{#each bindings}}
+          <semantic-link iri="[[resolvePrefix ":viewPlace"]]" urlqueryparam-placeiri="[[this]]">
+            {{place_name.value}}
+          </semantic-link>
+        </li>{{/each}}'
+      >
+    </semantic-query>
+  </li>
+</ol>
+
+[[> :headerResourceExists]]
+
+[[#if (hasPermission "forms:ldp:*")]]
+
+  <h1><semantic-query query='SELECT ?label WHERE { ?? ecrm:P3_has_note ?label }'></semantic-query></h1>
+
+  <semantic-form
+    persistence='LDP'
+  	browser-persistence='false'
+    post-action='redirect'
+    subject='[[this]]'
+    fields="[[fieldDefinitions
+          doi="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/doi"
+          equivalent_record="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_place"
+          record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/place_record_type"
+          place_name="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/main_place_name"
+    ]]"
+
+  >
+
+    <semantic-form-text-input for="place_name">
+    </semantic-form-text-input>
+
+
+    <bs-tabs>
+      <bs-tab event-key="lookup" title="Look up">
+        <autocomplete-input
+      		for="equivalent_record"
+          template='<div>{{label.value}} <span style="font-size:0.8em;">{{description.value}}</span></div>'
+      	>
+        </autocomplete-input>
+      </bs-tab>
+      <bs-tab event-key="enter" title="Enter URI">
+        <semantic-form-text-input for="equivalent_record">
+        </semantic-form-text-input>
+      </bs-tab>
+    </bs-tabs>
+
+    <span class="disabled hidden-field">
+      <semantic-form-text-input for="doi"></semantic-form-text-input>
+      <semantic-form-text-input for="record_type"></semantic-form-text-input>
+    </span>
+
+    <div class="text-right form-submit">
+      <semantic-link iri="[[resolvePrefix ":viewPlace"]]" urlqueryparam-placeiri="[[this]]" class="btn btn-default">Cancel</semantic-link>
+      <button name="submit" class="btn btn-primary btn-md">Save</button>
+    </div>
+
+  </semantic-form>
+
+  <div>
+    <semantic-link
+        iri="[[resolvePrefix ":deleteResource"]]"
+        urlqueryparam-resiri="[[this]]"
+        urlqueryparam-back="[[this]]"
+        urlqueryparam-backtitle="Places"
+        urlqueryparam-redirect=":listPlaces"
+      >
+        Delete Place
+      </semantic-link>
+  </div>
+
+[[else]]
+
+  <div class="inPageHeader">
+    [[> Platform:DefaultResourceHeader ]]
+  </div>
+
+  <semantic-link
+    iri="[[resolvePrefix ":viewPlace"]]"
+    urlqueryparam-placeiri="[[this]]"
+    class="btn btn-primary"
+  >View Place Record</semantic-link>
+
+  [[> Platform:SourceStatements ]]
+
+[[/if]]
+
+[[> :identifier]]
+
+[[> :footer]]

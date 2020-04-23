@@ -1,0 +1,5 @@
+[[#if escape]]
+  BIND( IF(REGEX(STR([[ input ]]), \",\"), CONCAT(STRAFTER([[ input ]], \",\"), \" \", STRBEFORE([[ input ]], \",\")), [[ input ]] ) as [[ output ]])
+[[else]]
+  BIND( IF(REGEX(STR([[ input ]]), ","), CONCAT(STRAFTER([[ input ]], ","), " ", STRBEFORE([[ input ]], ",")), [[ input ]] ) as [[ output ]])
+[[/if]]

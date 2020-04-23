@@ -1,0 +1,25 @@
+{
+  "displayName" : "Person",
+  "variableName" : "sort_label",
+  "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":viewPerson"]]\" urlqueryparam-personiri=\"{{subject.value}}\">{{label.value}}</semantic-link>"
+},
+{
+  "displayName" : "Role",
+  "variableName" : "roles"
+},
+{
+  "displayName" : "Biography",
+  "variableName" : "year_birth",
+  "cellTemplate" : "{{#if has_birth_data.value}}{{year_birth.value}} – {{year_death.value}} {{/if}}{{#if has_activity_data.value}}({{year_activity_from.value}} – {{year_activity_to.value}}){{/if}}"
+},
+{
+  "displayName" : "Num Books",
+  "variableName" : "num_books_created"
+}
+[[# if (hasPermission "forms:ldp:*")]]
+,
+{
+  "displayName" : "&nbsp;",
+  "cellTemplate" : "<semantic-link iri=\"{{subject.value}}\" >Edit</semantic-link>"
+}
+[[/if]]

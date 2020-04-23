@@ -1,0 +1,35 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/related_resource/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/related_resource> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/vmjvx97o>;
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/wl2qwh>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "A document that identifies or documents the current resource";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Related Resource" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/vmjvx97o> <http://spinrdf.org/sp#text>
+      """INSERT { 
+  $subject ecrm:P70i_is_documented_in $value .
+  $value a ecrm:E31_Document .
+} WHERE {}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/wl2qwh> <http://spinrdf.org/sp#text>
+      """SELECT ?value WHERE {
+  $subject ecrm:P70i_is_documented_in ?value .
+  ?value a ecrm:E31_Document .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/vmjvx97o> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/wl2qwh> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/related_resource> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:19.376+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/related_resource> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/related_resource> a <http://www.w3.org/ns/ldp#Resource> .
+}

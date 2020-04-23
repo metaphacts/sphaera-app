@@ -1,0 +1,63 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_place/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_place> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/u1opek0af16uh12rcnmi>;
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/n9jswsst1kfc2uzncdi>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#autosuggestionPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/yl0byl2980y4b9uyuv7vi>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Find and match a place on WikiData";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Equivalent Place (WikiData)" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/yl0byl2980y4b9uyuv7vi> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/u1opek0af16uh12rcnmi> <http://spinrdf.org/sp#text>
+      "INSERT { $subject owl:sameAs $value} WHERE {}" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/yl0byl2980y4b9uyuv7vi> <http://spinrdf.org/sp#text>
+      """PREFIX bds:  <http://www.bigdata.com/rdf/search#>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+    
+
+SELECT DISTINCT ?value ?label ?description WHERE {
+  SERVICE <https://wikidata.metaphacts.com/sparql>
+  {  
+    ?value rdfs:label ?label; 
+      <http://schema.org/description> ?description .
+   
+    ?value wdt:P31 ?instanceOf .
+    ?instanceOf wdt:P279* wd:Q486972 .
+#	?instanceOf wdt:P279* wd:Q515 .
+
+    ?label bds:search \"?token*\" ;    
+      bds:minRelevance \"0.5\" ;                
+      bds:matchAllTerms \"true\"  .
+      BIND( xsd:integer(substr(str(?value), 33)) as ?q)
+
+  }
+}
+ORDER BY ?q 
+LIMIT 10""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/n9jswsst1kfc2uzncdi> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+	$subject owl:sameAs ?value .
+  	SERVICE <https://wikidata.metaphacts.com/sparql>
+  	{  
+    	?value rdfs:label ?label .
+	}
+}""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/u1opek0af16uh12rcnmi> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_place> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.076+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_place> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_place> a <http://www.w3.org/ns/ldp#Resource> .
+}

@@ -1,0 +1,43 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+</ol>
+
+[[#if untaggedOnly ]]
+  <h1>Elements without Keywords</h1>
+  <div class="gap-bottom">
+    <semantic-link iri="[[resolvePrefix ":listElements"]]">Show all Elements</semantic-link>
+  </div>
+[[else]]
+  <h1>All Elements</h1>
+  <div class="gap-bottom">
+    <semantic-link iri="[[resolvePrefix ":listElementsWithoutKeywords"]]">Show only Elements without keyword</semantic-link>
+  </div>
+[[/if]]
+
+<div class="gap-bottom">
+  <semantic-link iri="[[resolvePrefix ":listRegions"]]">List Regions</semantic-link>
+</div>
+
+
+<p class="gap-bottom">
+  <semantic-link iri="http://sphaera.mpiwg-berlin.mpg.de/resource/createElement" class="btn btn-primary btn-md">Add new element</semantic-link>
+</p>
+
+<div class="content">
+  [[#> :tableElements]]
+    [[#if untaggedOnly]]
+      OPTIONAL {
+        ?subject ecrm:P2_has_type ?keyword .
+        sphType:keywords skos:member ?keyword .
+      }
+      FILTER(!BOUND(?keyword))
+    [[/if]]
+  [[/ :tableElements]]
+  <div>
+    [[> :csvDownload elements="true"]]
+  </div>
+</div>
+
+[[> :footer]]

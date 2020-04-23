@@ -1,0 +1,30 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listPersons") label="Persons"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listAppellations") label="Appellations"]]
+</ol>
+
+<h2>Edit person name</h2>
+<semantic-form
+  persistence='LDP'
+  browser-persistence='false'
+  subject='[[this]]'
+  fields="[[fieldDefinitions
+        person_name="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/person_name"
+  ]]"
+
+>
+
+  <semantic-form-text-input for="person_name">
+  </semantic-form-text-input>
+
+  <div class="text-right form-submit">
+    <semantic-link class="btn btn-default btn-md" iri="[[resolvePrefix ":listAppellations"]]">Back</semantic-link>
+    <button name="submit" class="btn btn-primary btn-md">Save</button>
+  </div>
+
+</semantic-form>
+
+[[> :footer]]

@@ -1,0 +1,30 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_note/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_note> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/zpfua1a3283aklbit3xr>;
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/an9m1anloh43ck6mkj4i>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#label> "Label" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/an9m1anloh43ck6mkj4i> <http://spinrdf.org/sp#text>
+      """SELECT ?value WHERE {
+	$subject ecrm:P3_has_note $value 
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/zpfua1a3283aklbit3xr> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/an9m1anloh43ck6mkj4i> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/zpfua1a3283aklbit3xr> <http://spinrdf.org/sp#text>
+      "INSERT { $subject ecrm:P3_has_note $value} WHERE {}" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_note> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:19.430+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_note> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_note> a <http://www.w3.org/ns/ldp#Resource> .
+}

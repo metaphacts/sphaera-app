@@ -1,0 +1,35 @@
+[[> :header]]
+
+[[#if (hasPermission "api:config")]]
+
+    <h1>Field Definition Catalog</h1>
+
+    <div class="content">
+      <semantic-table data-config='{
+          "numberOfDisplayedRows": 10,
+          "query":"SELECT ?Field ?Creator ?ModificationDate WHERE {
+  						<http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains> ?Field .
+  						?Field  <http://www.w3.org/ns/prov#wasAttributedTo> ?Creator.
+  						?Field <http://www.w3.org/ns/prov#generatedAtTime> ?ModificationDate .
+  				}",
+             "columnConfiguration" : [
+                  {"variableName":"Field", "displayName":"Field"},
+                  {"variableName":"Creator", "displayName":"Modified By"},
+                  {"variableName":"ModificationDate", "displayName":"Last Update", "cellTemplate": "{{dateTimeFormat ModificationDate.value \"LLL\"}}" },
+                  {"displayName":"Delete", "cellTemplate": "<mp-ldp-remove-from-container-action data-iri=\"{{Field.value}}\" data-container=\"http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer\">
+                    <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>
+                  </mp-ldp-remove-from-container-action>" }
+             ]
+      }'></semantic-table>
+    </div>
+
+    <h1>Field Editor</h1>
+    <div class="content">
+      <field-editor field-instance-base-iri="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/"></field-editor>
+    </div>
+
+[[else]]
+
+<p>No Permission</p>
+
+[[/if]]

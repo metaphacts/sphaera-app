@@ -1,0 +1,66 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":manageTerms") label="Manage Terms" tab="regionTypes"]]
+</ol>
+
+<semantic-query
+  query='SELECT ?type_name WHERE
+    {
+      ?type ecrm:P3_has_note ?type_name .
+      BIND(<[[urlParam "regiontypeiri"]]> as ?type)
+     }'
+  template="<h3>{{#each bindings}}{{type_name.value}}{{/each}}</h3>">
+</semantic-query>
+
+<semantic-link
+  iri="[[resolvePrefix ":addRegionType"]]"
+  urlqueryparam-resiri="[[urlParam "regiontypeiri"]]"
+  class="btn btn-md btn-primary gap-bottom" >Edit</semantic-link>
+
+<div class="content">
+
+  <h4 style="margin:2em 0">Regions of this type</h4>
+
+    <!-- Regions -->
+    <bs-row>
+      <semantic-table
+        query="SELECT
+
+          [[> :queryRegionsSelect]]
+
+          ?book
+          ?book_label
+
+        WHERE {
+
+          BIND(<[[urlParam "regiontypeiri"]]> as ?region_type) .
+
+          ?subject ecrm:P2_has_type ?region_type .
+
+          [[> :queryRegionsForPage]]
+
+          [[> :queryImageIdPattern]]
+
+        } ORDER BY xsd:integer(?page_num) LIMIT 1000"
+        number-of-displayed-rows="50"
+        options='{"showFilter": false}'
+        tuple-template='[[> :templatePageRegionsGrid]]'
+        >
+      </semantic-table>
+
+      [[#> :templateNumRegionsWarning]]
+
+          BIND(<[[urlParam "regiontypeiri"]]> as ?region_type) .
+          ?subject ecrm:P2_has_type ?region_type .
+
+      [[/ :templateNumRegionsWarning]]
+    </bs-row>
+
+  <dl>
+
+    [[> :identifier iri="regiontypeiri"]]
+
+  </dl>
+</div>

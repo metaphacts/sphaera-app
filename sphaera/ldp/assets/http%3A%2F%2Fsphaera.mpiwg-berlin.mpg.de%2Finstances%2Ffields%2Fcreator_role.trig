@@ -1,0 +1,59 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/creator_role/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/creator_role> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4orhfnkz3qqsrcm78pvi>;
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/axex5euf9aqdhkoz85mi>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/p67aesw43b6zgcra7cik9>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Specify the role of the actor in the creation of this item";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Creator Role" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/p67aesw43b6zgcra7cik9> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+  ?value skos:prefLabel ?label .
+  VALUES (?value ) {
+    (<http://sphaera.mpiwg-berlin.mpg.de/id/thes/role/author> )
+    (<http://sphaera.mpiwg-berlin.mpg.de/id/thes/role/commentator> )
+    (<http://sphaera.mpiwg-berlin.mpg.de/id/thes/role/editor> )
+    (<http://sphaera.mpiwg-berlin.mpg.de/id/thes/role/publisher> )
+    (<http://sphaera.mpiwg-berlin.mpg.de/id/thes/role/printer> )
+    (<http://sphaera.mpiwg-berlin.mpg.de/id/thes/role/translator> )
+  }    
+} ORDER BY ?label""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4orhfnkz3qqsrcm78pvi> <http://spinrdf.org/sp#text>
+      "INSERT { $subject ecrm:P14.1_in_the_role_of $value} WHERE {}";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/axex5euf9aqdhkoz85mi> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/p67aesw43b6zgcra7cik9> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/axex5euf9aqdhkoz85mi> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+  ?value skos:prefLabel ?label .
+  OPTIONAL { 
+    $subject ecrm:P14.1_in_the_role_of ?has_value .
+  }
+  VALUES (?value ) {
+    (<http://sphaera.mpiwg-berlin.mpg.de/id/thes/role/author> )
+    (<http://sphaera.mpiwg-berlin.mpg.de/id/thes/role/commentator> )
+    (<http://sphaera.mpiwg-berlin.mpg.de/id/thes/role/editor> )
+    (<http://sphaera.mpiwg-berlin.mpg.de/id/thes/role/publisher> )
+    (<http://sphaera.mpiwg-berlin.mpg.de/id/thes/role/printer> )
+    (<http://sphaera.mpiwg-berlin.mpg.de/id/thes/role/translator> )
+  }
+  BIND(IF(! BOUND(?has_value), sphRole:author, ?has_value) as ?value)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/creator_role> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.889+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/creator_role> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/creator_role> a <http://www.w3.org/ns/ldp#Resource> .
+}

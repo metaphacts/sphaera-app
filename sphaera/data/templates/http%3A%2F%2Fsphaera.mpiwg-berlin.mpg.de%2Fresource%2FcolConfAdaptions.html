@@ -1,0 +1,38 @@
+{
+  "displayName" : "Title",
+  "variableName" : "label",
+  "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":viewAdaption"]]\" urlqueryparam-adaptioniri=\"{{subject.value}}\">{{label.value}}</semantic-link>"
+},
+{
+  "displayName" : "Creators",
+  "variableName" : "sort_authors",
+  "cellTemplate" : "{{authors.value}}"
+},
+{
+  "displayName" : "Original Author",
+  "variableName" : "original_authors"
+},
+{
+  "displayName" : "Type",
+  "variableName" : "adaption_types"
+},
+{
+  "displayName" : "Appears in Books",
+  "variableName" : "num_books"
+},
+{
+  "displayName" : "Date (first appearance)",
+  "variableName" : "date"
+},
+{
+  "displayName" : "Custom Identifier",
+  "variableName" : "custom_identifier"
+}
+
+[[#if (hasPermission "forms:ldp:*")]]
+,
+{
+  "displayName" : "&nbsp;",
+  "cellTemplate" : "<semantic-link iri=\"{{subject.value}}\" >Edit</semantic-link>"
+}
+[[/if]]

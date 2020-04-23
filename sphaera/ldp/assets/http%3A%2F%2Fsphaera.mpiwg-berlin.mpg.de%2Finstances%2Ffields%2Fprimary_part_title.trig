@@ -1,0 +1,49 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/primary_part_title/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/primary_part_title> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4jr0f8>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "0";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/us41qj>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The primary title of a part";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Primary Part Title" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4jr0f8> <http://spinrdf.org/sp#text>
+      """INSERT {
+  $subject ecrm:PC01_is_domain_of ?has_title .
+  ?has_title a ecrm:PC102_has_title ;
+    ecrm:P102.1_has_type sphType:primary ;
+    ecrm:PC02_has_range ?title .
+  ?title a ecrm:E35_Title ;
+    ecrm:P3_has_note ?value .
+} WHERE {
+  OPTIONAL {
+    $subject ecrm:PC01_is_domain_of ?existing_has_title .
+    ?existing_has_title a ecrm:PC102_has_title ;
+      ecrm:P102.1_has_type sphType:primary .
+  }
+  BIND(IF(BOUND(?existing_has_title), ?existing_has_title, URI(CONCAT(STR($subject), \"/title/\", STRUUID()))) as ?has_title)
+  BIND(URI(CONCAT(STR(?has_title), \"/title\")) as ?title)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/us41qj> a <http://spinrdf.org/sp#Query>;
+    <http://spinrdf.org/sp#text> """SELECT ?value WHERE {
+ $subject ecrm:PC01_is_domain_of ?has_title .
+ ?has_title a ecrm:PC102_has_title ;
+    ecrm:P102.1_has_type sphType:primary ; 
+    ecrm:PC02_has_range/ecrm:P3_has_note $value .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4jr0f8> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/primary_part_title> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.463+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/primary_part_title> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/primary_part_title> a <http://www.w3.org/ns/ldp#Resource> .
+}

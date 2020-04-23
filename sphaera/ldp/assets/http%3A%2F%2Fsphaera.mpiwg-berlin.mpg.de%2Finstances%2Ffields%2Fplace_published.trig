@@ -1,0 +1,56 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/place_published/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/place_published> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/zbltvabv0wsmc59udi>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/87lu3sho1jlxvw75jyvi>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/s6jii97x970knle4s4i>;
+    <http://www.metaphacts.com/ontology/fields#autosuggestionPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/b7y6jtlraisyeq4a38fr>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The place of publication";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Place Published" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/b7y6jtlraisyeq4a38fr> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+  ?value a ecrm:E53_Place ;
+	ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?label .
+  FILTER REGEX(STR(?label), \"?token\", \"i\" )
+} ORDER BY ?label LIMIT 10""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/87lu3sho1jlxvw75jyvi> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+  ?publication_event ecrm:P7_took_place_at ?value .
+  ?value ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?label .
+  BIND(URI(CONCAT(STR($subject), \"/publication/event\")) as ?publication_event)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/s6jii97x970knle4s4i> <http://spinrdf.org/sp#text>
+      """SELECT DISTINCT ?value ?label WHERE {
+  ?value a ecrm:E53_Place ;
+  ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?label .
+} ORDER BY ?label""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/87lu3sho1jlxvw75jyvi> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/b7y6jtlraisyeq4a38fr> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/s6jii97x970knle4s4i> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/zbltvabv0wsmc59udi> a <http://spinrdf.org/sp#Query>;
+    <http://spinrdf.org/sp#text> """INSERT { 
+  ?publication_event ecrm:P7_took_place_at $value .
+} WHERE {
+      BIND(URI(CONCAT(STR($subject), \"/publication\")) as ?publication_expression)
+      BIND(URI(CONCAT(STR($subject), \"/publication/event\")) as ?publication_event)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/place_published> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.023+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/place_published> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/place_published> a <http://www.w3.org/ns/ldp#Resource> .
+}

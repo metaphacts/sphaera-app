@@ -1,0 +1,10 @@
+
+<semantic-query
+	query='SELECT ?doi WHERE {
+		BIND(<[[urlParam iri]]> as ?subject) .
+		?subject ecrm:P1_is_identified_by ?identifier .
+		?identifier ecrm:P2_has_type <http://www.doi.org> ;
+			ecrm:P3_has_note ?doi .
+	}'
+	template='<dl><dt>Permanent ID</dt>{{#each bindings}}<dd><a href="http://hdl.handle.net/{{doi.value}}">hdl.handle.net/{{doi.value}}</a></dd>{{/each}}</dl>'>
+</semantic-query>

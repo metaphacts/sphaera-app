@@ -1,0 +1,42 @@
+/* header */
+
+.navbar {
+  min-height: 45px;
+}
+
+.navbar-brand {
+  height: 45px;
+}
+
+@media (min-width: 768px) {
+  .navbar-nav > li > a {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}
+
+.navbar-inverse .navbar-nav > li > a:hover,
+.navbar-inverse .navbar-nav > li > a:focus {
+  color: #fff;
+  background-color: #006687;
+}
+
+.navbar-inverse .navbar-brand:hover,
+.navbar-inverse .navbar-brand:focus {
+  color: #fff;
+  background-color: transparent;
+}
+
+
+/* footer */
+
+.footer a:hover {
+  color: #3498DB !important;
+}
+
+
+/* tables */
+
+table {
+  font-size: 12px;
+}

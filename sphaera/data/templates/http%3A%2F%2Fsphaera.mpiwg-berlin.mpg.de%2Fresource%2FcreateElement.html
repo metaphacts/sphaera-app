@@ -1,0 +1,45 @@
+[[#if  (urlParam "modal")]]
+[[else]]
+
+  [[> :header]]
+
+  <ol class="page-breadcrumb">
+    [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+    [[> :templateBreadcrumb iri=(resolvePrefix ":listElements") label="Elements"]]
+  </ol>
+
+  <h2>Create new element record </h2>
+
+[[/if]]
+
+<semantic-form
+  persistence='LDP'
+  browser-persistence='false'
+  fields="[[fieldDefinitions
+        element_record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/element_record_type"
+        information_object_record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/information_object_record_type"
+        label="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/short_title"
+  ]]"
+  subject=[[singleValueFromSelect "SELECT ?newIRI WHERE { BIND(uri(concat(\"http://sphaera.mpiwg-berlin.mpg.de/id/element/\",STRUUID())) as ?newIRI)}"]]
+>
+
+  <semantic-form-text-input for="label">
+  </semantic-form-text-input>
+
+  <span class="disabled hidden-field">
+    <semantic-form-text-input for="element_record_type"></semantic-form-text-input>
+    <semantic-form-text-input for="information_object_record_type"></semantic-form-text-input>
+  </span>
+
+  <div class="text-right form-submit">
+    <button name="submit" class="btn btn-primary btn-md">Save</button>
+  </div>
+
+</semantic-form>
+
+[[#if ( urlParam "modal")]]
+[[else]]
+
+  [[> :footer]]
+
+[[/if]]

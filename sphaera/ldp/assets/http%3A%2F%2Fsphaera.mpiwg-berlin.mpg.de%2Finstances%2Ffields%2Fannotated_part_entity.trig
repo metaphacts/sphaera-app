@@ -1,0 +1,28 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotated_part_entity/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotated_part_entity> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      "t883";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> "t882";
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#label> "Annotated Part" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t883> a <http://spinrdf.org/sp#Query> .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t882> a <http://spinrdf.org/sp#Query>;
+    <http://spinrdf.org/sp#text> """SELECT ?value WHERE {
+  $subject ecrm:P106_is_composed_of ?value .
+  ?value a efrbroo:F22_Self-Contained_Expression
+}""" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t883> <http://spinrdf.org/sp#text>
+      "INSERT { $subject ecrm:P106_is_composed_of $value} WHERE {}" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotated_part_entity> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:19.409+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotated_part_entity> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotated_part_entity> a <http://www.w3.org/ns/ldp#Resource> .
+}

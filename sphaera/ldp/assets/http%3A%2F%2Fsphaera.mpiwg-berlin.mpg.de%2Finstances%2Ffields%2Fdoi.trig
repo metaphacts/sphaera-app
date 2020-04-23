@@ -1,0 +1,64 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/doi/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/doi> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/rizoaq>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/qenomi>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Assigns an auto-generated DOI";
+    <http://www.w3.org/2000/01/rdf-schema#label> "DOI  " .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/rizoaq> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/qenomi> a <http://spinrdf.org/sp#Query>;
+    <http://spinrdf.org/sp#text> """SELECT ?value WHERE {
+  BIND(\"DOI will be generated on save to avoid collisions\" as ?value)
+  BIND($subject as ?dummy)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/rizoaq> <http://spinrdf.org/sp#text>
+      """INSERT { 
+  $subject ecrm:P1_is_identified_by ?identifier .
+  ?identifier a ecrm:E42_Identifier ;
+      ecrm:P2_has_type <http://www.doi.org> ;
+      ecrm:P3_has_note ?updatedValue.
+  :configDOICounter ecrm:P3_has_note ?newCounter .
+} WHERE {
+  VALUES (?prefix ?namespace ?version) {
+    (\"21.11103\" \"sphaera\" \"1\")
+  }
+  BIND(URI(CONCAT(STR($subject),\"/doi\")) as ?identifier)
+
+  OPTIONAL {
+    ?identifier ecrm:P3_has_note ?existingValue.
+  }
+
+  {
+    SELECT ?counter WHERE {
+      OPTIONAL {
+        :configDOICounter ecrm:P3_has_note ?dbCounter .
+      }
+      BIND(IF(BOUND(?dbCounter), ?dbCounter, \"1\"^^xsd:integer) as ?counter)
+    } 
+    ORDER BY DESC(?counter)
+    LIMIT 1
+  }
+
+  BIND(IF((STRLEN(?counter)) = 1 , \"0000\", IF((STRLEN(?counter)) = 2 , \"000\", IF((STRLEN(?counter)) = 3 , \"00\", IF((STRLEN(?counter)) = 4 , \"0\", \"\")))) AS ?padding)
+  BIND(CONCAT(?prefix, \"/\", ?namespace, \".\", ?version, ?padding, STR(?counter + 1 )) AS ?newValue)
+  BIND(IF(BOUND(?existingValue), ?existingValue, ?newValue) AS ?updatedValue)
+  BIND(IF(BOUND(?existingValue), ?counter, ?counter + 1 ) as ?newCounter)  
+  BIND(?value as ?dummy)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/doi> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.311+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/doi> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/doi> a <http://www.w3.org/ns/ldp#Resource> .
+}

@@ -1,0 +1,140 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+  <li class="breadcrumb-item">
+    <semantic-query
+      query='SELECT ?book ?label WHERE
+        {
+          BIND(<[[urlParam "pageiri"]]> as ?page) .
+          ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page ;
+            ecrm:P3_has_note ?label .
+          } LIMIT 1'
+      template='
+        {{#each bindings}}
+          <semantic-link
+            iri="[[resolvePrefix ":viewBook"]]
+            urlqueryparam-bookiri="{{book.value}}"
+          >{{label.value}}</semantic-link>
+        {{/each}}'
+    </semantic-query>
+  </li>
+  <li class="breadcrumb-item">
+    <semantic-query
+      query='SELECT ?book WHERE
+        {
+          BIND(<[[urlParam "pageiri"]]> as ?page) .
+          ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page .
+        } LIMIT 1'
+      template='
+        {{#each bindings}}
+          <semantic-link
+            iri="[[resolvePrefix ":viewBookPages"]]"
+            urlqueryparam-bookiri="{{book.value}}"
+          >Pages</semantic-link>
+        {{/each}}'
+    </semantic-query>
+  </li>
+
+</ol>
+
+<semantic-query
+  query='SELECT ?page_num WHERE
+    {
+      BIND(<[[urlParam "pageiri"]]> as ?page)
+      ?page ecrm:P1_is_identified_by ?page_num .
+     }'
+  template="<h4>{{#each bindings}}Page {{page_num.value}}{{/each}}</h4>">
+</semantic-query>
+
+<bs-tab-container default-active-key="regions">
+  <bs-row>
+    <bs-col sm="2" sm-push="10" class="tab-bar">
+      [[#if (hasPermission "forms:ldp:*")]]
+        <semantic-query
+          query='SELECT ?book WHERE
+            {
+              BIND(<[[urlParam "pageiri"]]> as ?page) .
+              ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page .
+             }'
+          template='
+            {{#each bindings}}
+              <semantic-link
+                iri="{{book.value}}"
+                class="btn btn-md btn-primary pull-right"
+                style="margin-bottom:3px;"
+              >Edit</semantic-link>
+            {{/each}}'
+        </semantic-query>
+      [[/if]]
+    </bs-col>
+    <bs-col sm="10" sm-pull="2" class="tab-bar">
+      <bs-nav bs-style="tabs" >
+
+        <li role="presentation">
+
+          <semantic-query
+            query='SELECT ?book WHERE
+              {
+                BIND(<[[urlParam "pageiri"]]> as ?page) .
+                ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page .
+               }'
+            template='
+              {{#each bindings}}
+                <semantic-link
+                  iri="[[resolvePrefix ":viewBookPages"]]"
+                  urlqueryparam-bookiri="{{book.value}}"
+                ><i class="fa fa-long-arrow-left"></i> Back</semantic-link>
+              {{/each}}'
+          </semantic-query>
+
+        </li>
+
+        <li role="presentation">
+
+          <semantic-link
+            iri="[[resolvePrefix ":viewPage"]]"
+            urlqueryparam-pageiri="[[urlParam "pageiri"]]"
+          >Page</semantic-link>
+
+        </li>
+
+        <bs-nav-item event-key="regions">
+          Regions
+        </bs-nav-item>
+
+      </bs-nav>
+    </bs-col>
+    <div class="content" style="clear:both;">
+      <bs-tab-content animation="true">
+
+        <bs-tab-pane event-key="regions">
+
+          <!-- Regions -->
+          <bs-row>
+            <semantic-query
+              query="SELECT DISTINCT
+                [[> :queryRegionsSelect]]
+
+                ?part_or_adaption
+                ?part_or_adaption_label
+
+              WHERE {
+                BIND(<[[urlParam "pageiri"]]> as ?page) .
+
+                [[> :queryRegionsForPage]]
+
+                [[> :queryImageIdPattern]]
+
+              } ORDER BY xsd:integer(?page_num)"
+              template='[[> :templatePageRegions redirect=":viewPageRegions"]]'
+            ></semantic-query>
+          </bs-row>
+
+        </bs-tab-pane>
+
+      </bs-tab-content>
+    </div>
+  </bs-row>
+</bs-tab-container>

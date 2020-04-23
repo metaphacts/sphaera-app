@@ -1,0 +1,78 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/3n6orm>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/2ds5fr>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/shsymj>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Select a part to be added to a book";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Part " .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/3n6orm> <http://spinrdf.org/sp#text>
+      """INSERT {
+  $subject ecrm:P141_assigned $value ;
+      ecrm:P140_assigned_attribute_to ?expression .
+	?expression ecrm:P148_has_component $value
+} WHERE {
+      BIND(URI(CONCAT(STRBEFORE(STR($subject), \"/parts\"), \"/expression\")) as ?expression)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/2ds5fr> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/3n6orm> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/2ds5fr> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+    $subject ecrm:P141_assigned ?value .
+    ?value ecrm:P3_has_note ?label .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/shsymj> <http://spinrdf.org/sp#text>
+      """SELECT DISTINCT
+    ?value 
+    (GROUP_CONCAT(DISTINCT ?author_name; SEPARATOR=\", \") as ?authors) 
+    (COUNT(DISTINCT ?book) as ?num_books)
+    (GROUP_CONCAT(DISTINCT ?part_type; SEPARATOR=\"/\") as ?part_types) 
+(CONCAT(?part_label, \" (\", ?part_types, \" by \", ?authors,  \")\", \" in \", STR(?num_books), \" books\") as ?label) 
+WHERE { 
+    ?value a ?type ; 
+      ecrm:P3_has_note ?part_label . 
+
+    OPTIONAL { 
+        ?value efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range/ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?author_label .
+    BIND( IF(REGEX(?author_label, \",\", \"i\"), CONCAT(STRAFTER(?author_label, \", \"), \" \", STRBEFORE(?author_label, \",\")), ?author_label) as ?author_name)
+
+    } 
+
+    OPTIONAL {
+      ?book ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P148_has_component/
+    (efrbroo:R15i_is_fragment_of?/
+    (efrbroo:R3i_realises|ecrm:P165_incorporates)?)*/
+    ^efrbroo:R40i_is_representative_expression_for? ?value
+    }
+
+    OPTIONAL {
+      ?value ecrm:P2_has_type/ecrm:P3_has_note ?part_type .
+    }
+
+    OPTIONAL {
+      ?value ecrm:P165_incorporates/ecrm:P72_has_language/ecrm:P3_has_note ?language .
+    }
+
+     VALUES(?type) { (sphaera:Part) (sphaera:Part_Adaption) }
+
+} GROUP BY ?value ?part_label ORDER BY DESC(?num_books) ?type ?part_label""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.214+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part> a <http://www.w3.org/ns/ldp#Resource> .
+}

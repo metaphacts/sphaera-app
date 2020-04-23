@@ -1,0 +1,53 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":manageTerms") label="Manage Terms" tab="bookFormats"]]
+</ol>
+
+<semantic-query
+  query='SELECT ?format_name WHERE
+    {
+      ?format ecrm:P3_has_note ?format_name .
+      BIND(<[[urlParam "bookformatiri"]]> as ?format)
+     }'
+  template="<h3>{{#each bindings}}{{format_name.value}}{{/each}}</h3>">
+</semantic-query>
+<!--
+<semantic-link
+  iri="[[resolvePrefix ":addBookFormat"]]"
+  urlqueryparam-resiri="[[urlParam "bookformatiri"]]"
+  class="btn btn-md btn-primary gap-bottom" >Edit</semantic-link>
+-->
+<div class="content">
+
+  <h4 style="margin:2em 0">Books of this format</h4>
+  <div id="table_books_container">
+    <semantic-table
+      query='SELECT DISTINCT [[> :queryBooksSelect ]]  WHERE {
+
+        BIND(<[[urlParam "bookformatiri"]]> as ?format)
+        ?subject ecrm:P43_has_dimension ?format .
+
+        [[> :queryBooks]]
+      } GROUP BY [[> :queryBooksGroup]]
+      ORDER BY ?year_published_from ?date_text'
+
+      options='{
+          "showFilter" : false,
+          "resultsPerPage":100
+        }'
+
+      column-configuration='[
+        [[> :colConfBooks]]
+      ]'
+    >
+    </semantic-table>
+  </div>
+  <dl>
+
+    [[> :identifier iri="bookformatiri"]]
+
+  </dl>
+</div>

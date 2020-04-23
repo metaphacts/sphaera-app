@@ -1,0 +1,47 @@
+
+?subject a sphaera:Book ;
+  ecrm:P3_has_note ?label .
+
+  OPTIONAL {
+    ?subject ecrm:P1_is_identified_by ?identifier .
+    ?identifier ecrm:P2_has_type sphaera:customIdentifier ;
+      ecrm:P3_has_note ?custom_identifier .
+  }
+
+  OPTIONAL {
+    ?subject ecrm:P128_carries/ecrm:P102_has_title/ecrm:P3_has_note ?book_title .
+  }
+
+  OPTIONAL {
+    ?subject ecrm:P128_carries/ecrm:P165_incorporates/^ecrm:P140_assigned_attribute_to ?attribute_assignment .
+  }
+
+  OPTIONAL {
+    ?subject ecrm:P1_is_identified_by ?fingerprintIdentifier .
+    ?fingerprintIdentifier ecrm:P2_has_type sphaera:fingerprint ;
+      ecrm:P3_has_note ?fingerprint .
+    OPTIONAL {
+      ?fingerprintIdentifier ecrm:P106_is_composed_of ?fingerprint_part .
+      BIND("yes" as ?fingerprint_converted)
+    }
+  }
+
+  OPTIONAL {
+    ?subject ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:P4_has_time-span ?date_published .
+    OPTIONAL {
+      ?date_published ecrm:P3_has_note ?date_text .
+    }
+    OPTIONAL {
+      ?date_published ecrm:P82a_begin_of_the_beginning ?date_published_from .
+      BIND(SUBSTR(STR(?date_published_from),0,4) as ?year_published_from)
+    }
+  }
+
+  OPTIONAL {
+    ?subject efrbroo:R7_is_example_of/^ecrm:P70_documents ?source .
+    ?source ecrm:P2_has_type sphType:source ;
+      ecrm:P48_has_preferred_identifier ?source_url .
+    BIND(IF(CONTAINS(STR(?source_url),"mpiwg-berlin.mpg.de"),"True","") as ?mpiwg_source)
+  }
+
+  BIND( IF(BOUND(?book_title), ?book_title, "&nbsp;") as ?full_title )

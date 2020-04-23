@@ -1,0 +1,102 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+</ol>
+
+<h1>All books</h1>
+
+<div class="content">
+
+  <div>
+
+    <mp-sparql-download
+      query='PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        SELECT DISTINCT ?place_name ?book ?book_title ?coord ?url ?date_published ?date_published_from ?date_published_to WHERE {
+          ?book a sphaera:Book ;
+            ecrm:P3_has_note ?book_title ;
+            ecrm:P128_carries/efrbroo:R24i_was_created_through ?publication_event .
+          ?publication_event ecrm:P7_took_place_at ?place .
+
+          ?place owl:sameAs ?wdPlace ;
+            ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?place_name .
+
+          SERVICE <https://query.wikidata.org/sparql> {
+            ?wdPlace wdt:P625 ?coordinates .
+          }
+
+          OPTIONAL {
+            ?publication_event ecrm:P4_has_time-span ?date_published .
+            OPTIONAL {
+              ?date_published ecrm:P82a_begin_of_the_beginning ?date_published_from .
+            }
+            OPTIONAL {
+              ?date_published ecrm:P82b_end_of_the_end ?date_published_to .
+            }
+          }
+          BIND(STRAFTER(STRBEFORE(STR(?coordinates)," "), "Point(") as ?lat)
+          BIND(STRBEFORE(STRAFTER(STR(?coordinates)," "), ")") as ?long)
+          BIND(CONCAT(?long, ",", ?lat) as ?coord)
+
+          BIND(CONCAT("http://sphaera.mpiwg-berlin.mpg.de/resource/:viewBook?bookiri=", STR(?book)) as ?url)
+
+        }'
+      header="text/csv"
+      filename="mapBooks.csv">
+      <p>
+        <a href="#">Download CSV</a>
+      </p>
+    </mp-sparql-download>
+  </div>
+
+  <semantic-query
+    query="
+      PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+      SELECT DISTINCT ?Name ?Address (STR(?url) as ?Description) ?book ?Longitude ?Latitude (YEAR(?date_begin) as ?TimeStamp) WHERE {
+      ?book a sphaera:Book ;
+        ecrm:P3_has_note ?Name ;
+        ecrm:P128_carries/efrbroo:R24i_was_created_through ?publication_event .
+      ?publication_event ecrm:P7_took_place_at ?place .
+
+      OPTIONAL {
+    	?publication_event ecrm:P4_has_time-span/ecrm:P82a_begin_of_the_beginning ?date_begin .
+
+      }
+
+      ?place owl:sameAs ?wdPlace ;
+        ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?Address .
+
+      SERVICE <https://query.wikidata.org/sparql> {
+        ?wdPlace wdt:P625 ?coordinates .
+      }
+
+      BIND(STRAFTER(STRBEFORE(STR(?coordinates),' '), 'Point(') as ?Longitude)
+      BIND(STRBEFORE(STRAFTER(STR(?coordinates),' '), ')') as ?Latitude)
+
+      BIND(CONCAT('http://sphaera.mpiwg-berlin.mpg.de/resource/:', STR(?book)) as ?url)
+    }"
+    template='<a href="http://platin.sphaera.mpiwg-berlin.mpg.de/index.html#csv=Name,Address,Description,Longitude,Latitude,TimeStamp\n{{#each bindings}}%22{{Name.value}}%22,%22{{Address.value}}%22,%22{{Name.value}}%22,%22{{Longitude.value}}%22,%22{{Latitude.value}}%22,%22{{TimeStamp.value}}%22\n{{/each}}">Visualise in PLATIN</a>'
+  >
+  </semantic-query>
+
+  <semantic-map data-config='{
+      "query":"
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        SELECT DISTINCT ?wkt ?description ?link WHERE {
+          ?book a sphaera:Book ;
+          ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:P7_took_place_at ?place .
+
+          ?place owl:sameAs ?wdPlace ;
+           ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?description .
+          SERVICE <https://query.wikidata.org/sparql> {
+            ?wdPlace wdt:P625 ?wkt .
+          }
+
+          BIND(?book as ?link)
+      }"
+    }'>
+  </semantic-map>
+</div>
+
+[[> :footer]]

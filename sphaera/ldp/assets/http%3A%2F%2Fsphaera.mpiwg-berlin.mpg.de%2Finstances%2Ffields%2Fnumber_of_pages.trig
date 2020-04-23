@@ -1,0 +1,35 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/number_of_pages/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/number_of_pages> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/hn5zt>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/sm7qr>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#integer>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Specify the number of pages of a digitised book";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Number of pages in PDF" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/sm7qr> <http://spinrdf.org/sp#text>
+      """SELECT ?value WHERE { 
+ ?document ecrm:P57_has_number_of_parts ?value
+ BIND(URI(CONCAT(STR($subject), \"/reproduction/document\")) as ?document)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/hn5zt> a <http://spinrdf.org/sp#Query>;
+    <http://spinrdf.org/sp#text> """INSERT { 
+  ?document ecrm:P57_has_number_of_parts $value
+} WHERE {
+   BIND(URI(CONCAT(STR($subject), \"/reproduction/document\")) as ?document)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/sm7qr> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/number_of_pages> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.689+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/number_of_pages> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/number_of_pages> a <http://www.w3.org/ns/ldp#Resource> .
+}

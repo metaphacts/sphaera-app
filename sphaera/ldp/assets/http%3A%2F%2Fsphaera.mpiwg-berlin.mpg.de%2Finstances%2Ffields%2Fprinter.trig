@@ -1,0 +1,111 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/printer/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/printer> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fgqmz>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/jad0ve>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/vt23sj>;
+    <http://www.metaphacts.com/ontology/fields#autosuggestionPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/of6xuh>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The printer of a book";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Printer" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/vt23sj> <http://spinrdf.org/sp#text>
+      """SELECT DISTINCT ?value ?label  ?sort_label WHERE {
+  {
+    ?value a efrbroo:F10_Person ;
+        ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?name ;
+        ecrm:P2_has_type ?type .
+    OPTIONAL {
+      ?value ecrm:P1_is_identified_by/ecrm:P3_has_note ?alternative_name .
+    }
+    OPTIONAL {
+      ?value ecrm:P129i_is_subject_of ?description_object .
+      ?description_object ecrm:P2_has_type sphType:description ;
+          ecrm:P3_has_note ?description
+    }
+    BIND(
+        IF(BOUND(?description),
+          IF(BOUND(?alternative_name),
+            CONCAT(?alternative_name, \" (\", ?name, \")\", \" – \", ?description),
+            CONCAT(?name, \" – \", ?description)
+          ),
+          IF(BOUND(?alternative_name),
+          CONCAT(?alternative_name, \" (\", ?name, \")\"),
+          ?name)
+        )
+    as ?label)
+
+    VALUES (?order) {(\"2\")}
+  } UNION {
+    ?value a efrbroo:F10_Person ;
+        ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?name ;
+        ecrm:P2_has_type ?type .
+    OPTIONAL {
+      ?value ecrm:P129i_is_subject_of ?description_object .
+      ?description_object ecrm:P2_has_type sphType:description ;
+          ecrm:P3_has_note ?description
+    }
+    BIND(
+      IF(BOUND(?description),
+        CONCAT(?name, \" – \", ?description),
+        ?name)
+      as ?label)
+    VALUES (?order) {(\"1\")}
+  }
+  BIND(LCASE(?label) AS ?sort_label)
+ } ORDER BY ?order ?sort_label""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/of6xuh> <http://spinrdf.org/sp#text>
+      """SELECT DISTINCT ?value ?label ?sort_label WHERE {
+  {
+    ?value a efrbroo:F10_Person ;
+        ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?name ;
+        ecrm:P2_has_type ?type .
+    OPTIONAL {
+      ?value ecrm:P1_is_identified_by/ecrm:P3_has_note ?alternative_name .
+    }
+    BIND(IF(BOUND(?alternative_name),CONCAT(?alternative_name,\" (\",?name,\")\"),?name) as ?label)
+    VALUES (?order) {(\"2\")}
+  } UNION {
+    ?value a efrbroo:F10_Person ;
+        ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?label ;
+        ecrm:P2_has_type ?type .
+    VALUES (?order) {(\"1\")}
+  }
+  FILTER(REGEX(?label, \"?token\", \"i\"))
+  BIND(LCASE(?label) AS ?sort_label)
+ } ORDER BY ?order ?sort_label""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/jad0ve> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fgqmz> <http://spinrdf.org/sp#text>
+      """INSERT { 
+  $subject ecrm:PC02_has_range $value .
+  ?manifestation_event ecrm:PC01_is_domain_of $subject .
+} WHERE {
+  BIND(URI(CONCAT(STRBEFORE(STR($subject),\"/manifestation/printer\"),\"/manifestation/event\")) as ?manifestation_event)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/of6xuh> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fgqmz> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/jad0ve> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+    $subject ecrm:PC02_has_range ?value .
+    ?value ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?label .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/printer> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.437+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/printer> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/printer> a <http://www.w3.org/ns/ldp#Resource> .
+}

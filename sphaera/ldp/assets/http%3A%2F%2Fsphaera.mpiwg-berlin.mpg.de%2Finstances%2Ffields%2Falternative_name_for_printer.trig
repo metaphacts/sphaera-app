@@ -1,0 +1,71 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_printer/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_printer>
+    <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/7g8gnb>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/pz2ya>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/z5z6s8h>;
+    <http://www.metaphacts.com/ontology/fields#autosuggestionPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/pt6ma>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The name of a printer as stated in a book";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Alternative Name for Printer" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/7g8gnb> <http://spinrdf.org/sp#text>
+      """INSERT {
+  $subject ecrm:P140_assigned_attribute_to ?printer ;
+      ecrm:P141_assigned $value ;
+      ecrm:P16_used_specific_object ?reproduction .  
+  ?printer ecrm:P1_is_identified_by $value .
+  $value ecrm:P70i_is_documented_in ?publication_expression .
+} WHERE {
+  ?carried_out_by ecrm:PC02_has_range ?printer
+  BIND(URI(STRBEFORE(STR($subject), \"/name\")) as ?carried_out_by)
+  BIND(URI(CONCAT(STRBEFORE(STR(?carried_out_by), \"/manifestation/printer\"), \"/publication/expression\")) as ?publication_expression )
+  BIND(URI(CONCAT(STRBEFORE(STR(?carried_out_by), \"/manifestation/printer\"), \"/reproduction/document\")) as ?reproduction )
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/pz2ya> <http://spinrdf.org/sp#text>
+      """SELECT ?value WHERE {
+  ?subject ecrm:P141_assigned ?value .
+}""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/pt6ma> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+    ?value a ecrm:E82_Actor_Appellation ;
+        ecrm:P3_has_note ?label .
+    OPTIONAL {
+        ?actor ecrm:P48_has_preferred_identifier ?value .
+    }
+    FILTER(!(BOUND(?actor)))
+} ORDER BY ?label LIMIT 10""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/z5z6s8h> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+    ?value a ecrm:E82_Actor_Appellation ;
+        ecrm:P3_has_note ?label .
+    OPTIONAL {
+        ?actor ecrm:P48_has_preferred_identifier ?value .
+    }
+    FILTER(!(BOUND(?actor)))
+} ORDER BY ?label""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/7g8gnb> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/z5z6s8h> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/pt6ma> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_printer>
+    a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:19.424+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_printer> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_printer>
+    a <http://www.w3.org/ns/ldp#Resource> .
+}

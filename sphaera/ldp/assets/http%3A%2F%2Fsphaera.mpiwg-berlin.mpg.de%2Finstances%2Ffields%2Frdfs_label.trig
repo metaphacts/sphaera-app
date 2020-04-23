@@ -1,0 +1,42 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/rdfs_label/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/rdfs_label> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/cxb5wfspdxhbfg30udi>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/gct7v4iioo9x0mnuq5mi>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
+    <http://www.metaphacts.com/ontology/fields#deletePattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/sanktbqsd1au8o0xp3nmi>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#label> "Label" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/gct7v4iioo9x0mnuq5mi> <http://spinrdf.org/sp#text>
+      """SELECT ?value WHERE {
+    $subject rdfs:label ?value .
+  }""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/cxb5wfspdxhbfg30udi> <http://spinrdf.org/sp#text>
+      """INSERT { 
+  $subject rdfs:label $value .
+} WHERE {}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/sanktbqsd1au8o0xp3nmi> <http://spinrdf.org/sp#text>
+      """DELETE { 
+  $subject rdfs:label $value .
+} WHERE {}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/cxb5wfspdxhbfg30udi> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/gct7v4iioo9x0mnuq5mi> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/sanktbqsd1au8o0xp3nmi> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/rdfs_label> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.856+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/rdfs_label> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/rdfs_label> a <http://www.w3.org/ns/ldp#Resource> .
+}

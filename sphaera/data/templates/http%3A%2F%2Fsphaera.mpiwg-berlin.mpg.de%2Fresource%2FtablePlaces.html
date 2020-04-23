@@ -1,0 +1,39 @@
+<semantic-table
+	id="table_places"
+	query='SELECT DISTINCT
+		?subject ?label
+		(COUNT(?book) as ?num_books)
+	WHERE {
+		?subject a ecrm:E53_Place ;
+			ecrm:P3_has_note ?label .
+			?book ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:P7_took_place_at ?subject .
+	}
+	GROUP BY ?subject ?label
+	ORDER BY ?label'
+	column-configuration='[
+			{
+				"variableName" : "label",
+				"displayName" : "Place",
+        "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":viewPlace"]]\" urlqueryparam-placeiri=\"{{subject.value}}\">{{label.value}}</semantic-link>"
+
+			},
+			{
+				"displayName" : "Number of Books",
+				"variableName" : "num_books"
+			}
+
+			[[# if (hasPermission "forms:ldp:*")]]
+				,
+				{
+					"displayName" : "&nbsp;",
+	        "cellTemplate" : "<semantic-link iri=\"{{subject.value}}\">Edit</semantic-link>"
+				}
+			[[/if]]
+		]'
+
+		options='{
+				"resultsPerPage":100
+			}'
+		}
+>
+</semantic-table>

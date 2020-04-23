@@ -1,0 +1,32 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+</ol>
+
+<h1>All Adaptions</h1>
+
+<div class="gap-bottom">
+  <semantic-link iri="[[resolvePrefix ":listParts"]]">List Parts</semantic-link>
+</div>
+
+[[#if (hasPermission "forms:ldp:*")]]
+  <p class="gap-bottom">
+    <semantic-link
+      iri="[[resolvePrefix ":createPart"]]"
+      urlqueryparam-tab="adaption"
+      class="btn btn-primary btn-md">
+      Add new adaption
+    </semantic-link>
+  </p>
+[[/if]]
+
+<div class="content">
+  [[#> :tableAdaptions]]
+  [[/ :tableAdaptions]]
+  <div>
+    [[> :csvDownload adaptions="true"]]
+  </div>
+</div>
+
+[[> :footer]]

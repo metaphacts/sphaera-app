@@ -1,0 +1,95 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+</ol>
+
+
+[[#if (urlParam "resiri")]]
+
+<h1>Examine Resource</h1>
+
+<p>[[urlParam "resiri"]]</p>
+
+<h3>Statements</h3>
+
+<h4>Outgoing Statements</h4>
+
+<semantic-table
+  query="SELECT ?property ?object ?g WHERE
+    {
+      BIND(<[[urlParam "resiri"]]> as ?resource)
+      GRAPH ?g {
+        ?resource ?property ?object .
+      }
+    }
+  LIMIT 1000"
+
+	column-configuration='[
+      {
+        "variableName": "property",
+        "displayName": "Property"
+      },
+      {
+        "variableName": "object",
+        "displayName": "Object",
+        "cellTemplate": "<semantic-link
+          uri=\"[[this]]\"
+          urlqueryparam-resiri=\"{{object.value}}\"
+        >{{object.value}}</semantic-link>"
+      },
+      {
+        "variableName": "g",
+        "displayName": "Graph"
+      }
+		]'
+
+  options='{
+			"resultsPerPage":10
+	 }'>
+</semantic-table>
+
+<h4>Incoming Statements</h4>
+
+<semantic-table
+  query="SELECT ?property ?subject ?g WHERE
+    {
+      GRAPH ?g {
+        ?subject ?property ?resource .
+      }
+      BIND(<[[urlParam "resiri"]]> as ?resource)
+    } LIMIT 1000"
+
+	column-configuration='[
+      {
+        "variableName":"property",
+        "displayName":"Property"
+      },
+      {
+        "variableName":"subject",
+        "displayName":"Subject",
+        "cellTemplate": "<semantic-link
+          uri=\"[[this]]\"
+          urlqueryparam-resiri=\"{{subject.value}}\"
+        >{{subject.value}}</semantic-link>"
+      },
+      {
+        "variableName": "g",
+        "displayName": "Graph"
+      }
+		]'
+
+	options="{
+			"resultsPerPage":10
+		}">
+</semantic-table>
+
+[[else]]
+
+  <div class="alert alert-warning">
+    You can only access this page via resource
+  </div>
+
+[[/if]]
+
+[[> :footer]]

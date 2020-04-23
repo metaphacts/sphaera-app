@@ -1,0 +1,454 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+</ol>
+
+  <h1>Manage Terms</h1>
+
+  <bs-tab-container id="term-edit-form" class="bs-left-vertical-tabs" default-active-key="[[#if (urlParam "tab" )]][[urlParam "tab"]][[else]]bookTypes[[/if]]">
+    <bs-row class="clearfix">
+      <bs-col sm="2" >
+        <bs-nav bs-style="tabs" stacked="true">
+          <bs-nav-item event-key="bookTypes">
+            Book Types
+          </bs-nav-item>
+          <bs-nav-item event-key="adaptionTypes">
+            Adaption Types
+          </bs-nav-item>
+          <bs-nav-item event-key="partContentTypes">
+            Part Content Types
+          </bs-nav-item>
+          <bs-nav-item event-key="languages">
+            Languages
+          </bs-nav-item>
+          [[#if (hasPermission "forms:ldp:*")]]
+            <bs-nav-item event-key="contexts">
+              Locator Contexts
+            </bs-nav-item>
+          [[/if]]
+          <bs-nav-item event-key="regionTypes">
+            Region Types
+          </bs-nav-item>
+          <bs-nav-item event-key="keywords">
+            Keywords
+          </bs-nav-item>
+       </bs-nav>
+      </bs-col>
+      <bs-col sm="10">
+        <bs-tab-content animation="true" class="content">
+
+          <bs-tab-pane event-key="bookTypes">
+
+            <semantic-table
+              query="SELECT ?type ?label (COUNT(?book) as ?num) WHERE {
+                ?type a ecrm:E55_Type ;
+  								rdfs:label|ecrm:P3_has_note ?label .
+                sphType:bookType skos:member ?type .
+
+                OPTIONAL {
+                    ?book ecrm:P2_has_type ?type .
+                }
+
+              } GROUP BY ?type ?label"
+
+            	column-configuration='[
+              	{
+            			"displayName" : "Book Type",
+                  "variableName" : "type",
+                  "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":viewBookType"]]\" urlqueryparam-booktypeiri=\"{{type.value}}\">{{label.value}}</semantic-link>"
+                },
+                {
+                  "displayName" : "Number of books",
+                  "variableName" : "num"
+                }
+                [[#if (hasPermission "forms:ldp:*")]]
+                  ,
+                	{
+              			"displayName" : "&nbsp;",
+                    "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":addBookType"]]\" urlqueryparam-resiri=\"{{type.value}}\">Edit</semantic-link>"
+                  }
+                [[/if]]
+              ]'
+
+              options='{
+                "showFilter":false,
+                "resultsPerPage": 100
+              }'
+            >
+            </semantic-table>
+
+            [[#if (hasPermission "forms:ldp:*")]]
+              <div sm="12" class="text-right">
+                <semantic-link iri="http://sphaera.mpiwg-berlin.mpg.de/resource/addBookTypeLabel" class="btn btn-primary btn-md">Add</semantic-link>
+              </div>
+            [[/if]]
+          </bs-tab-pane>
+
+          <bs-tab-pane event-key="partTypes">
+            <bs-row>
+              <bs-col sm="12">
+	              <semantic-table
+                  query="SELECT ?type ?label (COUNT(?book) as ?num) WHERE {
+                    ?type a ecrm:E55_Type ;
+                  		rdfs:label|ecrm:P3_has_note ?label .
+                    sphType:partType skos:member ?type .
+
+                    OPTIONAL {
+                        ?book ecrm:P2_has_type ?type .
+                    }
+                  } GROUP BY ?type ?label"
+
+									column-configuration='[
+                  	{
+											"displayName" : "Part Type",
+                      "variableName" : "type",
+                      "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":viewPartType"]]\" urlqueryparam-parttypeiri=\"{{type.value}}\">{{label.value}}</semantic-link>"
+                    },
+                    {
+                      "displayName" : "Number of parts",
+                      "variableName" : "num"
+                    }
+
+                    [[#if (hasPermission "forms:ldp:*")]]
+                      ,
+                    	{
+  											"displayName" : "&nbsp;",
+                        "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":addPartType"]]\" urlqueryparam-resiri=\"{{type.value}}\">Edit</semantic-link>"
+                      }
+                    [[/if]]
+                  ]'
+
+                  options="{
+                      "showFilter":false,
+                      "resultsPerPage": 100
+                    }"
+                >
+    	          </semantic-table>
+               </bs-col>
+            </bs-row>
+            [[#if (hasPermission "forms:ldp:*")]]
+            	<bs-row>
+              	<bs-col sm="12" class="text-right">
+               	 <semantic-link iri="http://sphaera.mpiwg-berlin.mpg.de/resource/addPartTypeLabel" class="btn btn-primary btn-md">Add</semantic-link>
+             	 </bs-col>
+            	</bs-row>
+            [[/if]]
+          </bs-tab-pane>
+
+          <bs-tab-pane event-key="adaptionTypes">
+            <bs-row>
+              <bs-col sm="12">
+	              <semantic-table
+                  query="SELECT ?type ?label (COUNT(?part) as ?num) WHERE {
+                    ?type a ecrm:E55_Type ;
+                  		rdfs:label|ecrm:P3_has_note ?label .
+                    sphType:adaptionType skos:member ?type .
+
+                    OPTIONAL {
+                        ?part a sphaera:Part_Adaption ;
+                          ecrm:P2_has_type ?type .
+                    }
+                  } GROUP BY ?type ?label"
+
+									column-configuration='[
+                  	{
+											"displayName" : "Adaption Type",
+                      "variableName" : "type",
+                      "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":viewAdaptionType"]]\" urlqueryparam-adaptiontypeiri=\"{{type.value}}\">{{label.value}}</semantic-link>"
+                    },
+                    {
+                      "displayName" : "Number of parts",
+                      "variableName" : "num"
+                    }
+                    [[#if (hasPermission "forms:ldp:*")]]
+                      ,
+                    	{
+  											"displayName" : "&nbsp;",
+                        "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":addAdaptionType"]]\" urlqueryparam-adaptiontypeiri=\"{{type.value}}\">Edit</semantic-link>"
+                      }
+                    [[/if]]
+                  ]'
+
+                  options='{
+                    "showFilter":false,
+                    "resultsPerPage": 100
+                  }'
+                >
+    	          </semantic-table>
+               </bs-col>
+              </bs-row>
+              [[#if (hasPermission "forms:ldp:*")]]
+              	<bs-row>
+                	<bs-col sm="12" class="text-right">
+                 	 <semantic-link iri="[[resolvePrefix ":addAdaptionTypeLabel"]]" class="btn btn-primary btn-md">Add</semantic-link>
+               	 </bs-col>
+              	</bs-row>
+              [[/if]]
+          </bs-tab-pane>
+
+          <bs-tab-pane event-key="partContentTypes">
+            <bs-row>
+              <bs-col sm="12">
+	              <semantic-table
+                  query="SELECT ?type ?label (COUNT(?part) as ?num) WHERE {
+                    ?type a ecrm:E55_Type ;
+                  		rdfs:label|ecrm:P3_has_note ?label .
+                    sphType:partContentType skos:member ?type .
+
+                    OPTIONAL {
+                      ?part ecrm:P2_has_type ?type .
+                    }
+                  } GROUP BY ?type ?label"
+
+									column-configuration='[
+                  	{
+											"displayName" : "Adaption Type",
+                      "variableName" : "type",
+                      "cellTemplate" : "<semantic-link
+                        iri=\"[[resolvePrefix ":viewPartContentType"]]\"
+                        urlqueryparam-partcontenttypeiri=\"{{type.value}}\">{{label.value}}
+                      </semantic-link>"
+                    },
+                    {
+                      "displayName" : "Number of Parts",
+                      "variableName" : "num"
+                    }
+                    [[#if (hasPermission "forms:ldp:*")]]
+                      ,
+                    	{
+  											"displayName" : "&nbsp;",
+                        "cellTemplate" : "<semantic-link
+                            iri=\"[[resolvePrefix ":addPartContentType"]]\"
+                            urlqueryparam-partcontenttypeiri=\"{{type.value}}\">Edit</semantic-link>"
+                      }
+                    [[/if]]
+                  ]'
+
+                  options='{
+                    "showFilter":false,
+                    "resultsPerPage": 100
+                  }'
+                >
+    	          </semantic-table>
+               </bs-col>
+              </bs-row>
+              [[#if (hasPermission "forms:ldp:*")]]
+              	<bs-row>
+                	<bs-col sm="12" class="text-right">
+                 	 <semantic-link iri="[[resolvePrefix ":addPartContentTypeLabel"]]" class="btn btn-primary btn-md">Add</semantic-link>
+               	 </bs-col>
+              	</bs-row>
+              [[/if]]
+          </bs-tab-pane>
+
+
+          <bs-tab-pane event-key="languages">
+          	<bs-row>
+              <bs-col sm="12">
+	              <semantic-table
+                  query="SELECT ?language ?label (COUNT(?book) as ?num) WHERE {
+                    ?language a ecrm:E56_Language ;
+                    	rdfs:label|ecrm:P3_has_note ?label .
+
+                    OPTIONAL {
+                        ?book ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P72_has_language ?language .
+                    }
+
+                  }
+                  GROUP BY ?language ?label
+                  ORDER BY ?label"
+
+									column-configuration='[
+                  	{
+											"variableName" : "language",
+                      "displayName" : "Language",
+                      "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":viewLanguage"]]\" urlqueryparam-languageiri=\"{{language.value}}\">{{label.value}}</semantic-link>"
+                    },
+                    {
+                      "displayName" : "Number of books",
+                      "variableName" : "num"
+                    }
+
+                    [[#if (hasPermission "forms:ldp:*")]]
+                      ,
+                      {
+  											"displayName" : "&nbsp;",
+                        "cellTemplate" : "<semantic-link iri=\"{{language.value}}\">Edit</semantic-link>"
+                      }
+                    [[/if]]
+                  ]'
+
+                  options='{
+                    "showFilter":false,
+                    "resultsPerPage": 100
+                  }'
+                >
+    	          </semantic-table>
+               </bs-col>
+              </bs-row>
+
+              [[#if (hasPermission "forms:ldp:*")]]
+              	<bs-row>
+                	<bs-col sm="12" class="text-right">
+                 	 <semantic-link iri="http://sphaera.mpiwg-berlin.mpg.de/resource/addLanguageLabel" class="btn btn-primary btn-md">Add</semantic-link>
+               	 </bs-col>
+              	</bs-row>
+              [[/if]]
+          </bs-tab-pane>
+
+          [[#if (hasPermission "forms:ldp:*")]]
+            <bs-tab-pane event-key="contexts">
+              <semantic-table
+                query="SELECT ?type ?label WHERE {
+                  ?type a ecrm:E55_Type ;
+                    rdfs:label|ecrm:P3_has_note ?label .
+                  sphType:locatorContexts skos:member ?type .
+                 }"
+
+                 column-configuration='[
+                  {
+                    "displayName" : "Locator Context",
+                    "variableName" : "type",
+                    "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":addLocatorContext"]]\" urlqueryparam-resiri=\"{{type.value}}\">{{label.value}}</semantic-link>"
+                  },
+                  {
+                    "displayName" : "&nbsp;",
+                    "cellTemplate" : "
+                        <semantic-link
+                            iri=\"[[resolvePrefix ":deleteResource"]]\"
+                            urlqueryparam-resiri=\"{{type.value}}\"
+                            urlqueryparam-back=\":manageTerms\"
+                            urlqueryparam-tab=\"contexts\"
+                            urlqueryparam-backtitle=\"Manage Terms\"
+                          >
+                            <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>
+                          </semantic-link>"
+                  }
+                  ]'
+                options='{
+                    "showFilter":false,
+                    "resultsPerPage": 100
+                  }'
+              >
+              </semantic-table>
+
+              [[#if (hasPermission "forms:ldp:*")]]
+                <div class="text-right">
+                  <semantic-link iri="http://sphaera.mpiwg-berlin.mpg.de/resource/addLocatorContextLabel" class="btn btn-primary btn-md">Add</semantic-link>
+                </div>
+              [[/if]]
+            </bs-tab-pane>
+          [[/if]]
+          <bs-tab-pane event-key="regionTypes">
+            <bs-row>
+              <bs-col sm="12">
+                <semantic-table
+                  query="SELECT ?type ?label (COUNT(?region) as ?num) WHERE {
+                    ?type a ecrm:E55_Type ;
+                      rdfs:label|ecrm:P3_has_note ?label .
+                    sphType:regionType skos:member ?type .
+
+                    OPTIONAL {
+                      ?region ecrm:P2_has_type ?type ;
+                        a crmDig:D35_Area .
+                    }
+                  } GROUP BY ?type ?label"
+
+                  column-configuration='[
+                    {
+                      "displayName" : "Region Type",
+                      "variableName" : "type",
+                      "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":viewRegionType"]]\" urlqueryparam-regiontypeiri=\"{{type.value}}\">{{label.value}}</semantic-link>"
+                    },
+                    {
+                      "displayName" : "Number of Regions",
+                      "variableName" : "num"
+                    }
+
+                    [[#if (hasPermission "forms:ldp:*")]]
+                      ,
+                      {
+                        "displayName" : "&nbsp;",
+                        "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":addRegionType"]]\" urlqueryparam-resiri=\"{{type.value}}\">Edit</semantic-link>"
+                      }
+                    [[/if]]
+                  ]'
+
+                  options='{
+                    "showFilter":false,
+                    "resultsPerPage": 100
+                  }'
+                >
+                </semantic-table>
+               </bs-col>
+              </bs-row>
+
+              [[#if (hasPermission "forms:ldp:*")]]
+                <bs-row>
+                  <bs-col sm="12" class="text-right">
+                   <semantic-link iri="http://sphaera.mpiwg-berlin.mpg.de/resource/addRegionTypeLabel" class="btn btn-primary btn-md">Add</semantic-link>
+                 </bs-col>
+                </bs-row>
+              [[/if]]
+          </bs-tab-pane>
+
+          <bs-tab-pane event-key="keywords">
+            <bs-row>
+              <bs-col sm="12">
+                <semantic-table
+                  query="SELECT ?type ?label (COUNT(?resource) as ?num) WHERE {
+                    ?type a ecrm:E55_Type ;
+                      rdfs:label|ecrm:P3_has_note ?label .
+                    sphType:keywords skos:member ?type .
+
+                    OPTIONAL {
+                      ?resource ecrm:P2_has_type ?type .
+                    }
+                  } GROUP BY ?type ?label
+                  ORDER BY ?label"
+
+                  column-configuration='[
+                    {
+                      "displayName" : "Keyword",
+                      "variableName" : "label",
+                      "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":viewKeyword"]]\" urlqueryparam-keywordiri=\"{{type.value}}\">{{label.value}}</semantic-link>"
+                    },
+                    {
+                      "displayName" : "Number of resources",
+                      "variableName" : "num"
+                    }
+
+                    [[#if (hasPermission "forms:ldp:*")]]
+                      ,
+                      {
+                        "displayName" : "&nbsp;",
+                        "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":addKeyword"]]\" urlqueryparam-resiri=\"{{type.value}}\">Edit</semantic-link>"
+                      }
+                    [[/if]]
+                  ]'
+
+                  options='{
+                    "showFilter":false,
+                    "resultsPerPage": 100
+                  }'
+                >
+                </semantic-table>
+               </bs-col>
+              </bs-row>
+
+              [[#if (hasPermission "forms:ldp:*")]]
+                <bs-row>
+                  <bs-col sm="12" class="text-right">
+                     <semantic-link iri="http://sphaera.mpiwg-berlin.mpg.de/resource/addKeyword" class="btn btn-primary btn-md">Add</semantic-link>
+                   </bs-col>
+                </bs-row>
+              [[/if]]
+          </bs-tab-pane>
+
+        </bs-tab-content>
+      </bs-col>
+    </bs-row>
+  </bs-tab-container>
+
+[[> :footer]]

@@ -1,0 +1,30 @@
+<semantic-table
+
+	query="
+		SELECT DISTINCT
+		  ?subject
+		  ?label
+		  (SAMPLE(?imageIIIFUrlBeforeSize) as ?imageIIIFUrlBeforeSize)
+			(COUNT(?imageIIIFUrlBeforeSize) as ?num_regions)
+		WHERE {
+		  ?subject a sphaera:Element ;
+		    ecrm:P3_has_note ?label .
+
+			[[> @partial-block]]
+
+			OPTIONAL {
+		  	?region ecrm:P138_represents ?subject ;
+		       crmDig:L49_is_primary_area_of ?imageIRI ;
+		       rs:boundingBox ?bbox .
+			:configIIIFPath ecrm:P3_has_note ?IIIFPath .
+		    BIND(STRAFTER(?bbox, 'xywh=') as ?boundingBox)
+				[[> :queryImageIdPattern]]
+		    BIND(CONCAT(?IIIFPath, ?imageID, '/', ?boundingBox) as ?imageIIIFUrlBeforeSize)
+
+		  }
+		} GROUP BY ?subject ?label
+			ORDER BY DESC(?num_regions) ?label"
+	tuple-template='[[> :templateElementsGrid]]'
+	number-of-displayed-rows="50"
+		>
+</semantic-table>

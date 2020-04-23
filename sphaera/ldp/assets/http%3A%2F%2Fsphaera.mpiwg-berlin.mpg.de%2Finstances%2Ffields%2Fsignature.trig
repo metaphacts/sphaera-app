@@ -1,0 +1,42 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/signature/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/signature> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      "t366";
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> "t367";
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The signature of the book";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Signature" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t367> a <http://spinrdf.org/sp#Query> .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t366> a <http://spinrdf.org/sp#Query> .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t367> <http://spinrdf.org/sp#text>
+      """SELECT ?value WHERE {
+  $subject efrbroo:R7_is_example_of ?manifestation .
+  ?signature a ecrm:E29_Design_or_Procedure ;
+      ecrm:P129_is_about ?manifestation ;
+      ecrm:P3_has_note ?value .
+}""" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t366> <http://spinrdf.org/sp#text>
+      """INSERT { 
+  ?signature a ecrm:E29_Design_or_Procedure ;
+      ecrm:P129_is_about ?manifestation ;
+      ecrm:P3_has_note $value .
+} WHERE {
+  BIND(URI(CONCAT(STR($subject), \"/signature\")) as ?signature)
+  BIND(URI(CONCAT(STR($subject), \"/manifestation\")) as ?manifestation)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/signature> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.822+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/signature> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/signature> a <http://www.w3.org/ns/ldp#Resource> .
+}

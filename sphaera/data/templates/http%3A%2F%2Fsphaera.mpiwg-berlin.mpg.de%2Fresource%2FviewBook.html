@@ -1,0 +1,1035 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+</ol>
+
+<semantic-query
+  query='SELECT ?book_title ?label WHERE
+    {
+      BIND(<[[urlParam "bookiri"]]> as ?book)
+      OPTIONAL {
+        ?book ecrm:P3_has_note ?label .
+      }
+      OPTIONAL {
+        ?book ecrm:P128_carries/ecrm:P102_has_title/ecrm:P3_has_note ?book_title .
+      }
+     }'
+  template="<h3>{{#each bindings}}{{#if book_title.value}}{{book_title.value}}{{else}}{{label.value}}{{/if}}{{/each}}</h3>">
+</semantic-query>
+
+<bs-tab-container default-active-key="[[#if (urlParam "tab" )]][[urlParam "tab"]][[else]]details[[/if]]">
+  <bs-row>
+    <bs-col sm="2" sm-push="10" class="tab-bar">
+      [[#if (hasPermission "forms:ldp:*")]]
+        <semantic-link iri="[[urlParam "bookiri"]]" class="btn btn-md btn-primary pull-right" style="margin-bottom:3px;">Edit</semantic-link>
+      [[else]]
+        [[> :templateGiveFeedbackButton ]]
+      [[/if]]
+    </bs-col>
+    <bs-col sm="10" sm-pull="2" class="tab-bar">
+      <bs-nav bs-style="tabs">
+
+        <bs-nav-item event-key="details">
+          Details
+        </bs-nav-item>
+
+        <bs-nav-item event-key="parts">
+            <semantic-query query='SELECT (COUNT(DISTINCT ?attribute_assignment) as ?num_parts) WHERE {
+                ?attribute_assignment ecrm:P140_assigned_attribute_to ?expression .
+                BIND(<[[urlParam "bookiri"]]/expression> as ?expression)
+              } LIMIT 1'
+              template='{{#each bindings}}Parts ({{num_parts.value}}){{/each}}'
+            ></semantic-query>
+        </bs-nav-item>
+
+        <bs-nav-item event-key="license">
+            <semantic-query query='SELECT (COUNT(?license) as ?num_license) WHERE {
+                BIND(<[[urlParam "bookiri"]]> as ?book)
+                ?license a ecrm:E30_Right ;
+                  ecrm:P129_is_about/^efrbroo:R7_is_example_of ?book
+              } LIMIT 1'
+              template='{{#each bindings}}License ({{num_license.value}}){{/each}}'
+            ></semantic-query>
+        </bs-nav-item>
+
+        <bs-nav-item event-key="meta">
+          <semantic-query query='SELECT (COUNT(?annotation) as ?num_annotations) WHERE {
+            ?annotation a oa:Annotation ;
+              oa:hasTarget ?book .
+              BIND(<[[urlParam "bookiri"]]> as ?book)
+            } LIMIT 1'
+            template='{{#each bindings}}Annotations ({{num_annotations.value}}){{/each}}'
+          ></semantic-query>
+        </bs-nav-item>
+
+        <bs-nav-item event-key="pdf">
+          PDF
+        </bs-nav-item>
+
+        <li role="presentation">
+          <semantic-query
+            query='SELECT ?page WHERE {
+
+                BIND(<[[urlParam "bookiri"]]> as ?book) .
+
+              ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page .
+            }' LIMIT 1
+            template='
+              <semantic-link
+                iri="[[resolvePrefix ":viewBookPages"]]"
+                urlqueryparam-bookiri="[[urlParam "bookiri"]]"
+                role="tabs"
+              >Pages</semantic-link>
+            '
+          >
+          </semantic-query>
+        </li>
+
+        <bs-nav-item event-key="pages" class="link">
+
+        </bs-nav-item>
+      </bs-nav>
+    </bs-col>
+    <div class="content" style="clear:both;">
+      <bs-tab-content animation="true">
+
+        <bs-tab-pane event-key="details">
+          <dl>
+            <dt>Summary</dt>
+            <dd class="lead">
+              <semantic-query
+                query='
+                  SELECT ?book WHERE {
+                    BIND(<[[urlParam "bookiri"]]> as ?book)
+                    {
+                      SELECT ?book (GROUP_CONCAT(?publisher; SEPARATOR=";") as ?publishers) WHERE {
+                        {
+                            SELECT ?book ?publisher WHERE {
+                              ?book ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?publisher .
+                            } ORDER BY ?publisher
+                          }
+                      } GROUP BY ?book
+                    }
+                    {
+                      SELECT ?book (GROUP_CONCAT(?printer; SEPARATOR=";") as ?printers) WHERE {
+                        {
+                            SELECT ?book ?printer WHERE {
+                              ?book efrbroo:R28i_was_produced_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?printer .
+                            } ORDER BY ?printer
+                        }
+                      } GROUP BY ?book
+                    }
+                    FILTER(?publishers = ?printers)
+                  }'
+                  template="<span>Published and printed </span>"
+                  no-result-template="<span>Published </span>"
+              >
+              </semantic-query>
+              <semantic-query
+                query='
+                  SELECT ?date_published ?year_published_from ?year_published_to ?years_equal  WHERE {
+                  	BIND(<[[urlParam "bookiri"]]/publication/event> as ?publication_event)
+                  	OPTIONAL {
+                    	# Date
+                    	?publication_event ecrm:P4_has_time-span ?date .
+                    	OPTIONAL {
+                      		?date ecrm:P3_has_note ?date_published
+                    	}
+                    	OPTIONAL {
+                      		?date ecrm:P82a_begin_of_the_beginning ?date_published_from .
+                          BIND(SUBSTR(STR(?date_published_from),0,4) as ?year_published_from)
+                    	}
+                    	OPTIONAL {
+                      		?date ecrm:P82b_end_of_the_end ?date_published_to .
+                          BIND(SUBSTR(STR(?date_published_to),0,4) as ?year_published_to)
+                    	}
+                      BIND(xsd:string(if(?year_published_from = ?year_published_to,"true", "")) as ?years_equal)
+                    }
+                } GROUP BY ?date_published ?year_published_from ?year_published_to ?years_equal'
+                template='<span> {{#each bindings}}
+                  {{#if date_published.value}}
+                    <a>{{date_published.value}}</a>
+                  {{else}}
+                    {{#if year_published_from}}
+                      {{#if years_equal.value}}
+                        in <a>{{year_published_from.value}}</a>
+                      {{else}}
+                        between <a>{{year_published_from.value}}</a> and <a>{{year_published_to.value}}</a>
+                      {{/if}}
+                    {{/if}}
+                  {{/if}}
+                {{/each}}</span>'
+              >
+              </semantic-query>
+
+              <semantic-query
+                query='
+                  SELECT ?publisher ?publisher_name WHERE {
+                    ?publication_event ecrm:PC01_is_domain_of ?carried_out_by .
+                    ?carried_out_by a ecrm:PC14_carried_out_by ;
+                    ecrm:PC02_has_range ?publisher .
+                    ?publisher ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?publisher_label .
+
+                    [[> :queryFormatName input="?publisher_label" output="?publisher_name"]]
+                    BIND(<[[urlParam "bookiri"]]/publication/event> as ?publication_event)
+                  }'
+                template='<span> by {{#each bindings}}
+                  {{#if @first}}
+                  {{else}}
+                    {{#if @last}}
+                    and
+                    {{else}}
+                    ,
+                    {{/if}}
+                  {{/if}}
+                  <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="{{publisher.value}}">{{publisher_name.value}}</semantic-link>{{/each}}</span>'
+                >
+              </semantic-query>
+
+              <semantic-query
+                query='
+                  SELECT ?place_published ?place_published_name WHERE {
+                    BIND(<[[urlParam "bookiri"]]/publication/event> as ?publication_event)
+                  	?publication_event ecrm:P7_took_place_at ?place_published .
+                    ?place_published ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?place_published_name .
+                  }'
+                template='<span>{{#each bindings}} in <semantic-link
+                  iri="[[resolvePrefix ":viewPlace"]]"
+                  urlqueryparam-placeiri="{{place_published.value}}"
+                  >{{place_published_name.value}}</semantic-link>{{/each}}.</span>'
+                no-result-template="<span>.</span>"
+                >
+              </semantic-query>
+
+              <semantic-query
+                query='SELECT ?place_printed ?place_printed_name WHERE {
+                    ?manifestation_event ecrm:P7_took_place_at ?place_printed .
+                    ?place_printed ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?place_printed_name .
+                    BIND(<[[urlParam "bookiri"]]/manifestation/event> as ?manifestation_event)
+                  }'
+                template='<span>{{#each bindings}}
+                  Printed
+                  {{#if place_printed.value}}
+                    in <semantic-link iri="[[resolvePrefix ":viewPlace"]]" urlqueryparam-placeiri="{{place_printed.value}}">{{place_printed_name.value}}</semantic-link>
+                  {{/if}}
+                {{/each}}.</span>'
+                >
+              </semantic-query>
+
+              <semantic-query
+                query='SELECT ?printer ?printer_name ?place_printed WHERE {
+                  BIND(<[[urlParam "bookiri"]]> as ?book)
+                  BIND(<[[urlParam "bookiri"]]/manifestation/event> as ?manifestation_event)
+
+                  {
+                    SELECT ?book (GROUP_CONCAT(?publisher; SEPARATOR=";") as ?publishers) WHERE {
+                      {
+                          SELECT ?book ?publisher WHERE {
+                            ?book ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?publisher .
+                          } ORDER BY ?publisher
+                        }
+                    } GROUP BY ?book
+                  }
+                  {
+                    SELECT ?book (GROUP_CONCAT(?printer; SEPARATOR=";") as ?printers) WHERE {
+                      {
+                          SELECT ?book ?printer WHERE {
+                            ?book efrbroo:R28i_was_produced_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?printer .
+                          } ORDER BY ?printer
+                      }
+                    } GROUP BY ?book
+                  }
+                  FILTER(?publishers != ?printers)
+
+                	?book efrbroo:R28i_was_produced_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?printer .
+                  ?printer ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?printer_label .
+                  OPTIONAL {
+                    ?manifestation_event ecrm:P7_took_place_at ?place_printed .
+                  }
+                  [[> :queryFormatName input="?printer_label" output="?printer_name"]]
+                }'
+                template='<span>{{#each bindings}}
+                  {{#if @first}}
+                    {{#if place_printed.value}}
+                    {{else}}
+                      Printed
+                    {{/if}}
+                  {{/if}}
+                {{/each}}
+                by {{#each bindings}}
+                  {{#if @first}}
+                  {{else}}
+                    {{#if @last}}
+                    and
+                    {{else}}
+                    ,
+                    {{/if}}
+                  {{/if}}
+                    <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="{{printer.value}}">{{printer_name.value}}</semantic-link>{{/each}}.</span>'
+                >
+              </semantic-query>
+
+              <semantic-query
+                query='
+                  SELECT ?author ?author_name WHERE {
+                  	?expression_creation ecrm:PC01_is_domain_of ?carried_out_by .
+                    ?carried_out_by a ecrm:PC14_carried_out_by ;
+                        ecrm:P14.1_in_the_role_of sphRole:author ;
+                      	ecrm:PC02_has_range ?author .
+                    ?author ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?author_label .
+                  [[> :queryFormatName input="?author_label" output="?author_name"]]
+                	BIND(<[[urlParam "bookiri"]]/expression/event> as ?expression_creation)
+                }'
+                template='<span>{{#each bindings}}
+                  {{#if @first}}
+                    {{#if @last}}
+                      The credited author is
+                    {{else}}
+                      The credited authors are
+                    {{/if}}
+                  {{/if}}
+                  {{#if @first}}
+                  {{else}}
+                    {{#if @last}}
+                    and
+                    {{else}}
+                    ,
+                    {{/if}}
+                  {{/if}}
+                  <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="{{author.value}}">{{author_name.value}}</semantic-link>{{/each}}.</span>'
+                >
+              </semantic-query>
+
+              <semantic-query
+                query='
+                  SELECT ?translator ?translator_name WHERE {
+                  	?expression_creation ecrm:PC01_is_domain_of ?carried_out_by .
+                    ?carried_out_by a ecrm:PC14_carried_out_by ;
+                        ecrm:P14.1_in_the_role_of sphRole:translator ;
+                      	ecrm:PC02_has_range ?translator .
+                    ?translator ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?translator_label .
+                  [[> :queryFormatName input="?translator_label" output="?translator_name"]]
+                	BIND(<[[urlParam "bookiri"]]/expression/event> as ?expression_creation)
+                }'
+                template='<span> Translated by
+                  {{#each bindings}}
+                  {{#if @first}}
+                  {{else}}
+                    {{#if @last}}
+                    and
+                    {{else}}
+                    ,
+                    {{/if}}
+                  {{/if}}
+                  <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="{{translator.value}}">{{translator_name.value}}</semantic-link>{{/each}}.</span>'
+                >
+              </semantic-query>
+            </dd>
+
+            [[> :templateCitation iri="bookiri"]]
+
+            <dt>
+              Locators
+            </dt>
+            <dd>
+              <semantic-query
+								query='SELECT ?source_url ?source_text ?mpiwg_source {
+                    ?book efrbroo:R7_is_example_of/^ecrm:P70_documents ?source .
+                    ?source ecrm:P2_has_type sphType:source .
+
+                    OPTIONAL {
+                      ?source ecrm:P48_has_preferred_identifier ?source_url .
+                      BIND(IF(CONTAINS(STR(?source_url),"mpiwg-berlin.mpg.de"),"True","") as ?mpiwg_source)
+                    }
+
+                    OPTIONAL {
+                      ?source ecrm:P1_is_identified_by ?source_text .
+                    }
+
+                    BIND(<[[urlParam "bookiri"]]> as ?book)
+                  }'
+								template='<span>{{#each bindings}}
+                  {{#if mpiwg_source.value}}
+                    Find this book in the <a href="{{source_url.value}}" target="_blank"><img src="https://www.mpiwg-berlin.mpg.de/themes/custom/mpiwg_theme/logo.png" width="20px"> MPIWG Digital Collection</a>.
+                  {{else}}
+                    {{#if source_url.value}}We retrieved the PDF from <a href="{{{source_url.value}}}" target="_blank">here</a>.{{/if}}
+                    {{#if source_text.value}}We retrieved the PDF from {{source_text.value}}.{{/if}}
+                  {{/if}}
+                {{/each}}</span>'
+							>
+              </semantic-query>
+
+            <semantic-query
+								query='SELECT ?source_url ?source_context ?source_text {
+                  {
+                    ?book efrbroo:R7_is_example_of/^ecrm:P70_documents ?source .
+                    ?source ecrm:P48_has_preferred_identifier ?source_url ;
+                            ecrm:P2_has_type/ecrm:P3_has_note ?source_context .
+                  } UNION {
+                      ?book efrbroo:R7_is_example_of/^ecrm:P70_documents ?source .
+                      ?source ecrm:P1_is_identified_by ?source_text ;
+                              ecrm:P2_has_type/ecrm:P3_has_note ?source_context .
+                  }
+                  BIND(<[[urlParam "bookiri"]]> as ?book)
+                  FILTER( ! REGEX(?source_context, "Source|Drupal", "i" ))
+                }'
+								template='<span>
+                  {{#if bindings}}
+										This publication also appears in the catalogues of
+                    {{#each bindings}}
+                      {{#if @last}}
+                        {{#if @first}}
+                        {{else}}
+                          and
+                        {{/if}}
+                      {{else}}
+                        {{#if @first}}
+                        {{else}},{{/if}}
+                      {{/if}}
+                      {{#if source_url.value}}
+												<a href="{{{source_url.value}}}" target="_blank">{{source_context.value}}</a>
+                      {{else}}
+												<a>{{source_context.value}}</a> ({{source_text.value}})
+                      {{/if}}
+                    {{/each}}.
+                  {{/if}}
+                </span>'
+							>
+              </semantic-query>
+            </dd>
+          </dl>
+          <bs-row>
+            <bs-col sm=12 md=6>
+
+        			  [[#if (hasPermission "forms:ldp:*")]]
+                <semantic-query
+                  query='SELECT ?custom_identifier WHERE {
+                    ?book ecrm:P1_is_identified_by ?identifier .
+              			?identifier ecrm:P2_has_type sphaera:customIdentifier ;
+              				ecrm:P3_has_note ?custom_identifier .
+                    BIND(<[[urlParam "bookiri"]]> as ?book) .
+                  }'
+                  template='<dl><dt>Custom Identifier</dt>{{#each bindings}}<dd>{{custom_identifier.value}}</dd>{{/each}}</dl>'>
+                </semantic-query>
+                [[/if]]
+
+                [[> :templateDOI iri="bookiri"]]
+
+                <semantic-query
+                  query='SELECT ?fingerprint WHERE {
+                    BIND(<[[urlParam "bookiri"]]> as ?book) .
+                    ?book ecrm:P1_is_identified_by ?identifier .
+                    ?identifier ecrm:P2_has_type sphaera:fingerprint ;
+                      ecrm:P106_is_composed_of ?fp1 ;
+                      ecrm:P106_is_composed_of ?fp2 ;
+                      ecrm:P106_is_composed_of ?fp3 ;
+                      ecrm:P106_is_composed_of ?fp4 ;
+                      ecrm:P106_is_composed_of ?fp5 ;
+                      ecrm:P106_is_composed_of ?fp6 ;
+                      ecrm:P106_is_composed_of ?fp7 .
+                    ?fp1 ecrm:P1_is_identified_by "1" ;
+                      ecrm:P3_has_note ?fp1_value .
+                    ?fp2 ecrm:P1_is_identified_by "2" ;
+                      ecrm:P3_has_note ?fp2_value .
+                    ?fp3 ecrm:P1_is_identified_by "3" ;
+                      ecrm:P3_has_note ?fp3_value .
+                    ?fp4 ecrm:P1_is_identified_by "4" ;
+                      ecrm:P3_has_note ?fp4_value .
+                    ?fp5 ecrm:P1_is_identified_by "5" ;
+                      ecrm:P3_has_note ?fp5_value .
+                    ?fp6 ecrm:P1_is_identified_by "6" ;
+                      ecrm:P3_has_note ?fp6_value .
+                    ?fp7 ecrm:P1_is_identified_by "7" ;
+                      ecrm:P3_has_note ?fp7_value .
+                    BIND(CONCAT(?fp1_value, " ", ?fp2_value, " ", ?fp3_value, " ", ?fp4_value, " ", ?fp5_value, " ", ?fp6_value, " ", ?fp7_value) as ?fingerprint)
+                  }'
+                  template='<dl><dt>Fingerprint</dt>{{#each bindings}}<dd>{{fingerprint.value}}</dd>{{/each}}</dl>'>
+                </semantic-query>
+
+                <semantic-query
+                  query='SELECT ?short_title WHERE {
+                    ?book ecrm:P3_has_note ?short_title .
+                    BIND(<[[urlParam "bookiri"]]> as ?book) .
+                  }'
+                  template='<dl><dt>Short Title</dt>{{#each bindings}}<dd>{{short_title.value}}</dd>{{/each}}</dl>'>
+                </semantic-query>
+
+                <semantic-query
+                  query='SELECT ?book_type ?book_type_label WHERE {
+                    ?book ecrm:P2_has_type ?book_type .
+                    sphType:bookType skos:member ?book_type .
+                    ?book_type ecrm:P3_has_note ?book_type_label .
+                    BIND(<[[urlParam "bookiri"]]> as ?book) .
+                  }'
+                  template='<dl><dt>Book Type</dt>
+                  {{#each bindings}}
+                    <dd>
+                      <semantic-link
+                        iri="[[resolvePrefix ":viewBookType"]]"
+                        urlqueryparam-booktypeiri="{{book_type.value}}">
+                        {{book_type_label.value}}
+                      </semantic-link>
+                    </dd>
+                  {{/each}}</dl>'>
+                </semantic-query>
+
+                <semantic-query
+                  query='SELECT ?book_format ?book_format_label WHERE {
+                    BIND(<[[urlParam "bookiri"]]> as ?book) .
+                    ?book ecrm:P43_has_dimension ?book_format .
+                    ?book_format ecrm:P3_has_note ?book_format_label .
+                  }'
+                  template='<dl><dt>Book Format</dt>
+                  {{#each bindings}}
+                    <dd>
+                      <semantic-link
+                        iri="[[resolvePrefix ":viewBookFormat"]]"
+                        urlqueryparam-bookformatiri="{{book_format.value}}">
+                        {{book_format_label.value}}
+                      </semantic-link>
+                    </dd>
+                  {{/each}}</dl>'>
+                </semantic-query>
+
+                <semantic-query
+                  query='SELECT ?book_material ?book_material_label WHERE {
+                    BIND(<[[urlParam "bookiri"]]> as ?book) .
+                    ?book ecrm:P45_consists_of ?book_material .
+                    ?book_material ecrm:P3_has_note ?book_material_label .
+                  }'
+                  template='<dl><dt>Book Material</dt>
+                  {{#each bindings}}
+                    <dd>
+                      <semantic-link
+                        iri="[[resolvePrefix ":viewBookMaterial"]]"
+                        urlqueryparam-bookmaterialiri="{{book_material.value}}">
+                        {{book_material_label.value}}
+                      </semantic-link>
+                    </dd>
+                  {{/each}}</dl>'>
+                </semantic-query>
+
+                <semantic-query
+                  query='SELECT ?language_label ?language  WHERE {
+                    ?book ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P72_has_language ?language .
+                    ?language ecrm:P3_has_note ?language_label .
+                    BIND(<[[urlParam "bookiri"]]> as ?book) .
+                  }'
+                  template='<dl><dt>Language</dt>
+                  {{#each bindings}}
+                    <dd>
+                      <semantic-link
+                        iri="[[resolvePrefix ":viewLanguage"]]"
+                        urlqueryparam-languageiri="{{language.value}}">
+                        {{language_label.value}}
+                      </semantic-link>
+                    </dd>
+                  {{/each}}</dl>'>
+                  </semantic-query>
+
+                  <semantic-query
+                    query='SELECT ?signature_label  WHERE {
+                      BIND(<[[urlParam "bookiri"]]> as ?book) .
+                      ?book efrbroo:R7_is_example_of ?manifestation .
+                      ?signature a ecrm:E29_Design_or_Procedure ;
+                        ecrm:P129_is_about ?manifestation ;
+                        ecrm:P3_has_note ?signature_label .
+                    }'
+                    template='<dl><dt>Signature</dt>
+                    {{#each bindings}}
+                      <dd>
+                        {{signature_label.value}}
+                      </dd>
+                    {{/each}}</dl>'>
+                  </semantic-query>
+
+                [[> :templateLastUpdated bookiri=true]]
+
+
+              </dl>
+            </bs-col>
+            <bs-col sm=12 md=6>
+
+              <dl>
+
+                <semantic-query
+                  query='SELECT ?author ?author_name WHERE {
+                    ?book ecrm:P128_carries/ecrm:P165_incorporates/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+                      ?carried_out_by a ecrm:PC14_carried_out_by ;
+                        ecrm:P14.1_in_the_role_of sphRole:author ;
+                        ecrm:PC02_has_range ?author .
+                      ?author ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?author_label .
+
+                    [[> :queryFormatName input="?author_label" output="?author_name"]]
+                    BIND(<[[urlParam "bookiri"]]> as ?book) .
+                  } ORDER BY ?author_name'
+                  template='<dl><dt>
+                    {{#each bindings}}
+                      {{#if @first}}
+                        {{#if @last}}
+                          Author
+                        {{else}}
+                          Authors{{/if}}
+                        {{/if}}
+                      {{/each}}
+                    </dt>
+                    {{#each bindings}}
+                      <dd>
+                        <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="{{author.value}}">{{author_name.value}}</semantic-link>
+                      </dd>
+                    {{/each}}</dl>'>
+                </semantic-query>
+
+                <semantic-query
+                  query='SELECT ?translator ?translator_name WHERE {
+                    ?book ecrm:P128_carries/ecrm:P165_incorporates/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+                      ?carried_out_by a ecrm:PC14_carried_out_by ;
+                        ecrm:P14.1_in_the_role_of sphRole:translator ;
+                        ecrm:PC02_has_range ?translator .
+                      ?translator ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?translator_label .
+
+                    [[> :queryFormatName input="?translator_label" output="?translator_name"]]
+                    BIND(<[[urlParam "bookiri"]]> as ?book) .
+                  } ORDER BY ?translator_name'
+                  template='<dl><dt>
+                    {{#each bindings}}
+                      {{#if @first}}
+                        {{#if @last}}
+                          Translator
+                        {{else}}
+                          Translators{{/if}}
+                        {{/if}}
+                      {{/each}}
+                    </dt>
+                    {{#each bindings}}
+                      <dd>
+                        <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="{{translator.value}}">{{translator_name.value}}</semantic-link>
+                      </dd>
+                    {{/each}}</dl>'>
+                </semantic-query>
+
+                <semantic-query
+                  query='SELECT DISTINCT ?part_author ?part_author_name WHERE {
+
+                    [[> :queryPartsForBook]]
+
+                    ?original_part efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?part_author .
+                    ?part_author ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?part_author_label .
+
+                    [[> :queryFormatName input="?part_author_label" output="?part_author_name"]]
+                    BIND(<[[urlParam "bookiri"]]> as ?book) .
+
+                  } ORDER BY ?part_author_name'
+                  template='<dl><dt>
+                    {{#each bindings}}
+                      {{#if @first}}
+                        {{#if @last}}
+                          Original Part Author
+                        {{else}}
+                          Original Part Authors{{/if}}
+                        {{/if}}
+                      {{/each}}
+                    </dt>
+                    {{#each bindings}}
+                      <dd>
+                        <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="{{part_author.value}}">{{part_author_name.value}}</semantic-link>
+                      </dd>
+                    {{/each}}</dl>'>
+                >
+                </semantic-query>
+
+                <semantic-query
+                  query='SELECT DISTINCT ?part_annotator ?part_annotator_name WHERE {
+
+                    [[> :queryPartsForBook]]
+
+                    ?assigned_part efrbroo:R15i_is_fragment_of?/ecrm:P2_has_type sphType:annotatedPart ;
+                      efrbroo:R15i_is_fragment_of?/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?part_annotator .
+
+                    ?part_annotator ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?part_annotator_label .
+
+                    [[> :queryFormatName input="?part_annotator_label" output="?part_annotator_name"]]
+                    BIND(<[[urlParam "bookiri"]]> as ?book) .
+                  } ORDER BY ?part_annotator_name'
+                  template='<dl><dt>
+                    {{#each bindings}}
+                      {{#if @first}}
+                        {{#if @last}}
+                          Part Annotator
+                        {{else}}
+                          Part Annotators{{/if}}
+                        {{/if}}
+                      {{/each}}
+                    </dt>
+                    {{#each bindings}}
+                      <dd>
+                        <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="{{part_annotator.value}}">{{part_annotator_name.value}}</semantic-link>
+                      </dd>
+                    {{/each}}</dl>'>
+                >
+                </semantic-query>
+
+                <semantic-query
+                      query='SELECT DISTINCT ?part_creator ?part_creator_name WHERE {
+
+                        [[> :queryPartsForBook]]
+
+                        ?assigned_part efrbroo:R15i_is_fragment_of?/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?part_creator .
+
+                        ?part_creator ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?part_creator_label .
+
+                        [[> :queryFormatName input="?part_creator_label" output="?part_creator_name"]]
+                        BIND(<[[urlParam "bookiri"]]> as ?book) .
+                      } ORDER BY ?part_creator_name'
+                      template='<dl><dt>
+                        {{#each bindings}}
+                          {{#if @first}}
+                            {{#if @last}}
+                              Part Creator
+                            {{else}}
+                              Part Creators{{/if}}
+                            {{/if}}
+                          {{/each}}
+                        </dt>
+                        {{#each bindings}}
+                          <dd>
+                            <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="{{part_creator.value}}">{{part_creator_name.value}}</semantic-link>
+                          </dd>
+                        {{/each}}</dl>'>
+                    >
+              </semantic-query>
+
+                <semantic-query
+                  query='SELECT ?publisher ?publisher_name WHERE {
+                    ?book ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of ?carried_out_by .
+                      ?carried_out_by a ecrm:PC14_carried_out_by ;
+                        ecrm:PC02_has_range ?publisher .
+                      ?publisher ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?publisher_label .
+                    [[> :queryFormatName input="?publisher_label" output="?publisher_name"]]
+                    BIND(<[[urlParam "bookiri"]]> as ?book) .
+                  } ORDER BY ?publisher_name'
+                  template='<dl><dt>
+                    {{#each bindings}}
+                      {{#if @first}}
+                        {{#if @last}}
+                          Publisher
+                        {{else}}
+                          Publishers{{/if}}
+                        {{/if}}
+                      {{/each}}
+                    </dt>
+                    {{#each bindings}}
+                      <dd>
+                        <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="{{publisher.value}}">{{publisher_name.value}}</semantic-link>
+                      </dd>
+                    {{/each}}</dl>'>
+               </semantic-query>
+
+                <semantic-query
+                  query='SELECT ?printer ?printer_name WHERE {
+                    ?book efrbroo:R7_is_example_of/efrbroo:R26i_was_produced_by/ecrm:PC01_is_domain_of ?carried_out_by .
+                      ?carried_out_by a ecrm:PC14_carried_out_by ;
+                        ecrm:PC02_has_range ?printer .
+                      ?printer ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?printer_label .
+                    [[> :queryFormatName input="?printer_label" output="?printer_name"]]
+                    BIND(<[[urlParam "bookiri"]]> as ?book) .
+                  } ORDER BY ?printer_name'
+                  template='<dl><dt>
+                    {{#each bindings}}
+                      {{#if @first}}
+                        {{#if @last}}
+                          Printer
+                        {{else}}
+                          Printers{{/if}}
+                        {{/if}}
+                      {{/each}}
+                    </dt>
+                    {{#each bindings}}
+                      <dd>
+                        <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="{{printer.value}}">{{printer_name.value}}</semantic-link>
+                      </dd>
+                    {{/each}}</dl>'>
+                </semantic-query>
+
+
+                <semantic-query
+                  query='SELECT ?date_published WHERE {
+                    ?book ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:P4_has_time-span/ecrm:P3_has_note ?date_published
+                    BIND(<[[urlParam "bookiri"]]> as ?book) .
+                  }'
+                  template='<dl><dt>Date published</dt>{{#each bindings}}<dd>{{date_published.value}}</dd>{{/each}}</dl>'>
+                </semantic-query>
+              </dl>
+
+            </bs-col>
+          </bs-row>
+
+          [[> :identifier iri="bookiri"]]
+
+        </bs-tab-pane>
+
+        <bs-tab-pane event-key="parts">
+          <semantic-query
+            query='[[> :queryPartsForBookEdit bookiri="bookiri"]]'
+            template='
+              <ol class="panel-numbering">
+                {{#each bindings}}
+                  <li>
+                  <div class="panel">
+                    <div class="panel-body">
+                      {{#if assigned_title.value}}
+                        {{#if is_adaption.value}}
+
+                          {{#if assigned_part_fragment_of.value}}
+                            <h3><semantic-link iri="[[resolvePrefix ":viewAdaption"]]" urlqueryparam-adaptioniri="{{assigned_part_fragment_of.value}}">{{assigned_title.value}}</semantic-link></h3>
+                            <dl>
+                              <dt>Part Title</dt>
+                              <dd>{{short_title.value}}</dd>
+                          {{else}}
+                            <h3><semantic-link iri="[[resolvePrefix ":viewAdaption"]]" urlqueryparam-adaptioniri="{{assigned_part.value}}">{{assigned_title.value}}</semantic-link></h3>
+                            <dl>
+                              <dt>Adaption Title</dt>
+                              <dd>{{short_title.value}}</dd>
+                          {{/if}}
+
+                        {{else}}
+
+                          {{#if assigned_part_fragment_of.value}}
+                            <h3><semantic-link iri="[[resolvePrefix ":viewPart"]]" urlqueryparam-partiri="{{assigned_part_fragment_of.value}}">{{assigned_title.value}}</semantic-link></h3>
+                            <dl>
+                              <dt>Part Title</dt>
+                              <dd>{{short_title.value}}</dd>
+                          {{else}}
+                            <h3><semantic-link iri="[[resolvePrefix ":viewPart"]]" urlqueryparam-partiri="{{assigned_part.value}}">{{assigned_title.value}}</semantic-link></h3>
+                            <dl>
+                              <dt>Part Title</dt>
+                              <dd>{{short_title.value}}</dd>
+                          {{/if}}
+                        {{/if}}
+                      {{else}}
+                        {{#if is_adaption.value}}
+                          <h3><semantic-link iri="[[resolvePrefix ":viewAdaption"]]" urlqueryparam-adaptioniri="{{assigned_part.value}}">{{short_title.value}}</semantic-link></h3>
+                        {{else}}
+                          <h3><semantic-link iri="[[resolvePrefix ":viewPart"]]" urlqueryparam-partiri="{{assigned_part.value}}">{{short_title.value}}</semantic-link></h3>
+                        {{/if}}
+                        <dl>
+                      {{/if}}
+                        <dt>
+                          Part Type
+                        </dt>
+                        <dd>
+                          {{part_types.value}}
+                          {{#if is_adaption.value}}
+                            {{#if assigned_part_authors.value}}
+                            by {{assigned_part_authors.value}}
+                            {{/if}}
+                          {{/if}}
+                        </dd>
+                        <dt>
+                          {{#if is_adaption.value}}
+                            Original Author(s)
+                          {{else}}
+                            Author(s)
+                          {{/if}}
+                        </dt>
+                        <dd>
+                          {{authors.value}}
+                        </dd>
+                        {{#if is_adaption.value}}
+
+                          {{#if ancestor_adaption_labels.value}}
+                            <dt>
+                              Based on
+                            </dt>
+                            <dd>
+                              {{{ancestor_adaption_labels.value}}}
+                            </dd>
+                          {{/if}}
+
+                        {{/if}}
+
+                        {{#if languages.value}}
+                          <dt>
+                            Language
+                          </dt>
+                          <dd>
+                            {{languages.value}}
+                          </dd>
+                        {{/if}}
+
+                        {{#if part_annotated.value}}
+                          <dt>
+                            Author of Annotations
+                          </dt>
+                          <dd>
+                            {{annotation_authors.value}}
+                          </dd>
+                        {{/if}}
+
+                        {{#if part_translation.value}}
+                          <dt>
+                            Translator(s)
+                          </dt>
+                          <dd>
+                            {{translators.value}}
+                          </dd>
+                          <dt>
+                            Translated into
+                          </dt>
+                          <dd>
+                            {{translation_language.value}}
+                          </dd>
+                        {{/if}}
+                        <dt>
+                          Pages
+                        </dt>
+                        <dd>
+                          {{#if page_from_page.value}}
+                            <semantic-link
+                              iri="[[resolvePrefix ":viewPage"]]"
+                              urlqueryparam-pageiri="{{page_from_page.value}}"
+                            >{{page_from.value}}</semantic-link>
+                          {{else}}
+                            {{page_from.value}}
+                          {{/if}}
+                          {{#if page_to_page.value}}
+                            &ndash;
+                            <semantic-link
+                              iri="[[resolvePrefix ":viewPage"]]"
+                              urlqueryparam-pageiri="{{page_to_page.value}}"
+                            >{{page_to.value}}</semantic-link>
+                          {{else}}
+                            &ndash;{{page_to.value}}
+                          {{/if}}
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </li>
+              {{/each}}
+            </ol>'
+           no-result-template='<p>No parts have been specified.</p>'
+          >
+         </semantic-query>
+
+        </bs-tab-pane>
+
+        <bs-tab-pane event-key="license">
+
+          <semantic-query
+            query='SELECT ?license ?type ?note ?page WHERE {
+              BIND(<[[urlParam "bookiri"]]> as ?book)
+              ?license a ecrm:E30_Right ;
+                ecrm:P129_is_about/^efrbroo:R7_is_example_of ?book ;
+                ecrm:P2_has_type/ecrm:P3_has_note ?type .
+              OPTIONAL {
+                ?license sphaera:pageFrom ?page .
+              }
+              OPTIONAL {
+                ?license ecrm:P3_has_note ?note
+              }
+            }'
+
+            template='<dl>
+              {{#each bindings}}
+                <dt>
+                  License Type
+                </dt>
+                <dd>
+                  {{type.value}}
+                </dd>
+                {{#if note.value}}
+                  <dt>
+                    Note
+                  </dt>
+                  <dd>
+                    {{note.value}}
+                  </dd>
+                {{/if}}
+                {{#if page.value}}
+                  <dt>Page</dt>
+                  <dd>
+                    {{page.value}}
+                  </dd>
+                {{/if}}
+            {{/each}}
+          </dl>'
+
+          no-result-template='<p>No license or copyright information specified</p>'
+
+          >
+          </semantic-query>
+        </bs-tab-pane>
+        <bs-tab-pane event-key="meta">
+
+          <semantic-query
+            query='SELECT (CONCAT(STR(DAY(?date)),
+             ".",
+             STR(MONTH(?date)),
+             ".",
+            STR(YEAR(?date))) as ?displayDate)
+            	?body
+              ?body_html
+              (GROUP_CONCAT(?context; SEPARATOR=", ") as ?context)
+            WHERE {
+              ?annotation a oa:Annotation ;
+            	oa:hasTarget ?book ;
+             	oa:hasBody/cnt:chars ?body .
+              ?container <http://www.w3.org/ns/prov#generatedAtTime> ?date .
+
+              OPTIONAL {
+                ?annotation ecrm:P3_has_note ?context .
+              }
+              BIND(<[[urlParam "bookiri"]]> as ?book)
+              BIND(URI(CONCAT(STR(?annotation), "/container")) as ?container)
+              BIND(REPLACE(?body,"\n","<br>") as ?body_html)
+            }
+            GROUP BY ?date ?body ?body_html
+            ORDER BY ?date'
+
+            template='<dl>
+              {{#each bindings}}
+                <dt>
+                  {{displayDate.value}}
+                </dt>
+                <dd>
+                  {{{body_html.value}}}
+                  {{#if context.value}}
+                    <p><small>{{context.value}}</small></p>
+                  {{/if}}
+                </dd>
+              {{/each}}
+            </dl>'
+
+            no-result-template='<p>No annotations. [[#if (hasPermission "forms:ldp:*")]]<semantic-link iri="[[resolvePrefix ":createAnnotation"]]" urlqueryparam-resourceiri="[[urlParam "bookiri"]]">Add Annotation</semantic-link>[[/if]]</p>'
+
+          >
+          </semantic-query>
+
+        </bs-tab-pane>
+
+        <bs-tab-pane event-key="pdf">
+
+            <semantic-query
+                query='SELECT ?url WHERE { ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P48_has_preferred_identifier ?url .
+          				BIND(<[[urlParam "bookiri"]]> as ?book)}'
+                template='<div>{{#each bindings}}{{#if url.value}}<p><a href="{{url.value}}" target="_blank">Download PDF</a></p>{{/if}}{{/each}}</div>'
+                >
+            </semantic-query>
+
+          <semantic-query
+              query='SELECT ?url WHERE { ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P48_has_preferred_identifier ?url .
+        				BIND(<[[urlParam "bookiri"]]> as ?book)}'
+              template='<div>{{#each bindings}}{{#if url.value}}<iframe width="100%" height="800" src="http://content.mpiwg-berlin.mpg.de/pdfViewer/pdfjs/web/viewer.html?file={{url.value}}"></iframe>{{else}}<p>No PDF available</p>{{/if}}{{/each}}</div>'
+              >
+          </semantic-query>
+        </bs-tab-pane>
+
+      </bs-tab-content>
+    </div>
+  </bs-row>
+</bs-tab-container>
+
+[[> :footer ]]

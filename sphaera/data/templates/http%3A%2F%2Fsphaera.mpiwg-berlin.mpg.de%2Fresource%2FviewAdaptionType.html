@@ -1,0 +1,50 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":manageTerms") label="Manage Terms" tab="adaptionTypes"]]
+</ol>
+
+<semantic-query
+  query='SELECT ?type_name WHERE
+    {
+      ?type ecrm:P3_has_note ?type_name .
+      BIND(<[[urlParam "adaptiontypeiri"]]> as ?type)
+     }'
+  template="<h3>{{#each bindings}}{{type_name.value}}{{/each}}</h3>">
+</semantic-query>
+
+
+[[#if (hasPermission "forms:ldp:*")]]
+  <semantic-link
+    iri="[[resolvePrefix ":addAdaptionType"]]"
+    urlqueryparam-resiri="[[urlParam "adaptiontypeiri"]]"
+    class="btn btn-md btn-primary gap-bottom" >Edit</semantic-link>
+[[/if]]
+
+<div id="view-record-body" class="content">
+  <h4 style="margin:2em 0">Adaptions of this type</h4>
+
+  <semantic-table
+    query='SELECT DISTINCT
+  				[[> :queryAdaptionsSelect]]
+  			WHERE {
+  	    	[[> :queryAdaptions]]
+          BIND(<[[urlParam "adaptiontypeiri"]]> as ?type)
+          ?subject ecrm:P2_has_type ?type .
+  	} GROUP BY [[> :queryAdaptionsGroup]]'
+
+    options='{
+      "resultsPerPage":100
+    }'
+
+  	column-configuration='[
+  		[[> :colConfAdaptions]]
+  	]'
+  >
+  </semantic-table>
+
+  <dl>
+    [[> :identifier iri="adaptiontypeiri"]]
+  </dl>
+</div>

@@ -1,0 +1,43 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_format/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_format> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/y72s2v>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "0";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/vbi4tg>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/g2ouri>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The format of the book";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Book Format" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/g2ouri> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+  ?value a ecrm:E54_Dimension ;
+  	ecrm:P3_has_note ?label .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/vbi4tg> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+    $subject ecrm:P43_has_dimension ?value .
+    ?value ecrm:P3_has_note ?label
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/y72s2v> <http://spinrdf.org/sp#text>
+      "INSERT { $subject ecrm:P43_has_dimension $value} WHERE {}" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/vbi4tg> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/y72s2v> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/g2ouri> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_format> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:19.918+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_format> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_format> a <http://www.w3.org/ns/ldp#Resource> .
+}

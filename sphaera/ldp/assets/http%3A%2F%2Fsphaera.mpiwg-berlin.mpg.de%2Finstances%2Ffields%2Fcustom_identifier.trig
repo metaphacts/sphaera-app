@@ -1,0 +1,60 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/custom_identifier/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/custom_identifier> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4fp8y5>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/17qm7b>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
+    <http://www.metaphacts.com/ontology/fields#askPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/9vxwl5>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "A custom identifier for the book";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Custom Identifier" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/17qm7b> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4fp8y5> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/9vxwl5> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/17qm7b> <http://spinrdf.org/sp#text>
+      """SELECT ?value WHERE {
+  $subject ecrm:P1_is_identified_by ?identifier .
+  ?identifier ecrm:P2_has_type sphaera:customIdentifier ;
+      ecrm:P3_has_note ?value .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4fp8y5> <http://spinrdf.org/sp#text>
+      """INSERT { 
+  $subject ecrm:P1_is_identified_by ?identifier .
+  ?identifier ecrm:P2_has_type sphaera:customIdentifier ;
+      ecrm:P3_has_note $value .
+} WHERE {
+  BIND(URI(CONCAT(STR($subject), \"/custom_id\")) as ?identifier)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/9vxwl5> <http://spinrdf.org/sp#text>
+      """ASK {
+  {
+    ?entity ecrm:P1_is_identified_by ?identifier .
+    ?identifier ecrm:P2_has_type sphaera:customIdentifier ;
+      ecrm:P3_has_note ?value .
+    FILTER(REGEX(STR(?entity), STR($subject), \"i\"))
+  } UNION { 
+      OPTIONAL {
+        ?entity ecrm:P1_is_identified_by ?identifier .
+        ?identifier ecrm:P2_has_type sphaera:customIdentifier ;
+          ecrm:P3_has_note ?value .
+      }
+      FILTER(! BOUND(?entity))
+  }
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/custom_identifier> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.524+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/custom_identifier> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/custom_identifier> a <http://www.w3.org/ns/ldp#Resource> .
+}

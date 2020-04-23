@@ -1,0 +1,18 @@
+<semantic-table
+	id="table_adaptions"
+	query='SELECT DISTINCT
+			[[> :queryAdaptionsSelect]]
+		WHERE {
+			[[> @partial-block ]]
+	  	[[> :queryAdaptions]]
+	} GROUP BY [[> :queryAdaptionsGroup]]'
+
+	options='{
+    "resultsPerPage":100
+  }'
+
+	column-configuration='[
+		[[> :colConfAdaptions]]
+	]'
+>
+</semantic-table>

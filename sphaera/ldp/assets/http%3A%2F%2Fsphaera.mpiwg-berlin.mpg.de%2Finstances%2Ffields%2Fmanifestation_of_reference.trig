@@ -1,0 +1,36 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/manifestation_of_reference/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/manifestation_of_reference> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/19kkddcfutp7s3q8h0k9>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/i26xxy8wsgcofada38fr>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The manifestation of a book that a reference URL should be connected to";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Manifestation of reference" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/i26xxy8wsgcofada38fr> <http://spinrdf.org/sp#text>
+      """SELECT ?value WHERE {
+  BIND(URI(CONCAT(STRBEFORE(STR($subject),\"/reference\"), \"/manifestation\")) as ?value)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/19kkddcfutp7s3q8h0k9> <http://spinrdf.org/sp#text>
+      """INSERT { 
+  $subject ecrm:P70_documents $value
+} WHERE {}""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/i26xxy8wsgcofada38fr> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/manifestation_of_reference> a
+      <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.339+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/manifestation_of_reference> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/manifestation_of_reference> a
+      <http://www.w3.org/ns/ldp#Resource> .
+}

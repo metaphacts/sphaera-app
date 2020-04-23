@@ -1,0 +1,58 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/related_person/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/related_person> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/ysbyxx>;
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/77rexe>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/m0rk8f>;
+    <http://www.metaphacts.com/ontology/fields#askPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/m295n7>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> """Select the related person
+
+""";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Related Person" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/m295n7> <http://spinrdf.org/sp#text>
+      """ASK {
+    $value a efrbroo:F10_Person
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/77rexe> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+  $subject ecrm:P16_used_specific_object $value .
+  $value ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?label .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/m0rk8f> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+  ?value a efrbroo:F10_Person;
+    ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?label
+} ORDER BY ?label""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/ysbyxx> <http://spinrdf.org/sp#text>
+      """INSERT { 
+  ?person ?predicate $value .
+  $subject ecrm:P16_used_specific_object $value .
+} WHERE {
+  $subject ecrm:P140_assigned_attribute_to ?person ;
+      ecrm:P141_assigned ?predicate .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/77rexe> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/m0rk8f> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/m295n7> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/ysbyxx> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/related_person> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:19.391+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/related_person> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/related_person> a <http://www.w3.org/ns/ldp#Resource> .
+}

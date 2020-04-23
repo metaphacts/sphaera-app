@@ -1,0 +1,45 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/carried_out_by/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/carried_out_by> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/nut2jgt137cbwdnrvn29>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4zuriquo078rzl37syvi>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/xlj2pp4f2ucc73p1ra4i>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Defaults to PC14 carried out by";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Carried out by Record Type" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/xlj2pp4f2ucc73p1ra4i> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/nut2jgt137cbwdnrvn29> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4zuriquo078rzl37syvi> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/xlj2pp4f2ucc73p1ra4i> <http://spinrdf.org/sp#text>
+      """SELECT $value $label WHERE { 
+  VALUES ($value $label) 
+	{ 
+    (<http://erlangen-crm.org/current/PC14_carried_out_by> \"PC14 carried out by\") 
+  } }""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/4zuriquo078rzl37syvi> <http://spinrdf.org/sp#text>
+      """SELECT $value $label WHERE { 
+  BIND(?subject as ?dummy)  
+  VALUES ($value $label) {(<http://erlangen-crm.org/current/PC14_carried_out_by> \"PC14 carried out by\") } 
+}
+""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/nut2jgt137cbwdnrvn29> <http://spinrdf.org/sp#text>
+      "INSERT { $subject rdf:type $value} WHERE {}" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/carried_out_by> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.843+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/carried_out_by> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/carried_out_by> a <http://www.w3.org/ns/ldp#Resource> .
+}

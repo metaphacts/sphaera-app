@@ -1,0 +1,15 @@
+
+?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page .
+?page a ecrm:E36_Visual_Item ;
+  ecrm:P1_is_identified_by ?page_num .
+
+:configIIIFPath ecrm:P3_has_note ?IIIFPath .
+
+OPTIONAL {
+  ?region crmDig:L49_is_primary_area_of ?page .
+  BIND('true' as ?has_regions)
+}
+
+BIND(?page as ?imageIRI) .
+
+[[> :queryImageIdPattern]]

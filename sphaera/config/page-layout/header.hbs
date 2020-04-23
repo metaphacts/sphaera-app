@@ -1,0 +1,85 @@
+<bs-navbar data-fluid="true" class="metaphacts-header-navbar" data-fixed-top="true" data-inverse="true" data-role="navigation">
+  <bs-navbar-header>
+    <bs-navbar-brand>
+      <a href="/resource/Start">
+        Sphaera <small>CorpusTracer</small>
+      </a>
+    </bs-navbar-brand>
+    <bs-navbar-toggle/>
+  </bs-navbar-header>
+  <bs-navbar-collapse>
+    <ul class="nav navbar-nav">
+
+        <mp-resource-link-container uri="http://sphaera.mpiwg-berlin.mpg.de/resource/listBooks">
+          <li title="List all books">
+            <a>Books</a>
+          </li>
+        </mp-resource-link-container>
+
+        <mp-resource-link-container uri="http://sphaera.mpiwg-berlin.mpg.de/resource/listParts">
+          <li title="List all parts">
+            <a>Parts</a>
+          </li>
+        </mp-resource-link-container>
+
+        <mp-resource-link-container uri="http://sphaera.mpiwg-berlin.mpg.de/resource/listPersons">
+          <li title="List all persons">
+            <a>Persons</a>
+          </li>
+        </mp-resource-link-container>
+
+        <mp-resource-link-container uri="http://sphaera.mpiwg-berlin.mpg.de/resource/listElements">
+          <li title="List all elements">
+            <a>Elements</a>
+          </li>
+        </mp-resource-link-container>
+
+        <mp-resource-link-container uri="http://sphaera.mpiwg-berlin.mpg.de/resource/listPlaces">
+          <li title="List all books">
+            <a>Places</a>
+          </li>
+        </mp-resource-link-container>
+
+        <mp-resource-link-container uri="http://sphaera.mpiwg-berlin.mpg.de/resource/manageTerms">
+          <li title="Manage Terms">
+            <a>Terms</a>
+          </li>
+        </mp-resource-link-container>
+
+        <mp-resource-link-container uri="http://sphaera.mpiwg-berlin.mpg.de/resource/search">
+          <li title="Advanced Search">
+            <a>Search</a>
+          </li>
+        </mp-resource-link-container>
+
+    </ul>
+    <bs-nav data-pull-right="true">
+      <mp-anonymous-hidden>
+        <li><mp-link url="/sparql" title="Sparql Endpoint">SPARQL</mp-link></li>
+      </mp-anonymous-hidden>
+      <mp-nav-account></mp-nav-account>
+      <mp-anonymous-hidden>
+        <mp-resource-link-container uri="http://www.metaphacts.com/resource/admin/">
+          <li title="System Settings">
+            <a><i class="fa fa-cog"></i></a>
+          </li>
+        </mp-resource-link-container>
+      </mp-anonymous-hidden>
+
+      <mp-anonymous-hidden>
+        <li>
+          <a href="https://gitlab.gwdg.de/MPIWG/Department-I/sphaera/sphaera-frontend-metaphactory/issues/new?issue">Raise Issue</a>
+        </li>
+      </mp-anonymous-hidden>
+
+      <!--
+      <mp-resource-link-container uri="http://help.metaphacts.com/resource/Start">
+        <li title="Help">
+          <a><i class="fa fa-question-circle"></i></a>
+        </li>
+      </mp-resource-link-container>
+      -->
+
+    </bs-nav>
+  </bs-navbar-collapse>
+</bs-navbar>

@@ -1,0 +1,23 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+</ol>
+
+<h1>All places</h1>
+
+[[# if (hasPermission "forms:ldp:*")]]
+  <p class="gap-bottom">
+    <semantic-link iri="http://sphaera.mpiwg-berlin.mpg.de/resource/createPlace" class="btn btn-primary btn-md">Add new place</semantic-link>
+  </p>
+[[/if]]
+
+<div class="content">
+  [[> :mapPlaces]]
+  [[> :tablePlaces]]
+  <div>
+    [[> :csvDownload places="true"]]
+  </div>
+</div>
+
+[[> :footer]]

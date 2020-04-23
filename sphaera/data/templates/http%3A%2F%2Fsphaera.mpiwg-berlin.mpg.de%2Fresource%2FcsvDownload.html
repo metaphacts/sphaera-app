@@ -1,0 +1,30 @@
+	<mp-sparql-download
+		id="csv-download"
+		[[#if books]]
+			query="[[> :csvBooksQuery subject=subject]]"
+			filename="books.csv"
+		[[/if]]
+		[[#if parts]]
+			query="[[> :csvPartsQuery]]"
+			filename="parts.csv"
+		[[/if]]
+		[[#if adaptions]]
+			query="[[> :csvAdaptionsQuery]]"
+			filename="adaptions.csv"
+		[[/if]]
+		[[#if persons]]
+			query="[[> :csvPersonsQuery]]"
+			filename="persons.csv"
+		[[/if]]
+		[[#if places]]
+			query="[[> :csvPlacesQuery]]"
+			filename="places.csv"
+		[[/if]]
+		[[#if elements]]
+			query="[[> :csvElementsQuery]]"
+			filename="elements.csv"
+		[[/if]]
+		header="text/csv"
+	>
+		<a href="#">Download CSV</a>
+	</mp-sparql-download>

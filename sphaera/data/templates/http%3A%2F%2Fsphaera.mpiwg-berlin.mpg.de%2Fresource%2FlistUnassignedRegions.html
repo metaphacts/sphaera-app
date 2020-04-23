@@ -1,0 +1,44 @@
+[[> :header]]
+
+<ol class="breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+</ol>
+
+<h1>Unassigned Regions</h1>
+
+  <div class="gap-bottom">
+    <semantic-link iri="[[resolvePrefix ":listRegions"]]">List all Regions</semantic-link>
+  </div>
+  <!-- Regions -->
+  <bs-row>
+    <semantic-table
+    query="SELECT
+
+      [[> :queryRegionsSelect]]
+
+      ?book
+      ?book_label
+    WHERE {
+
+      [[> :queryRegionsForPage]]
+
+      ?book ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:P4_has_time-span/ecrm:P82b_end_of_the_end ?date_to .
+      FILTER(YEAR(?date_to) >= 1472 && YEAR(?date_to) <= 1571)
+
+      ?subject ecrm:P2_has_type sphType:contentIllustration .
+      OPTIONAL {
+        ?subject ecrm:P138_represents ?element .
+      }
+      FILTER(!BOUND(?element))
+
+      [[> :queryImageIdPattern]]
+
+    } ORDER BY xsd:integer(?page_num) ?subject
+    LIMIT 1000"
+    number-of-displayed-rows="50"
+    options='{"showFilter": false}'
+    tuple-template='[[> :templatePageRegionsGrid]]'
+    >
+    </semantic-table>
+  </bs-row>
+[[> :footer]]

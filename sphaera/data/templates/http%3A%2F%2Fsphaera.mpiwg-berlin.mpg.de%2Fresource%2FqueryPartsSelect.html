@@ -1,0 +1,6 @@
+?custom_identifier
+?label
+?subject
+?title
+(GROUP_CONCAT(DISTINCT ?author_name; SEPARATOR=", ") as ?authors)
+(GROUP_CONCAT(DISTINCT ?sort_author_name; SEPARATOR=", ") as ?sort_authors)

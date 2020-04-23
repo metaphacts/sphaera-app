@@ -1,0 +1,834 @@
+<!--
+Implemented workaround from rs.mpiwg-berlin.mpg.de
+http://erlangen-crm.org/current/P128_carries should actually be http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-published-between-time
+explanation
+"a quick workaround for the current issue with date-range FRs in facets"
+-->
+
+
+<style>
+  .facet-relations{
+      min-width: 200px;
+  }
+
+  .QueryBuilder--searchAreaHolder .QueryBuilder--searchArea li[aria-label=Part],
+  .QueryBuilder--searchAreaHolder .QueryBuilder--searchArea li[aria-label=Adaption] {
+    display: none;
+  }
+  .semantic-facet-holder .facet__category-selector-holder .category-selector li:nth-child(1),
+  .semantic-facet-holder .facet__category-selector-holder .category-selector li:nth-child(2) {
+    display: none;
+  }
+  .QueryBuilder--searchAreaHolder .QueryBuilder--searchArea ul.QueryBuilder--domainSelection > li[aria-label=Timeframe] {
+    display: none;
+  }
+  [[#if (hasPermission "forms:ldp:*")]]
+  .QueryBuilder--searchAreaHolder .QueryBuilder--searchArea li[aria-label=Part],
+  .QueryBuilder--searchAreaHolder .QueryBuilder--searchArea li[aria-label=Adaption] {
+    display: flex;
+  }
+  [[/if]]
+</style>
+
+<semantic-search
+  optimizer=blazegraph
+  search-profile='{
+    "categories": [
+      {
+        "iri": "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+        "label": "Book",
+        "thumbnail": "../assets/icons/book.svg"
+      },
+      {
+        "iri": "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part>",
+        "label": "Part",
+        "thumbnail": "../assets/icons/file-text.svg"
+      },
+      {
+        "iri": "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part_Adaption>",
+        "label": "Adaption",
+        "thumbnail": "../assets/icons/file-text-o.svg"
+      },
+      {
+        "iri": "<http://erlangen-crm.org/efrbroo/F10_Person>",
+        "label": "Person",
+        "thumbnail": "../assets/icons/user.svg"
+      },
+      {
+        "iri": "<http://erlangen-crm.org/current/E53_Place>",
+        "label": "Place",
+        "thumbnail": "../assets/icons/map-marker.svg"
+      },
+      {
+        "iri": "<http://erlangen-crm.org/current/E52_Time-Span>",
+        "label": "Timeframe",
+        "thumbnail": "../assets/icons/clock-o.svg"
+      },
+      {
+        "iri": "<http://erlangen-crm.org/current/E54_Dimension>",
+        "label": "Format",
+        "thumbnail": "../assets/icons/pencil.svg"
+      },
+      {
+        "iri": "<http://erlangen-crm.org/current/E56_Language>",
+        "label": "Language",
+        "thumbnail": "../assets/icons/commenting-o.svg"
+      },
+      {
+        "iri": "<http://www.ics.forth.gr/isl/CRMdig/D35_Area>",
+        "label": "Region",
+        "thumbnail": "../assets/icons/image.svg"
+      },
+      {
+        "iri": "<http://erlangen-crm.org/current/E55_Type>",
+        "label": "Type",
+        "thumbnail": "../assets/icons/tag.svg"
+      }
+    ],
+    "relations": [
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-contains-original-or-adapted-part>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part>",
+          "label":"contains",
+          "description":""
+       },
+        {
+           "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+           "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-contains-fragment-of-original-part>",
+           "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part>",
+           "label":"contains (original or fragment)",
+           "description":"excluding adaptions"
+        },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-contains-original-part>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part>",
+          "label":"contains (original)",
+          "description":"excluding fragments and adaptions"
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-does-not-contain-original-or-adapted-part>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part>",
+          "label":"does not contain",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-contains-adaption>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part_Adaption>",
+          "label":"contains",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-authored-by-person>",
+          "hasRange":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "label":"authored by",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-published-by-person>",
+          "hasRange":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "label":"published by",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-printed-by-person>",
+          "hasRange":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "label":"printed by",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-translated-by-person>",
+          "hasRange":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "label":"translated by",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-created-by-person>",
+          "hasRange":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "label":"created by",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-published-at-place>",
+          "hasRange":"<http://erlangen-crm.org/current/E53_Place>",
+          "label":"published at",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-not-published-at-place>",
+          "hasRange":"<http://erlangen-crm.org/current/E53_Place>",
+          "label":"not published at",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "iri":"<http://erlangen-crm.org/current/P128_carries>",
+          "hasRange":"<http://erlangen-crm.org/current/E52_Time-Span>",
+          "label":"published within",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-is-in-language>",
+          "hasRange":"<http://erlangen-crm.org/current/E56_Language>",
+          "label":"is in",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-has-format>",
+          "hasRange":"<http://erlangen-crm.org/current/E54_Dimension>",
+          "label":"has",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-contains-region>",
+          "hasRange":"<http://www.ics.forth.gr/isl/CRMdig/D35_Area>",
+          "label":"contains",
+          "description":""
+       },
+
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/part-contained-in-book>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "label":"contained in",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/part-authored-by-person>",
+          "hasRange":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "label":"authored by",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part_Adaption>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/adaption-contained-in-book>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "label":"contained in",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part_Adaption>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/adaption-annotates-part>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part>",
+          "label":"annotates",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part_Adaption>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/adaption-annotates-adaption-of-part>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part>",
+          "label":"annotates (adaption of)",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part_Adaption>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/adaption-translates-part>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part>",
+          "label":"translates",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part_Adaption>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/adaption-annotates-adaption>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part_Adaption>",
+          "label":"annotates",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part_Adaption>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/adaption-translates-adaption>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part_Adaption>",
+          "label":"translates",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part_Adaption>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/adaption-has-ancestor-adaption>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part>",
+          "label":"has ancestor",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part_Adaption>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/adaption-created-by-person>",
+          "hasRange":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "label":"created by",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-author-of-book>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "label":"is author of",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-translator-of-book>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "label":"is translator of",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-publisher-of-book>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "label":"is publisher of",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-printer-of-book>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "label":"is printer of",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-creator-of-book>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "label":"is involved in creation of",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-co-author-person>",
+          "hasRange":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "label":"co-author of",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-related-to-person>",
+          "hasRange":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "label":"related to",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-author-of-part>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part>",
+          "label":"author of",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://erlangen-crm.org/efrbroo/F10_Person>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-creator-of-adaption>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part_Adaption>",
+          "label":"creator of",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://erlangen-crm.org/current/E53_Place>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/place-is-publishing-place-of-book>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "label":"is publishing place of",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://erlangen-crm.org/current/E56_Language>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/language-is-language-of-book>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+          "label":"is language of",
+          "description":""
+       },
+       {
+          "hasDomain":"<http://erlangen-crm.org/current/E56_Language>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/language-is-used-to-translate-part>",
+          "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Part>",
+          "label":"is used to translate",
+          "description":""
+       },
+
+       {
+          "hasDomain":"<http://www.ics.forth.gr/isl/CRMdig/D35_Area>",
+          "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/region-has-type>",
+          "hasRange":"<http://erlangen-crm.org/current/E55_Type>",
+          "label":"of type",
+          "description":""
+       },
+      {
+        "hasDomain":"<http://www.ics.forth.gr/isl/CRMdig/D35_Area>",
+        "iri":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/region-appears-in-book>",
+        "hasRange":"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/Book>",
+        "label":"appears in",
+        "description":""
+      }
+    ]
+  }'
+  categories='{
+    "<http://erlangen-crm.org/current/E52_Time-Span>": [{
+      "kind": "date-range"
+    }]
+  }'
+  relations='{
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-contains-original-part>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?__value__ a sphaera:Part .
+        ?subject ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P148_has_component ?__value__ .
+       }"
+    }],
+
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-contains-fragment-of-original-part>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?__value__ a sphaera:Part .
+        {
+          ?subject ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P148_has_component ?__value__
+        } UNION {
+          ?subject ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P148_has_component/efrbroo:R15i_is_fragment_of ?__value__
+        }
+      }"
+    }],
+
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-contains-original-or-adapted-part>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?__value__ a sphaera:Part .
+        ?subject sphaera:book-contains-original-or-adapted-part ?__value__ .
+      }"
+    }],
+
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-does-not-contain-original-or-adapted-part>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?__value__ a sphaera:Part .
+        ?subject a sphaera:Book .
+        FILTER NOT EXISTS { ?subject sphaera:book-contains-original-or-adapted-part ?__value__ }
+      }"
+    }],
+
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-contains-adaption>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?__value__ a sphaera:Part_Adaption .
+        ?subject ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P148_has_component/[[> :queryPart]] ?__value__  .
+      }"
+    }],
+
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-authored-by-person>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?__value__ a efrbroo:F10_Person .
+        ?subject ecrm:P128_carries/ecrm:P165_incorporates/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+        ?carried_out_by ecrm:P14.1_in_the_role_of sphRole:author ;
+        ecrm:PC02_has_range ?__value__ .
+      }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-published-by-person>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?__value__ a efrbroo:F10_Person .
+        ?subject ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?__value__  .
+      }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-printed-by-person>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?__value__ a efrbroo:F10_Person .
+        ?subject efrbroo:R28i_was_produced_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?__value__ .
+      }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-translated-by-person>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?__value__ a efrbroo:F10_Person .
+        ?subject ecrm:P128_carries/ecrm:P165_incorporates/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+        ?carried_out_by ecrm:P14.1_in_the_role_of sphRole:translator ;
+        ecrm:PC02_has_range ?__value__ .
+      }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-created-by-person>": [{
+      "kind": "resource",
+      "queryPattern": "{
+          ?__value__ a efrbroo:F10_Person .
+          {
+            ?__value__ ^ecrm:PC02_has_range ?carried_out_by .
+            ?carried_out_by ecrm:P14.1_in_the_role_of sphRole:author;
+              ^ecrm:PC01_is_domain_of/^efrbroo:R17i_was_created_by/^ecrm:P165_incorporates/^ecrm:P128_carries ?subject .
+          } UNION {
+            ?__value__ ^ecrm:PC02_has_range ?carried_out_by .
+            ?carried_out_by ecrm:P14.1_in_the_role_of sphRole:translator;
+              ^ecrm:PC01_is_domain_of/^efrbroo:R17i_was_created_by/^ecrm:P165_incorporates/^ecrm:P128_carries ?subject .
+          } UNION {
+            ?__value__ ^ecrm:PC02_has_range/^ecrm:PC01_is_domain_of/^efrbroo:R24i_was_created_through/^ecrm:P128_carries ?subject .
+          } UNION {
+            ?__value__ ^ecrm:PC02_has_range/^ecrm:PC01_is_domain_of/^efrbroo:R28i_was_produced_by ?subject .
+          }
+        }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-published-at-place>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?__value__ a ecrm:E53_Place .
+        ?subject efrbroo:R7_is_example_of /^efrbroo:CLR6i_should_be_carried_by/efrbroo:R24i_was_created_through/ecrm:P7_took_place_at ?__value__
+      }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-not-published-at-place>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?__value__ a ecrm:E53_Place .
+        ?subject efrbroo:R7_is_example_of /^efrbroo:CLR6i_should_be_carried_by/efrbroo:R24i_was_created_through/ecrm:P7_took_place_at ?place .
+        FILTER(?place != ?__value__ )
+      }"
+    }],
+    "<http://erlangen-crm.org/current/P128_carries>": [{
+      "kind": "date-range",
+      "queryPattern": "{
+          ?date a ecrm:E52_Time-Span .
+          ?subject ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:P4_has_time-span ?date .
+          ?date ecrm:P82a_begin_of_the_beginning ?begin ;
+               ecrm:P82b_end_of_the_end ?end .
+          FILTER(?begin <= ?__dateEndValue__) .
+          FILTER(?end >= ?__dateBeginValue__) .
+       }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-is-in-language>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?__value__ a ecrm:E56_Language .
+        ?subject ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P72_has_language ?__value__ .
+      }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-has-format>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?__value__ a ecrm:E54_Dimension .
+        ?subject ecrm:P43_has_dimension ?__value__ .
+      }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/book-contains-region>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?__value__ a crmDig:D35_Area .
+        ?subject efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of/^crmDig:L49_is_primary_area_of ?__value__ .
+      }"
+    }],
+
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/part-contained-in-book>": [{
+      "kind": "resource",
+      "queryPattern": "{
+          ?subject a sphaera:Part .
+          ?__value__ (ecrm:P128_carries/ecrm:P165_incorporates)/^ecrm:P140_assigned_attribute_to ?attribute_assignment .
+          ?attribute_assignment ecrm:P141_assigned/[[> :queryPart]] ?subject .
+          ?attribute_assignment ecrm:P141_assigned  ?assigned_part .
+          ?assigned_part (efrbroo:R15i_is_fragment_of)?/ecrm:P2_has_type ?part_type .
+          VALUES ?part_type { sphType:translation sphType:originalPart sphType:annotatedPart }
+      }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/part-authored-by-person>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?subject a sphaera:Part;
+          efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?__value__
+        }"
+    }],
+
+
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/adaption-contained-in-book>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?subject a sphaera:Part_Adaption .
+        ?__value__ ecrm:P128_carries/ecrm:P165_incorporates/ecrm:P148_has_component/[[> :queryPart]] ?subject .
+      }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/adaption-annotates-part>": [{
+      "kind": "resource",
+      "queryPattern": "{ ?subject (ecrm:P106_is_composed_of/ecrm:P165_incorporates)+ ?__value__ }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/adaption-annotates-adaption-of-part>": [{
+      "kind": "resource",
+      "queryPattern": "{
+          ?subject (ecrm:P106_is_composed_of/ecrm:P165_incorporates)+ ?incorporated_adaption .
+          ?incorporated_adaption a ?type ;
+            (efrbroo:R3i_realises/^efrbroo:R40i_is_representative_expression_for)* ?__value__.
+
+          VALUES ( ?type ) {
+            ( sphaera:Part )
+            ( sphaera:Part_Adaption )
+          }
+        }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/adaption-translates-part>": [{
+      "kind": "resource",
+      "queryPattern": "{ ?subject ecrm:P165_incorporates/efrbroo:R3i_realises/^efrbroo:R40i_is_representative_expression_for ?__value__ }"
+    }],
+
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/adaption-annotates-adaption>": [{
+      "kind": "resource",
+      "queryPattern": "{ ?subject (ecrm:P106_is_composed_of/ecrm:P165_incorporates) ?__value__ }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/adaption-translates-adaption>": [{
+      "kind": "resource",
+      "queryPattern": "{ ?subject ecrm:P165_incorporates/efrbroo:R3i_realises/^efrbroo:R40i_is_representative_expression_for ?__value__ }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/adaption-created-by-person>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?subject a sphaera:Part_Adaption ;
+          efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?__value__
+        }"
+    }],
+
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-author-of-book>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?subject ^ecrm:PC02_has_range ?carried_out_by .
+        ?carried_out_by ecrm:P14.1_in_the_role_of sphRole:author;
+          ^ecrm:PC01_is_domain_of/^efrbroo:R17i_was_created_by/^ecrm:P165_incorporates/^ecrm:P128_carries ?__value__ .
+        }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-translator-of-book>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?subject ^ecrm:PC02_has_range ?carried_out_by .
+        ?carried_out_by ecrm:P14.1_in_the_role_of sphRole:translator;
+          ^ecrm:PC01_is_domain_of/^efrbroo:R17i_was_created_by/^ecrm:P165_incorporates/^ecrm:P128_carries ?__value__ .
+        }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-publisher-of-book>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?subject ^ecrm:PC02_has_range/^ecrm:PC01_is_domain_of/^efrbroo:R24i_was_created_through/^ecrm:P128_carries ?__value__ .
+        }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-printer-of-book>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?subject ^ecrm:PC02_has_range/^ecrm:PC01_is_domain_of/^efrbroo:R28i_was_produced_by ?__value__ .
+        }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-creator-of-book>": [{
+      "kind": "resource",
+      "queryPattern": "{
+          {
+            ?subject ^ecrm:PC02_has_range ?carried_out_by .
+            ?carried_out_by ecrm:P14.1_in_the_role_of sphRole:author;
+              ^ecrm:PC01_is_domain_of/^efrbroo:R17i_was_created_by/^ecrm:P165_incorporates/^ecrm:P128_carries ?__value__ .
+          } UNION {
+            ?subject ^ecrm:PC02_has_range ?carried_out_by .
+            ?carried_out_by ecrm:P14.1_in_the_role_of sphRole:translator;
+              ^ecrm:PC01_is_domain_of/^efrbroo:R17i_was_created_by/^ecrm:P165_incorporates/^ecrm:P128_carries ?__value__ .
+          } UNION {
+            ?subject ^ecrm:PC02_has_range/^ecrm:PC01_is_domain_of/^efrbroo:R24i_was_created_through/^ecrm:P128_carries ?__value__ .
+          } UNION {
+            ?subject ^ecrm:PC02_has_range/^ecrm:PC01_is_domain_of/^efrbroo:R28i_was_produced_by ?__value__ .
+          }
+
+        }"
+    }],
+
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-author-of-part>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?subject ^ecrm:PC02_has_range/^ecrm:PC01_is_domain_of/^efrbroo:R17i_was_created_by ?__value__ .
+        ?__value__ a sphaera:Part .
+        }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-creator-of-adaption>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        ?subject ^ecrm:PC02_has_range/^ecrm:PC01_is_domain_of/^efrbroo:R17i_was_created_by ?__value__ .
+        ?__value__ a sphaera:Part_Adaption .
+        }"
+    }],
+    "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-co-author-person>": [{
+      "kind": "resource",
+      "queryPattern": "{
+        {
+          ?subject ^ecrm:PC02_has_range/^ecrm:PC01_is_domain_of ?expression_creation .
+          ?expression_creation a efrbroo:F28_Expression_Creation ;
+            ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?__value__
+        } UNION {
+          ?subject ^ecrm:PC02_has_range/^ecrm:PC01_is_domain_of/^efrbroo:R17i_was_created_by/^ecrm:P148_has_component/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?__value__
+        } UNION {
+          ?subject ^ecrm:PC02_has_range/^ecrm:PC01_is_domain_of/^efrbroo:R17i_was_created_by/ecrm:P148_has_component/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?__value__
+        } UNION {
+          ?subject ^ecrm:PC02_has_range/^ecrm:PC01_is_domain_of/^efrbroo:R17i_was_created_by/^ecrm:P148_has_component/(^ecrm:P165_incorporates|^efrbroo:R15i_is_fragment_of)/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?__value__
+        } UNION {
+          ?subject ^ecrm:PC02_has_range/^ecrm:PC01_is_domain_of/^efrbroo:R17i_was_created_by/ecrm:P148_has_component/(^ecrm:P165_incorporates|^efrbroo:R15i_is_fragment_of)/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?__value__
+        }
+
+       }"
+      }],
+
+      "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/person-related-to-person>": [{
+        "kind": "resource",
+        "queryPattern": "{
+          {
+            ?attribute_assignment ecrm:P2_has_type sphType:relationshipAssignment ;
+              ecrm:P140_assigned_attribute_to ?subject ;
+              ecrm:P16_used_specific_object ?__value__ .
+          } UNION {
+            ?attribute_assignment ecrm:P2_has_type sphType:relationshipAssignment ;
+              ecrm:P140_assigned_attribute_to ?__value__ ;
+              ecrm:P16_used_specific_object ?subject .
+          }
+        }"
+      }],
+
+      "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/place-is-publishing-place-of-book>": [{
+        "kind": "resource",
+        "queryPattern": "{
+          ?subject ^ecrm:P7_took_place_at/^efrbroo:R24i_was_created_through/^ecrm:P128_carries ?__value__ .
+          }"
+      }],
+
+      "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/language-is-language-of-book>": [{
+        "kind": "resource",
+        "queryPattern": "{
+          ?subject ^ecrm:P72_has_language/^ecrm:P165_incorporates/^ecrm:P128_carries ?__value__ .
+        }"
+      }],
+      "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/language-is-used-to-translate-part>": [{
+        "kind": "resource",
+        "queryPattern": "{
+          ?translation ecrm:P72_has_language ?subject .
+          ?translation a sphaera:Translation ;
+            efrbroo:R3i_realises/^efrbroo:R40i_is_representative_expression_for  ?__value__ .
+
+        }"
+      }],
+
+      "<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/region-has-type>": [{
+        "kind": "resource",
+        "queryPattern": "{
+          ?subject ecrm:P2_has_type ?__value__ .
+          }"
+      }],
+
+"<http://ontologies.mpiwg-berlin.mpg.de/sphaera/relations/region-appears-in-book>": [{
+  "kind": "resource",
+  "queryPattern": "{
+    ?__value__ efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of/^crmDig:L49_is_primary_area_of ?subject .
+    }"
+}]
+  }'
+>
+  [[> @partial-block ]]
+
+  <div data-flex-layout="row stretch-stretch">
+    <div data-flex-self="size-1of3" style="flex: 0 0 0;">
+      <semantic-search-facet
+        open-by-default=true
+        value-relations='{
+          "<http://erlangen-crm.org/current/P128_carries>": {
+            "kind": "date-range",
+            "valuesQuery": "
+               SELECT ?dateBeginValue ?dateEndValue WHERE {
+                   ?subject ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:P4_has_time-span ?date .
+                   ?date ecrm:P82a_begin_of_the_beginning ?dateBeginValue ;
+                      ecrm:P82b_end_of_the_end ?dateEndValue .
+            } ORDER BY ?dateBeginValue"
+           }
+        }'
+        default-value-queries='{
+          "resource": "
+            SELECT ?value ?label (COUNT(DISTINCT $subject) AS ?count) WHERE {
+              FILTER(?__facetRelationPattern__)
+              {
+                ?value (rdfs:label|ecrm:P3_has_note) ?label .
+                MINUS { ?value a efrbroo:F10_Person }
+              } UNION {
+                ?value (ecrm:P48_has_preferred_identifier/ecrm:P3_has_note) ?label ;
+                  a efrbroo:F10_Person .
+              }
+            } GROUP BY ?value ?label ORDER BY ?label
+          "
+        }'
+      ></semantic-search-facet>
+    </div>
+
+    <semantic-search-result-holder>
+      <div data-flex-self="md-full" class="content">
+
+        <!-- you can instantiate as many search results as you like, it expects a single child with query attribute  -->
+        <!-- you can also nest it in, for example, tabs and add another semantic-search-result with semantic-table with grid layout and images in the second tab -->
+
+        <semantic-search-result>
+          <mp-sparql-result-counts id="search_results_count"
+            query="SELECT DISTINCT * {}"
+            template='<div>{{#if hasLimit}} <bs-alert bs-style="warning"> Showing {{numberOfResults}} of {{totalNumberOfResults}} matches. <strong>Please, refine your search.</strong> </bs-alert> {{else}} <p>Found <em>{{numberOfResults}}</em> results</p>{{/if}}</div>'>
+          </mp-sparql-result-counts>
+        </semantic-search-result>
+
+        <semantic-search-result class="books" id="search_results_books">
+
+          [[> :tableBooks]]
+
+        </semantic-search-result>
+
+        <semantic-search-result class="parts" id="search_results_parts">
+
+          [[#> :tableParts]]
+          [[/ :tableParts]]
+
+        </semantic-search-result>
+
+        <semantic-search-result class="adaptions" id="search_results_adaptions">
+          
+          [[#> :tableAdaptions]]
+          [[/ :tableAdaptions]]
+
+        </semantic-search-result>
+        <semantic-search-result class="persons" id="search_results_persons">
+
+          [[> :tablePersons]]
+
+        </semantic-search-result>
+
+        <semantic-search-result class="places" id="search_results_places">
+
+          [[> :tablePlaces]]
+
+        </semantic-search-result>
+
+        <semantic-search-result class="languages" id="search_results_languages">
+
+          [[> :tableLanguages]]
+
+        </semantic-search-result>
+
+        <semantic-search-result class="languages" id="search_results_regions">
+
+          [[> :tableRegions]]
+
+        </semantic-search-result>
+
+        <!--
+        similar to visualization, download can be placed in a semantic-search-result as that you also can have multiple instantiations of different downloads
+        You can modify the ouput by modifying the query
+        i.e. the select query as specified in the query attribute will be wrapped around the main results as produced by the structured search
+      -->
+
+        <semantic-search-result class="csvDownload" id="search_results_csvDownload">
+
+          <ul id="download-select">
+            <li>Books: [[> :csvDownload books="true"]]</li>
+            <li>Persons: [[> :csvDownload persons="true"]]</li>
+            <li>Parts: [[> :csvDownload parts="true"]]</li>
+            <li>Adaptions: [[> :csvDownload adaptions="true"]]</li>
+            <li>Places: [[> :csvDownload places="true"]]</li>
+          </ul>
+
+        </semantic-search-result>
+
+      </div>
+    </semantic-search-result-holder>
+  </div>
+</semantic-search>

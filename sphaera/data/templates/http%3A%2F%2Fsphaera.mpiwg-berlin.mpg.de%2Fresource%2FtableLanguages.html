@@ -1,0 +1,21 @@
+<semantic-table
+	id="table_languages"
+	query="SELECT DISTINCT ?subject ?label WHERE { ?subject a ecrm:E56_Language . ?subject ecrm:P3_has_note ?label  } LIMIT 1000"
+	column-configuration='[
+			{
+				"variableName" : "label",
+				"displayName" : "Language",
+        "cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":viewLanguage"]]\" urlqueryparam-languageiri=\"{{subject.value}}\">{{label.value}}</semantic-link>"
+
+			},
+			{
+				"displayName" : "&nbsp;",
+        "cellTemplate" : "<semantic-link iri=\"{{subject.value}}\">Edit</semantic-link>"
+			}
+		]'
+
+		options='{
+			"resultsPerPage":100
+		}'
+>
+</semantic-table>

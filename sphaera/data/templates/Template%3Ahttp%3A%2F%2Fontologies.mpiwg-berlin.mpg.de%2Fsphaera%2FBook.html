@@ -1,0 +1,884 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+  <li class="breadcrumb-item">
+    <semantic-query
+      query='SELECT ?book_name WHERE
+        {
+          ?? ecrm:P3_has_note ?book_name .
+        } LIMIT 1'
+      template='{{#each bindings}}
+          <semantic-link iri="[[resolvePrefix ":viewBook"]] urlqueryparam-bookiri="[[this]]">
+            {{book_name.value}}
+          </semantic-link>
+        </li>{{/each}}'
+      >
+    </semantic-query>
+  </li>
+</ol>
+
+[[> :headerResourceExists]]
+
+[[#if (hasPermission "forms:ldp:*")]]
+
+  <h2><semantic-query query='SELECT ?label WHERE { ?? ecrm:P3_has_note ?label }'></semantic-query></h2>
+
+  <semantic-form
+    fields="[[fieldDefinitions
+      book_language="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_language"
+      book_title="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_title"
+      book_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_type"
+      book_format="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_format"
+      book_material="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_material"
+      carrier_production_event="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/carrier_production_event"
+      custom_identifier="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/custom_identifier"
+      date_published_earliest="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/date_published_earliest"
+      date_published_latest="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/date_published_latest"
+      date_published_text="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/date_published_text"
+      doi="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/doi"
+      expression_creation="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/expression_creation"
+      fingerprint="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_autofill"
+      fingerprint_part_1="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_part_1"
+      fingerprint_part_2="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_part_2"
+      fingerprint_part_3="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_part_3"
+      fingerprint_part_4="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_part_4"
+      fingerprint_part_5="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_part_5"
+      fingerprint_part_6="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_part_6"
+      fingerprint_part_7="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_part_7"
+      label="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/short_title"
+      number_of_pages="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/number_of_pages"
+      place_published="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/place_published"
+      place_published_name="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_place_published"
+      place_printed="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/place_printed"
+      place_printed_name="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_place_printed"
+      page_spread="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/page_spread"
+      publication_event="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/publication_event"
+      record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/book_record_type"
+      reproduction_event="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/reproduction_event"
+      signature="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/signature"
+      url_to_pdf="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/url_to_pdf"
+    ]]"
+    subject="[[this]]"
+    browser-persistence="true"
+    persistence="LDP"
+  >  
+
+    <bs-tab-container id="book-edit-form" class="bs-left-vertical-tabs" default-active-key="[[#if (urlParam "tab" )]][[urlParam "tab"]][[else]]description[[/if]]">
+      <bs-row class="clearfix">
+        <bs-col sm="2" >
+          <bs-nav bs-style="tabs" stacked="true">
+            <bs-nav-item event-key="description">
+              Description
+            </bs-nav-item>
+            <bs-nav-item event-key="fingerprint">
+              Fingerprint
+            </bs-nav-item>
+            <bs-nav-item event-key="publication">
+              Publication
+            </bs-nav-item>
+            <bs-nav-item event-key="author">
+              Authors
+            </bs-nav-item>
+            <bs-nav-item event-key="printing">
+              Printing
+            </bs-nav-item>
+            <bs-nav-item event-key="license">
+              License
+            </bs-nav-item>
+            <bs-nav-item event-key="locator">
+              Locators
+            </bs-nav-item>
+            <bs-nav-item event-key="parts">
+              Parts
+            </bs-nav-item>
+            <bs-nav-item event-key="meta">
+              Annotations
+            </bs-nav-item>
+
+            [[#if (hasPermission "api:config")]]
+              <bs-nav-item event-key="delete">
+                Delete
+              </bs-nav-item>
+              <bs-nav-item event-key="hidden" class="hidden-field">
+                Hidden
+              </bs-nav-item>
+              <bs-nav-item event-key="statements">
+                Statements
+              </bs-nav-item>
+            [[/if]]
+
+            </bs-nav>
+          </bs-col>
+        <bs-col sm="10">
+          <bs-tab-content animation="true">
+
+            <bs-tab-pane event-key="description">
+              <h3>Description</h3>
+              <semantic-form-text-input for="custom_identifier"></semantic-form-text-input>
+              <semantic-form-text-input for="label"></semantic-form-text-input>
+              <semantic-form-text-input for="book_title" multiline="true"></semantic-form-text-input>
+              <semantic-form-select-input for="book_type"></semantic-form-select-input>
+              <semantic-form-select-input for="book_format"></semantic-form-select-input>
+              <semantic-form-select-input for="book_material"></semantic-form-select-input>
+              <semantic-form-select-input for="book_language"></semantic-form-select-input>
+              <semantic-form-text-input for="signature"></semantic-form-text-input>
+              <semantic-form-text-input for="url_to_pdf"></semantic-form-text-input>
+              <semantic-form-text-input for="number_of_pages"></semantic-form-text-input>
+              <semantic-form-select-input  for="page_spread"></semantic-form-select-input>
+            </bs-tab-pane>
+
+            <bs-tab-pane event-key="fingerprint">
+              <h3>Fingerprint</h3>
+              <semantic-form-text-input for="fingerprint_part_1"></semantic-form-text-input>
+              <semantic-form-text-input for="fingerprint_part_2"></semantic-form-text-input>
+              <semantic-form-text-input for="fingerprint_part_3"></semantic-form-text-input>
+              <semantic-form-text-input for="fingerprint_part_4"></semantic-form-text-input>
+              <semantic-form-text-input for="fingerprint_part_5"></semantic-form-text-input>
+              <semantic-form-text-input for="fingerprint_part_6"></semantic-form-text-input>
+              <semantic-form-text-input for="fingerprint_part_7"></semantic-form-text-input>
+            </bs-tab-pane>
+
+            <bs-tab-pane event-key="publication">
+              <h3>Publication</h3>
+              <semantic-table
+                query='SELECT ?carried_out_by ?publisher_name ?attribute_assignment ?alternative_name_label WHERE {
+                      BIND(URI(CONCAT(STR(??), "/reproduction/document")) as ?reproduction)
+                      ?? ecrm:P128_carries ?publication_expression .
+                      ?publication_expression efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of ?carried_out_by .
+                      ?carried_out_by ecrm:PC02_has_range ?publisher .
+                      ?publisher ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?publisher_name
+                      OPTIONAL {
+                        ?alternative_name ^ecrm:P1_is_identified_by ?publisher ;
+                    		ecrm:P3_has_note ?alternative_name_label ;
+                      		ecrm:P70i_is_documented_in ?publication_expression  .
+                        ?attribute_assignment ecrm:P141_assigned ?alternative_name ;
+                    		ecrm:P140_assigned_attribute_to ?publisher ;
+                      		ecrm:P16_used_specific_object ?reproduction .
+                      }
+                    }
+                    LIMIT 1000'
+                  column-configuration='[
+                    {
+                      "displayName" : "Publisher",
+                      "cellTemplate" : "<semantic-link
+                        iri=\"[[resolvePrefix ":addPublisherToBook"]]\"
+                        urlqueryparam-carriedoutbyiri=\"{{carried_out_by.value}}\"
+                        urlqueryparam-bookiri=\"[[this]]\">
+                        {{publisher_name.value}}
+                      </semantic-link>"
+                    },
+                    {
+                      "displayName" : "Name (as stated in book)",
+                      "cellTemplate" : "{{#if alternative_name_label.value}}
+                        <semantic-link
+                          iri=\"[[resolvePrefix ":addNameForPublisher"]]\"
+                          urlqueryparam-carriedoutbyiri=\"{{carried_out_by.value}}\"
+                          urlqueryparam-bookiri=\"[[this]]\">
+                          {{alternative_name_label.value}}
+                        </semantic-link>
+                      {{else}}
+                        <semantic-link
+                          class=\"btn btn-xs btn-default\"
+                          iri=\"[[resolvePrefix ":addNameForPublisher"]]\"
+                          urlqueryparam-carriedoutbyiri=\"{{carried_out_by.value}}\"
+                          urlqueryparam-bookiri=\"[[this]]\">
+                          Edit Name
+                        </semantic-link>
+                      {{/if}}"
+                    },
+                    {
+                      "displayName" : "&nbsp;",
+                      "cellTemplate" : "<div>
+                                        <mp-ldp-remove-from-container-action
+                                          iri=\"{{attribute_assignment.value}}/container\"
+                                          container=\"http://www.metaphacts.com/ontologies/platform#formContainer\">
+                                          <div>
+                                          <mp-ldp-remove-from-container-action
+                                            iri=\"{{carried_out_by.value}}/container\"
+                                            container=\"http://www.metaphacts.com/ontologies/platform#formContainer\">
+
+                                             <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>
+
+                                          </mp-ldp-remove-from-container-action>
+                                          </div>
+                                        </mp-ldp-remove-from-container-action>
+                                      </div>"
+                    }
+                  ]'
+                  options='{"showFilter":false}'
+
+                no-result-template="<table>
+                  <thead><tr><th>Publisher</th><th>Name (as stated in book)</th><tr></thead>
+                  <tbody><tr><td colspan=2>No publishers assigned</td><tr></tbody>
+                </table>"
+                >
+              </semantic-table>
+              <div class="gap-bottom">
+                <semantic-link
+                  class="btn btn-default btn-sm"
+                  iri="[[resolvePrefix ":addPublisherToBook"]]"
+                  urlqueryparam-bookiri="[[this]]"
+                >
+                  Add Publisher
+                </semantic-link>
+              </div>
+
+              <semantic-form-select-input data-for='place_published'></semantic-form-select-input>
+
+              <mp-overlay-dialog title="Create new place" type="modal" bs-size="large">
+
+                <mp-overlay-dialog-trigger><a>Create new place</a></mp-overlay-dialog-trigger>
+
+                <mp-overlay-dialog-content>
+                  <div width="800px">
+                    <mp-page-loader iri="http://sphaera.mpiwg-berlin.mpg.de/resource/createPlace" urlqueryparam-noredirect="true">
+                    </mp-page-loader>
+                  </div>
+                </mp-overlay-dialog-content>
+              </mp-overlay-dialog>
+
+              <div class="gap-bottom">
+                [[#if (ask "ASK {?? ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:P7_took_place_at ?place}")]]
+                  <semantic-form-text-input for="place_published_name"></semantic-form-text-input>
+                [[else]]
+                  <div class="disabled">
+                    <div class="input-layover">You first need to add a place and click save</div>
+                    <semantic-form-text-input for="place_published_name"></semantic-form-text-input>
+                  </div>
+                [[/if]]
+              </div>
+
+              <semantic-form-text-input for="date_published_earliest"></semantic-form-text-input>
+
+              <semantic-form-text-input for="date_published_latest"></semantic-form-text-input>
+
+              <semantic-form-text-input for="date_published_text"></semantic-form-text-input>
+            </bs-tab-pane>
+
+            <bs-tab-pane event-key="author">
+              <h3>Authors</h3>
+
+               <semantic-table
+                query='SELECT ?carried_out_by ?author_name ?attribute_assignment ?alternative_name_label WHERE {
+                     BIND(URI(CONCAT(STR(??), "/reproduction/document")) as ?reproduction)
+                      ?? ecrm:P128_carries ?publication_expression .
+                      ?publication_expression ecrm:P165_incorporates/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+                      ?carried_out_by ecrm:PC02_has_range ?author  ;
+                       ecrm:P14.1_in_the_role_of sphRole:author .
+                      ?author ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?author_name
+                      OPTIONAL {
+                        ?alternative_name ^ecrm:P1_is_identified_by ?author ;
+                    		ecrm:P3_has_note ?alternative_name_label ;
+                      		ecrm:P70i_is_documented_in ?publication_expression  .
+                        ?attribute_assignment ecrm:P141_assigned ?alternative_name ;
+                    		ecrm:P140_assigned_attribute_to ?author ;
+                      		ecrm:P16_used_specific_object ?reproduction .
+                      }
+                    }
+                    LIMIT 1000'
+                   column-configuration='[
+                    {
+                      "displayName" : "Author",
+                      "cellTemplate" : "<semantic-link
+                        iri=\"[[resolvePrefix ":addAuthorToBook"]]\"
+                        urlqueryparam-carriedoutbyiri=\"{{carried_out_by.value}}\"
+                        urlqueryparam-bookiri=\"[[this]]\">
+                        {{author_name.value}}
+                      </semantic-link>"
+                    },
+                    {
+                      "displayName" : "Name (as stated in book)",
+                      "cellTemplate" : "{{#if alternative_name_label.value}}
+                        <semantic-link
+                          iri=\"[[resolvePrefix ":addNameForAuthorOrTranslator"]]\"
+                          urlqueryparam-carriedoutbyiri=\"{{carried_out_by.value}}\"
+                          urlqueryparam-bookiri=\"[[this]]\">
+                          {{alternative_name_label.value}}
+                        </semantic-link>
+                      {{else}}
+                        <semantic-link
+                          class=\"btn btn-xs btn-default\"
+                          iri=\"[[resolvePrefix ":addNameForAuthorOrTranslator"]]\"
+                          urlqueryparam-carriedoutbyiri=\"{{carried_out_by.value}}\"
+                          urlqueryparam-bookiri=\"[[this]]\">
+                          Edit name
+                        </semantic-link>
+                      {{/if}}"
+                    },
+                    {
+                      "displayName" : "&nbsp;",
+                      "cellTemplate" : "<div>
+                                        <mp-ldp-remove-from-container-action
+                                          iri=\"{{attribute_assignment.value}}/container\"
+                                          container=\"http://www.metaphacts.com/ontologies/platform#formContainer\">
+                                          <div>
+                                          <mp-ldp-remove-from-container-action
+                                            iri=\"{{carried_out_by.value}}/container\"
+                                            container=\"http://www.metaphacts.com/ontologies/platform#formContainer\">
+
+                                             <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>
+
+                                          </mp-ldp-remove-from-container-action>
+                                          </div>
+                                        </mp-ldp-remove-from-container-action>
+                                      </div>"
+                    }
+                  ]'
+                  options='{"showFilter":false}'
+                >
+                </semantic-table>
+
+               <semantic-link
+                class="btn btn-default btn-sm"
+                iri="[[resolvePrefix ":addAuthorToBook"]]"
+                urlqueryparam-bookiri="[[this]]">
+                Add Author
+              </semantic-link>
+
+               <div style="margin-top:2em;">
+
+                    <semantic-table
+                      query='SELECT ?carried_out_by ?translator_name ?attribute_assignment ?alternative_name_label WHERE {
+                          BIND(URI(CONCAT(STR(??), "/reproduction/document")) as ?reproduction)
+                           ?? ecrm:P128_carries ?publication_expression .
+                           ?publication_expression ecrm:P165_incorporates/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+                           ?carried_out_by ecrm:PC02_has_range ?translator ;
+                            ecrm:P14.1_in_the_role_of sphRole:translator .
+                           ?translator ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?translator_name
+                           OPTIONAL {
+                             ?alternative_name ^ecrm:P1_is_identified_by ?translator ;
+                         		ecrm:P3_has_note ?alternative_name_label ;
+                           		ecrm:P70i_is_documented_in ?publication_expression  .
+                             ?attribute_assignment ecrm:P141_assigned ?alternative_name ;
+                         		ecrm:P140_assigned_attribute_to ?translator ;
+                           		ecrm:P16_used_specific_object ?reproduction .
+                           }
+                         }
+                         LIMIT 1000'
+                        column-configuration='[
+                         {
+                           "displayName" : "Translator",
+                           "cellTemplate" : "<semantic-link
+                              iri=\"[[resolvePrefix ":addTranslatorToBook"]]\"
+                              urlqueryparam-carriedoutbyiri=\"{{carried_out_by.value}}\"
+                              urlqueryparam-bookiri=\"[[this]]\">
+                              {{translator_name.value}}
+                            </semantic-link>"
+                         },
+                         {
+                           "displayName" : "Name (as stated in book)",
+                           "cellTemplate" : "{{#if alternative_name_label.value}}
+                              <semantic-link
+                                iri=\"[[resolvePrefix ":addNameForAuthorOrTranslator"]]\"
+                                urlqueryparam-carriedoutbyiri=\"{{carried_out_by.value}}\"
+                                urlqueryparam-bookiri=\"[[this]]\">
+                                {{alternative_name_label.value}}
+                              </semantic-link>
+                            {{else}}
+                              <semantic-link
+                                class=\"btn btn-xs btn-default\"
+                                iri=\"[[resolvePrefix ":addNameForAuthorOrTranslator"]]\"
+                                urlqueryparam-carriedoutbyiri=\"{{carried_out_by.value}}\"
+                                urlqueryparam-bookiri=\"[[this]]\">
+                                Edit name
+                              </semantic-link>
+                            {{/if}}"
+                         },
+                         {
+                           "displayName" : "&nbsp;",
+                           "cellTemplate" : "<div>
+                                             <mp-ldp-remove-from-container-action
+                                               iri=\"{{attribute_assignment.value}}/container\"
+                                               container=\"http://www.metaphacts.com/ontologies/platform#formContainer\">
+                                               <div>
+                                               <mp-ldp-remove-from-container-action
+                                                 iri=\"{{carried_out_by.value}}/container\"
+                                                 container=\"http://www.metaphacts.com/ontologies/platform#formContainer\">
+
+                                                  <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>
+
+                                               </mp-ldp-remove-from-container-action>
+                                               </div>
+                                             </mp-ldp-remove-from-container-action>
+                                           </div>"
+                         }
+                       ]'
+                       options='{"showFilter": false }'>
+                     </semantic-table>
+
+                    <semantic-link
+                      class="btn btn-default btn-sm"
+                      iri="[[resolvePrefix ":addTranslatorToBook"]]"
+                      urlqueryparam-bookiri="[[this]]">
+                      Add Translator
+                    </semantic-link>
+
+               </div>
+              </bs-tab-pane>
+
+            <bs-tab-pane event-key="printing">
+              <h3>Printing</h3>
+
+               <semantic-table
+                 query='SELECT DISTINCT ?carried_out_by ?printer_name ?attribute_assignment ?alternative_name_label WHERE {
+                      BIND(URI(CONCAT(STR(??), "/reproduction/document")) as ?reproduction)
+                      ?? ecrm:P128_carries ?publication_expression ;
+                        efrbroo:R7_is_example_of/efrbroo:R26i_was_produced_by/ecrm:PC01_is_domain_of ?carried_out_by .
+                      ?carried_out_by ecrm:PC02_has_range ?printer .
+                      ?printer ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?printer_name
+                      OPTIONAL {
+              					?printer ecrm:P1_is_identified_by ?alternative_name .
+              					?alternative_name ecrm:P3_has_note ?alternative_name_label ;
+              						ecrm:P70i_is_documented_in ?publication_expression .
+                      }
+                    }
+                    LIMIT 1000'
+                   column-configuration='[
+                    {
+                      "displayName" : "Printer",
+                      "cellTemplate" : "<semantic-link
+                        iri=\"[[resolvePrefix ":addPrinterToBook"]]\"
+                        urlqueryparam-carriedoutbyiri=\"{{carried_out_by.value}}\"
+                        urlqueryparam-bookiri=\"[[this]]\">
+                        {{printer_name.value}}
+                      </semantic-link>"
+                    },
+                    {
+                      "displayName" : "Name (as stated in book)",
+                      "cellTemplate" : "{{#if alternative_name_label.value}}
+                          <semantic-link
+                            iri=\"[[resolvePrefix ":addNameForPrinter"]]\"
+                            urlqueryparam-carriedoutbyiri=\"{{carried_out_by.value}}\"
+                            urlqueryparam-bookiri=\"[[this]]\">
+                            {{alternative_name_label.value}}
+                          </semantic-link>
+                        {{else}}
+                          <semantic-link
+                            class=\"btn btn-xs btn-default\"
+                            iri=\"[[resolvePrefix ":addNameForPrinter"]]\"
+                            urlqueryparam-carriedoutbyiri=\"{{carried_out_by.value}}\"
+                            urlqueryparam-bookiri=\"[[this]]\">
+                            Edit name
+                          </semantic-link>
+                        {{/if}}"
+                    },
+                    {
+                      "displayName" : "&nbsp;",
+                      "cellTemplate" : "<div>
+                                        <mp-ldp-remove-from-container-action
+                                          iri=\"{{attribute_assignment.value}}/container\"
+                                          container=\"http://www.metaphacts.com/ontologies/platform#formContainer\">
+                                          <div>
+                                          <mp-ldp-remove-from-container-action
+                                            iri=\"{{carried_out_by.value}}/container\"
+                                            container=\"http://www.metaphacts.com/ontologies/platform#formContainer\">
+
+                                             <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>
+
+                                          </mp-ldp-remove-from-container-action>
+                                          </div>
+                                        </mp-ldp-remove-from-container-action>
+                                      </div>"
+                    }
+                  ]'
+                  options='{"showFilter": false }'
+                >
+                </semantic-table>
+
+               <semantic-link
+                class="btn btn-default btn-sm"
+                iri="[[resolvePrefix ":addPrinterToBook"]]"
+                urlqueryparam-bookiri="[[this]]">
+                Add Printer
+              </semantic-link>
+
+              </bs-tab-pane>
+
+            <bs-tab-pane event-key="license">
+              <h3>License</h3>
+
+                <semantic-table
+                  query="SELECT ?license ?type ?note ?page WHERE {
+                   ?? efrbroo:R7_is_example_of ?manifestation .
+
+                   ?license a ecrm:E30_Right ;
+                    ecrm:P129_is_about ?manifestation ;
+                    ecrm:P2_has_type/ecrm:P3_has_note ?type .
+
+                    OPTIONAL {
+                      ?license ecrm:P3_has_note ?note
+                    }
+
+                    OPTIONAL {
+                      ?license sphaera:pageFrom ?page
+                    }
+                  } ORDER BY ?page"
+                  column-configuration='[
+                    {
+                      "displayName" : "License Type",
+                      "variableName" : "type"
+                    },
+                    {
+                      "displayName" : "Note",
+                      "variableName" : "note"
+                    },
+                    {
+                      "displayName" : "Page",
+                      "variableName" : "page"
+                    },
+                    {
+                      "displayName" : "&nbsp",
+                      "cellTemplate" : "<semantic-link
+                        class=\"btn-xs btn-default\"
+                        iri=\"[[resolvePrefix ":addLicenseToBook"]]\"
+                        urlqueryparam-licenseiri=\"{{license.value}}\"
+                        urlqueryparam-bookiri=\"[[this]]\">
+                        Edit
+                      </semantic-link>
+                      <mp-ldp-remove-from-container-action
+                        iri=\"{{license.value}}/container\"
+                        container=\"http://www.metaphacts.com/ontologies/platform#formContainer\">
+
+                        <a class=\"btn-default btn-xs\">Delete</a>
+
+                      </mp-ldp-remove-from-container-action>"
+                    }
+                  ]'
+                  options='{"showFilter": false}'
+              >
+              </semantic-table>
+
+               <semantic-link
+                class="btn btn-default btn-sm"
+                iri="[[resolvePrefix ":addLicenseToBook"]]"
+                urlqueryparam-bookiri="[[this]]">
+                Add License
+              </semantic-link>
+
+            </bs-tab-pane>
+
+            <bs-tab-pane event-key="locator">
+              <h3>Locators</h3>
+              <semantic-table
+                query="SELECT ?context ?url ?identifier  ?document {
+                      ?? efrbroo:R7_is_example_of/^ecrm:P70_documents ?document .
+                      ?document ecrm:P2_has_type/ecrm:P3_has_note ?context .
+                      OPTIONAL {
+                        ?document ecrm:P48_has_preferred_identifier ?url .
+                      }
+                      OPTIONAL
+                      {
+                        ?document ecrm:P1_is_identified_by ?identifier .
+                      }
+                    }
+                    LIMIT 1000"
+                 column-configuration='[
+                    {
+                      "displayName" : "Context",
+                      "cellTemplate" : "{{context.value}}"
+                    },
+                    {
+                      "displayName" : "URL / Identifier",
+                      "cellTemplate" : "{{#if url.value}}<a href=\"{{url.value}}\" style=\"max-width:40em;display:block;\"><mp-text-truncate>{{url.value}}</mp-text-truncate></a>{{else}}{{identifier.value}}{{/if}}"
+                    },
+                    {
+                      "displayName" : "",
+                      "cellTemplate" : "
+                      <div>
+                        <semantic-link
+                          uri=\":addLocatorToBook\"
+                          urlqueryparam-locatoriri=\"{{document.value}}\"
+                          urlqueryparam-bookiri=\"[[this]]\"
+                          class=\"btn-default btn-xs\">Edit</semantic-link>
+                        <mp-ldp-remove-from-container-action
+                          iri=\"{{document.value}}/container\"
+                          container=\"http://www.metaphacts.com/ontologies/platform#formContainer\">
+
+                          <a class=\"btn-default btn-xs\">Delete</a>
+
+                        </mp-ldp-remove-from-container-action>
+                      </div>"
+                    }
+                  ]'
+                  options='{
+                      "showFilter":false,
+                      "resultsPerPage":100
+                  }'
+                  >
+              </semantic-table>
+              <div class="gap-bottom">
+                <semantic-link
+                  iri="[[resolvePrefix ":addLocatorToBook"]]"
+                  urlqueryparam-bookiri="[[this]]"
+                  class="button btn-default btn-sm">Add Locator</a>
+              </div>
+            </bs-tab-pane>
+
+            <bs-tab-pane event-key="parts">
+              <h3>Parts</h3>
+
+              <div class="text-right gap-bottom">
+                <semantic-link
+                  iri="[[resolvePrefix ":addPartToBook"]]"
+                  urlqueryparam-bookiri="[[this]]"
+                  class="btn btn-primary btn-sm">
+                  Add Part
+                </semantic-link>
+              </div>
+
+              <semantic-query
+                query='[[> :queryPartsForBookEdit]]'
+                template='
+                  <ol class="panel-numbering">
+                    {{#each bindings}}
+                    <li>
+                      <div class="panel">
+                        <bs-row class="panel-body">
+                          <bs-col md=4 sm=12 class="panel-header">
+                            <dl style="margin-left:1em">
+                              <dt>
+                                Part Type
+                              </dt>
+                              <dd>
+                                {{part_types.value}}
+                              </dd>
+                              <dt>
+                                Title
+                              </dt>
+                              <dd>
+                                <em>{{short_title.value}}</em>
+                              </dd>
+                              <dt>
+                                {{#if is_adaption.value}}
+                                  Original Author(s)
+                                {{else}}
+                                  Author(s)
+                                {{/if}}
+                              </dt>
+                              <dd>
+                                {{authors.value}}
+                              </dd>
+                              <dt>
+                                Pages
+                              </dt>
+                              <dd>
+                                {{page_from.value}}&ndash;{{page_to.value}}
+                              </dd>
+                              <dt style="padding-top:1em;">
+
+                                {{#if has_title.value}}
+                                  <mp-ldp-remove-from-container-action
+                                    iri="{{has_title.value}}/container"
+                                    container="http://www.metaphacts.com/ontologies/platform#formContainer">
+                                    <div style="display:inline-block">
+                                      <mp-ldp-remove-from-container-action
+                                        iri="{{attribute_assignment.value}}/container"
+                                        container="http://www.metaphacts.com/ontologies/platform#formContainer">
+                                        <a class="btn-default btn btn-sm">Remove</a>
+                                      </mp-ldp-remove-from-container-action>
+                                    </div>
+                                  </mp-ldp-remove-from-container-action>
+                                {{else}}
+                                  <mp-ldp-remove-from-container-action
+                                    iri="{{attribute_assignment.value}}/container"
+                                    container="http://www.metaphacts.com/ontologies/platform#formContainer">
+                                    <a class="btn-default btn btn-sm">Remove</a>
+                                  </mp-ldp-remove-from-container-action>
+                                {{/if}}
+                                <semantic-link
+                                  {{#if is_fragment.value}}
+                                    iri="[[resolvePrefix ":editPartFragmentInBook"]]"
+                                  {{else}}
+                                    iri="[[resolvePrefix ":editPartInBook"]]"
+                                  {{/if}}
+                                  urlqueryparam-attributeassignmentiri="{{attribute_assignment.value}}"
+                                  urlqueryparam-bookiri="[[this]]"
+                                  class="btn btn-default btn-sm">
+                                  Edit
+                                </semantic-link>
+                              </dt>
+                            </dl>
+
+                          </bs-col>
+                          <bs-col md=8 sm=12>
+                            <dl>
+                              <dt>
+                                Title in Book
+                              </dt>
+                              <dd>
+
+                                  {{#if assigned_title.value}}
+                                    {{assigned_title.value}}
+                                  {{/if}}
+
+                                  {{#if assigned_title.value}}
+                                    <mp-ldp-remove-from-container-action
+                                      iri="{{has_title.value}}/container"
+                                      container="http://www.metaphacts.com/ontologies/platform#formContainer">
+                                      <a class="btn btn-default btn-xs">Remove</a>
+                                    </mp-ldp-remove-from-container-action>
+                                  {{/if}}
+
+                                  <semantic-link
+                                    iri="[[resolvePrefix ":addPartTitleInBook"]]"
+                                    urlqueryparam-hastitleiri="{{has_title.value}}"
+                                    urlqueryparam-bookiri="[[this]]"
+                                    urlqueryparam-partiri="{{assigned_part.value}}"
+                                    class="btn btn-xs btn-default"
+                                    >
+                                    {{#if assigned_title.value}}
+                                      Edit
+                                    {{else}}
+                                      Add
+                                    {{/if}}
+                                  </semantic-link>
+
+                              </dd>
+
+                              {{#if is_adaption.value}}
+                                {{#if assigned_part_authors.value}}
+                                  <dt>
+                                    Part Author(s)
+                                  </dt>
+                                  <dd>
+                                    {{assigned_part_authors.value}}
+                                  </dd>
+                                {{/if}}
+
+                                {{#if is_adaption.value}}
+
+                                  {{#if ancestor_adaption_labels.value}}
+                                    <dt>
+                                      Based on
+                                    </dt>
+                                    <dd>
+                                      {{{ancestor_adaption_labels.value}}}
+                                    </dd>
+                                  {{/if}}
+
+                                {{/if}}
+
+                              {{/if}}
+
+                              {{#if languages.value}}
+                                <dt>
+                                  Language
+                                </dt>
+                                <dd>
+                                  {{languages.value}}
+                                </dd>
+                              {{/if}}
+                            </dl>
+                          </bs-col>
+                        </bs-row>
+                      </div>
+                    </li>
+                  {{/each}}
+                </ol>'
+              >
+              </semantic-query>
+
+            </bs-tab-pane>
+
+            <bs-tab-pane event-key="meta">
+              <h3>Annotations</h3>
+              <semantic-table
+                query="SELECT ?annotation ?annotation_body WHERE {
+                    BIND(?? as ?target)
+                    ?annotation oa:hasTarget ?target ;
+                    oa:hasBody/cnt:chars ?annotation_body .
+                  }"
+                column-configuration='[
+                    {
+                      "displayName" : "Annotation",
+                      "variableName" : "annotation_body"
+                    },
+                    {
+                      "displayName" : "&nbsp;",
+                      "cellTemplate" : "<div><semantic-link iri=\"{{annotation.value}}\" class=\"btn btn-default btn-xs\">Edit</semantic-link>
+                        <mp-ldp-remove-from-container-action
+                          iri=\"{{annotation.value}}/container\"
+                          container=\"http://www.metaphacts.com/ontologies/platform#formContainer\">
+                            <a class=\"btn btn-default btn-xs\">Delete</a>
+                        </mp-ldp-remove-from-container-action></div>"
+                    }
+                  ]'
+                  options='{"showFilter":false}'
+              >
+              </semantic-table>
+              <semantic-link
+                iri="[[resolvePrefix ":createAnnotation"]]"
+                urlqueryparam-resourceiri="[[this]]"
+                class="btn btn-default btn-sm"
+              >Add Annotation</semantic-link>
+            </bs-tab-pane>
+
+            <bs-tab-pane event-key="delete">
+              <h3>Delete</h3>
+              <p>Use the button below if you like to delete this book from the database</p>
+
+                  <semantic-link
+                      class="btn bn-md btn-danger"
+                      iri="[[resolvePrefix ":deleteResource"]]"
+                      urlqueryparam-resiri="[[this]]"
+                      urlqueryparam-back="[[this]]"
+                      urlqueryparam-backtitle="Books"
+                      urlqueryparam-redirect=":listBooks"
+                    >
+                      Delete Book
+                    </semantic-link>
+            </bs-tab-pane>
+
+            <bs-tab-pane event-key="hidden">
+              <div class="disabled hidden-field">
+                <h3>Hidden</h3>
+                <semantic-form-text-input for="doi"></semantic-form-text-input>
+                <semantic-form-text-input for="fingerprint"></semantic-form-text-input>
+                <semantic-form-text-input for="record_type"></semantic-form-text-input>
+                <semantic-form-text-input for="carrier_production_event"></semantic-form-text-input>
+                <semantic-form-text-input for="expression_creation"></semantic-form-text-input>
+                <semantic-form-text-input for="publication_event"></semantic-form-text-input>
+                <semantic-form-text-input for="reproduction_event"></semantic-form-text-input>
+              </div>
+            </bs-tab-pane>
+
+            <bs-tab-pane event-key="statements">
+
+              [[> :statements]]
+
+            </bs-tab-pane>
+
+          </bs-tab-content>
+        </bs-col>
+      </bs-row>
+    </bs-tab-container>
+
+    <bs-row>
+      <bs-col sm="12" class="text-right form-submit">
+        <button name="submit" class="btn btn-primary btn-md">Save</button>
+        <semantic-form-recover-notification class="alert alert-info"></semantic-form-recover-notification>
+      </bs-col>
+     </bs-row>
+  </semantic-form>
+
+[[else]]
+
+  <div class="inPageHeader">
+    [[> Platform:DefaultResourceHeader ]]
+  </div>
+
+  <semantic-link
+    iri="[[resolvePrefix ":viewBook"]]
+    urlqueryparam-bookiri="[[this]]"
+    class="btn btn-primary"
+  >View Book Record</semantic-link>
+
+  [[> Platform:SourceStatements ]]
+
+[[/if]]
+
+[[> :identifier]]
+
+[[> :footer]]

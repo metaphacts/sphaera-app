@@ -1,0 +1,69 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+  [[> :templateBreadcrumbEditResource bookiri="true" tab="publication"]]
+</ol>
+
+<h2>Add name of the publisher as stated in the book</h2>
+
+[[#if (urlParam "carriedoutbyiri")]]
+
+  <semantic-query
+	query='SELECT ?book_name ?book WHERE { ?book ecrm:P3_has_note ?book_name . BIND(URI(STRBEFORE("[[urlParam "carriedoutbyiri"]]","/publication/publisher")) as ?book ) } LIMIT 1'
+  template='<p>Use this form to edit the publisher of the book {{#each bindings}}<semantic-link iri={{book.value}}>{{book_name.value}}</semantic-link>{{/each}}</p>'
+	>
+ </semantic-query>
+
+  <p>
+    Publisher:
+    <semantic-query
+  	query='SELECT ?publisher_name WHERE {
+           ?carried_out_by ecrm:PC02_has_range ?publisher .
+          ?publisher ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?publisher_name .
+           BIND(<[[urlParam "carriedoutbyiri"]]> as ?carried_out_by ) } LIMIT 1'
+    template='{{#each bindings}}{{publisher_name.value}}{{/each}}'
+  	>
+   </semantic-query>
+  </p>
+
+  <semantic-form
+    fields="[[fieldDefinitions
+      alternative_name="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_publisher"
+      record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/attribute_assignment_record_type"
+    ]]"
+    browser-persistence="false"
+    persistence="LDP"
+    subject="[[urlParam "carriedoutbyiri"]]/name"
+    post-action="[[urlParam "bookiri"]]"
+    urlqueryparam-tab="publication"
+  >
+  <semantic-form-select-input for="alternative_name"></semantic-form-select-input>
+
+  <mp-overlay-dialog title="Create new name" type="modal" bs-size="large">
+    <mp-overlay-dialog-trigger><a>Create new name</a></mp-overlay-dialog-trigger>
+      <mp-overlay-dialog-content>
+        <div width="800px">
+        <mp-page-loader iri="http://sphaera.mpiwg-berlin.mpg.de/resource/createActorAppellation">
+        </mp-page-loader>
+      </div>
+    </mp-overlay-dialog-content>
+  </mp-overlay-dialog>
+
+   <div class="disabled hidden-field">
+     <semantic-form-text-input for="record_type"></semantic-form-text-input>
+     </div>
+
+   <div class="text-right form-submit">
+     <semantic-link iri="[[urlParam "bookiri"]]" urlqueryparam-tab="publication" class="btn btn-default btn-md">Cancel</semantic-link>
+     <button name="submit" class="btn btn-primary btn-md">Save</button>
+   </div>
+
+</semantic-form>
+
+[[else]]
+	No actor has been selected. This form needs to be accessed via a book record.
+[[/if]]
+
+[[> :footer]]

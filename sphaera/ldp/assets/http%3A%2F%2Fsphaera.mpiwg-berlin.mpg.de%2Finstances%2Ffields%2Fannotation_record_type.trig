@@ -1,0 +1,33 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_record_type/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_record_type> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/52s0x2zjt3rhn8zrggb9>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fcvz6n8y5cem8u102j4i>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Defaults to the annotation record type";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Annotation Record Type" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/52s0x2zjt3rhn8zrggb9> <http://spinrdf.org/sp#text>
+      "INSERT { $subject rdf:type $value} WHERE {}";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fcvz6n8y5cem8u102j4i> <http://spinrdf.org/sp#text>
+      """SELECT $value WHERE { 
+  BIND(?subject as ?dummy) 
+  VALUES ($value) { 
+    (<http://www.w3.org/ns/oa#Annotation>) } }
+""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_record_type> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:19.670+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_record_type> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_record_type> a <http://www.w3.org/ns/ldp#Resource> .
+}

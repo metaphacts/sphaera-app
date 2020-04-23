@@ -1,0 +1,823 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listPersons") label="Persons"]]
+</ol>
+
+<semantic-query
+  query='SELECT ?person_name WHERE
+    {
+      ?person ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?person_label .
+      [[> :queryFormatName input="?person_label" output="?person_name"]]
+
+      BIND(<[[urlParam "personiri"]]> as ?person)
+     }'
+  template="<h3>{{#each bindings}}{{person_name.value}}{{/each}}</h3>">
+</semantic-query>
+
+<semantic-query
+  query='SELECT ?person_role WHERE
+    {
+      ?person ecrm:P2_has_type/skos:prefLabel ?person_role .
+      BIND(<[[urlParam "personiri"]]> as ?person)
+    } ORDER BY ?person_role'
+  template="<h4>{{#each bindings}}{{#if @first}}{{else}}{{#if @last}} and {{else}}, {{/if}}{{/if}}{{person_role.value}}{{/each}}</h4>">
+</semantic-query>
+[[#if (hasPermission "forms:ldp:*")]]
+  <semantic-link iri="[[urlParam "personiri"]]" class="btn btn-md btn-primary gap-bottom" >Edit</semantic-link>
+[[else]]
+  <div style="text-align:right">
+    [[> :templateGiveFeedbackButton ]]
+  </div>
+[[/if]]
+
+<div class="content">
+  <dl>
+
+    <!-- Summary -->
+    <dt>Summary</dt>
+    <dd class="lead gap-bottom">
+
+      <!-- Summary: Name -->
+      <semantic-query
+        query='SELECT ?person_name WHERE {
+          BIND(<[[urlParam "personiri"]]> as ?person)
+
+          ?person ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?person_label .
+          [[> :queryFormatName input="?person_label" output="?person_name"]]
+        }'
+        template='<span>{{#each bindings}}{{person_name.value}}{{/each}}</span>'
+      ></semantic-query>
+
+
+      <!-- Summary: Role -->
+      <semantic-query
+        query='SELECT ?role ?role_label_lowercase ?article WHERE {
+          BIND(<[[urlParam "personiri"]]> as ?person)
+
+          ?person ecrm:P2_has_type ?role .
+          ?role skos:prefLabel ?role_label .
+          BIND(LCASE(?role_label) as ?role_label_lowercase)
+          BIND(IF(REGEX(?role_label, "^[aeiou]", "i"), "an", "a") as ?article)
+        }'
+        template='<span> is {{#each bindings}}{{#if @first}}{{article.value}} {{else}}{{#if @last}} and {{else}}, {{/if}}{{/if}}{{role_label_lowercase.value}}{{/each}}</span>'
+      ></semantic-query>
+
+      <!-- Summary: Creations -->
+      <semantic-query
+        query='SELECT
+          ?label
+          ?has_books_authored
+          ?has_books_printed
+          ?has_books_published
+          ?has_books_published_and_printed
+          ?has_parts_adapted
+          ?has_parts_created
+          ?num_books_authored
+          ?num_books_printed
+          ?num_books_published
+          ?num_books_published_and_printed
+          ?num_parts_created
+          ?num_parts_adapted
+        WHERE {
+          FILTER(?label != "true")
+          {
+            SELECT
+              ?label
+              ?has_books_authored
+              ?has_books_printed
+              ?has_books_published
+              ?has_books_published_and_printed
+              ?has_parts_adapted
+              ?has_parts_created
+              (COUNT(DISTINCT ?book_authored) as ?num_books_authored)
+              (COUNT(DISTINCT ?book_published) as ?num_books_published)
+              (COUNT(DISTINCT ?book_published_and_printed) as ?num_books_published_and_printed)
+              (COUNT(DISTINCT ?book_printed) as ?num_books_printed)
+              (COUNT(DISTINCT ?part_created) as ?num_parts_created)
+              (COUNT(DISTINCT ?part_adapted) as ?num_parts_adapted)
+              {
+                BIND(<[[urlParam "personiri"]]> as ?person)
+
+                {
+                  ?book_authored ecrm:P128_carries/ecrm:P165_incorporates/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person .
+                  ?book_authored a sphaera:Book .
+                  BIND("true" as ?has_books_authored)
+                  BIND("1_books_authored" as ?label)
+                } UNION {
+                  ?book_published_and_printed ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person ;
+                    efrbroo:R28i_was_produced_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person .
+                  ?book_published_and_printed a sphaera:Book .
+                  BIND("true" as ?has_books_published_and_printed)
+                  BIND("2_books_published_and_printed" as ?label)
+                } UNION {
+                  ?book_published ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person .
+        		      FILTER NOT EXISTS { ?book_published efrbroo:R28i_was_produced_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person }
+                  ?book_published a sphaera:Book .
+                  BIND("true" as ?has_books_published)
+                  BIND("3_books_published" as ?label)
+                } UNION {
+                  ?book_printed efrbroo:R28i_was_produced_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person .
+        		      FILTER NOT EXISTS { ?book_printed ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person }
+                  ?book_printed a sphaera:Book .
+                  BIND("true" as ?has_books_printed)
+                  BIND("4_books_printed" as ?label)
+                } UNION {
+                  ?part_created efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person .
+                  ?part_created a sphaera:Part .
+                  BIND("true" as ?has_parts_created)
+                  BIND("5_parts_created" as ?label)
+                } UNION {
+                  ?part_adapted efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person .
+                  ?part_adapted a sphaera:Part_Adaption .
+                  BIND("true" as ?has_parts_adapted)
+                  BIND("6_parts_adapted" as ?label)
+                }
+              } GROUP BY
+              ?label
+              ?has_books_authored
+              ?has_books_printed
+              ?has_books_published
+              ?has_books_published_and_printed
+              ?has_parts_adapted
+              ?has_parts_created
+
+              }
+          } ORDER BY ?label'
+        template='<span> who {{#each bindings}}
+          {{#if @first}}{{else}}{{#if @last}} and {{else}}, {{/if}}{{/if}}{{#if has_books_authored.value
+          }}<a href="#books_authored">authored {{num_books_authored.value}} {{#ifCond num_books_authored.value "==" 1}}book{{else}}books{{/ifCond}}</a>{{/if}}{{#if has_books_published_and_printed.value
+          }}<a href="#books_published_and_printed">published and printed {{num_books_published_and_printed.value}} {{#ifCond num_books_published_and_printed.value "==" 1}}book{{else}}books{{/ifCond}}</a>{{/if}}{{#if has_books_printed.value
+          }}<a href="#books_printed">printed {{num_books_printed.value}} {{#ifCond num_books_printed.value "==" 1}}book{{else}}books{{/ifCond}}</a>{{/if}}{{#if has_books_published.value
+          }}<a href="#books_published">published {{num_books_published.value}} {{#ifCond num_books_published.value "==" 1}}book{{else}}books{{/ifCond}}</a>{{/if}}{{#if has_parts_created.value
+          }}<a href="#parts_created">created {{num_parts_created.value}} {{#ifCond num_parts_created.value "==" 1}}part{{else}}parts{{/ifCond}}</a>{{/if}}{{#if has_parts_adapted.value
+          }}<a href="#parts_adapted">adapted {{num_parts_adapted.value}} {{#ifCond num_parts_adapted.value "==" 1}}part{{else}}parts{{/ifCond}}</a>{{/if}}{{/each}}.'
+        no-result-template='.'
+      ></semantic-query>
+
+      <!-- Summary: Places -->
+      <semantic-query
+        query='SELECT DISTINCT ?person_name ?place ?place_name WHERE {
+           BIND(<[[urlParam "personiri"]]> as ?person)
+
+            ?person ^ecrm:PC02_has_range ?carried_out_by ;
+              ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?person_label .
+            [[> :queryFormatName input="?person_label" output="?person_name"]]
+
+            ?carried_out_by a ecrm:PC14_carried_out_by .
+            ?event ecrm:PC01_is_domain_of ?carried_out_by ;
+          	ecrm:P7_took_place_at ?place .
+            ?place ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?place_name .
+          }'
+        template='<span>{{#each bindings}}
+          {{#if @first}}{{person_name.value}} was active in {{/if}}{{#if @first}}{{else}}{{#if @last}} and {{else}}, {{/if}}{{/if}}<semantic-link iri="[[resolvePrefix ":viewPlace"]]" urlqueryparam-placeiri="{{place.value}}">{{place_name.value}}</semantic-link>{{/each}}.</span>'>
+      </semantic-query>
+
+      <!-- Summary: Alternative Names -->
+      <semantic-query
+        query='SELECT ?num_names WHERE {
+
+          FILTER(?num_names > 0)
+
+          {
+            SELECT (COUNT(?alternative_name) as ?num_names) WHERE {
+              BIND(<[[urlParam "personiri"]]> as ?person)
+              ?person ecrm:P1_is_identified_by ?alternative_name .
+              ?alternative_name a ecrm:E82_Actor_Appellation .
+            }
+          }
+
+        }'
+        template='<span> We encountered {{#each bindings}}<a href="#alternative_names">{{num_names.value}} other {{#ifCond num_names.value "==" 1}}name{{else}}names{{/ifCond}}{{/each}}</a> for this person.</span>'
+      >
+      </semantic-query>
+
+      <!-- Summary: Biography -->
+        <semantic-query
+          query='SELECT ?person_firstname ?data_present ?year_of_birth ?year_of_death ?year_active_from ?year_active_to ?order WHERE {
+             BIND(<[[urlParam "personiri"]]> as ?person)
+             ?person ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?person_name
+             BIND( IF(REGEX(STR(?person_name), ", "),
+                IF(REGEX(STRAFTER(?person_name, ", ")," "), STRBEFORE(STRAFTER(?person_name, ", "), " "), STRAFTER(?person_name, ", ")),
+                ?person_name )
+               as ?person_firstname)
+             OPTIONAL {
+               ?person ecrm:P98i_was_born/ecrm:P4_has_time-span/ecrm:P3_has_note ?date_of_birth .
+               BIND(STRBEFORE(STR(?date_of_birth), "-01") as ?year_of_birth)
+               BIND("true" as ?data_present)
+             }
+             OPTIONAL {
+               ?person ecrm:P100i_died_in/ecrm:P4_has_time-span/ecrm:P3_has_note ?date_of_death .
+               BIND(STRBEFORE(STR(?date_of_death), "-12") as ?year_of_death)
+               BIND("true" as ?data_present)
+             }
+             OPTIONAL {
+               ?person ecrm:P11i_participated_in/ecrm:P4_has_time-span/ecrm:P82a_begin_of_the_beginning ?active_from .
+               BIND(STRBEFORE(STR(?active_from), "-01") as ?year_active_from)
+               BIND("true" as ?data_present)
+
+             }
+             OPTIONAL {
+               ?person ecrm:P11i_participated_in/ecrm:P4_has_time-span/ecrm:P82b_end_of_the_end ?active_to .
+               BIND(STRBEFORE(STR(?active_to), "-12") as ?year_active_to)
+               BIND("true" as ?data_present)
+             }
+          } LIMIT 1'
+          template='<span>
+            {{#each bindings}}
+              {{#if data_present.value}}
+                {{#if @first}}{{person_firstname.value}}{{/if}}
+                {{#if year_of_birth.value}}
+                  lived
+                {{else}}
+                  {{#if year_of_death.value}}
+                    lived
+                  {{/if}}
+                {{/if}}
+                {{#if year_of_birth.value}}from {{year_of_birth.value}} {{/if}}
+                {{#if year_of_death.value}}until {{year_of_death.value}}{{/if}}
+                {{#if year_active_from.value}}
+                  {{#if year_of_birth.value}}
+                    and
+                  {{else}}
+                    {{#if year_of_death.value}}
+                      and
+                    {{/if}}
+                  {{/if}}
+                {{else}}
+                  {{#if year_active_to.value}}
+                    {{#if year_of_birth.value}}
+                      and
+                    {{else}}
+                      {{#if year_of_death.value}}
+                        and
+                      {{/if}}
+                    {{/if}}
+                  {{/if}}
+                {{/if}}
+                {{#if year_active_from.value}}
+                  was active
+                {{else}}
+                  {{#if year_active_to.value}}
+                    was active
+                  {{/if}}
+                {{/if}}
+                {{#if year_active_from.value}}from {{year_active_from.value}}{{/if}}
+                {{#if year_active_to.value}} until {{year_active_to.value}}{{/if}}
+              .
+              {{/if}}
+            {{/each}}</span>'
+        ></semantic-query>
+
+      <!-- Summary: Relatives  -->
+      <semantic-query
+        query='SELECT ?num_relatives ?s WHERE {
+
+          FILTER(?num_relatives > 0)
+          BIND(IF(?num_relatives > 1,"s","") as ?s)
+
+          {
+            SELECT (COUNT(?attribute_assignment) as ?num_relatives) WHERE {
+              {
+                BIND(<[[urlParam "personiri"]]> as ?person)
+                ?attribute_assignment ecrm:P2_has_type sphType:relationshipAssignment ;
+                  ecrm:P140_assigned_attribute_to ?person .
+              } UNION {
+                BIND(<[[urlParam "personiri"]]> as ?person)
+                ?attribute_assignment ecrm:P2_has_type sphType:relationshipAssignment ;
+                  ecrm:P16_used_specific_object ?person .
+              }
+            }
+          }
+
+        }'
+        template='<span>{{#each bindings}} We know of <a href="#relatives">{{num_relatives.value}} kinship{{s.value}}</a>.{{/each}}</span>'
+      >
+      </semantic-query>
+      <!-- Summary: Wikidata Names -->
+      <semantic-query
+        query='SELECT ?wd WHERE {
+
+          BIND(<[[urlParam "personiri"]]> as ?person)
+          ?person owl:sameAs ?wd .
+
+        }'
+        template='<span> We also found an {{#each bindings}}<a href="{{wd.value}}">entry on Wikidata</a>{{/each}}.</span>'
+      >
+      </semantic-query>
+    </dd>
+
+    [[> :templateCitation iri="personiri"]]
+
+    <!-- Description -->
+    <semantic-query
+        query="SELECT ?value WHERE {
+          BIND(<[[urlParam "personiri"]]> as ?person)
+          ?person ecrm:P129i_is_subject_of ?description .
+          ?description ecrm:P2_has_type sphType:description ;
+            ecrm:P3_has_note ?value .
+        }"
+        template='<dl><dt>Description</dt>
+          {{#each bindings}}
+            <dd>{{value.value}}</dd>
+          {{/each}}</dl>'
+      >
+    </semantic-query>
+
+    <!-- Image -->
+    <semantic-query
+      query='SELECT ?image ?label WHERE {
+        BIND(<[[urlParam "personiri"]]> as ?person)
+      }'
+      template='<dl><dt>Notes</dt>
+      {{#each bindings}}
+        <dd>{{note.value}}</dd>
+      {{/each}}</dl></dl>'
+    >
+  </semantic-query>
+
+  <!-- Image -->
+  <semantic-query
+    query='SELECT ?image ?label WHERE {
+      BIND(<[[urlParam "personiri"]]> as ?person)
+      ?person ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?label;
+        owl:sameAs ?wdPerson .
+      SERVICE <https://query.wikidata.org/sparql> {
+        ?wdPerson <http://www.wikidata.org/prop/direct/P18> ?image .
+      }
+    }'
+    template='<dl><dt>
+      Image (from Wikidata)
+    </dt>
+    <dd>
+      {{#each bindings}}
+        <img style="max-width:50%" src="{{image.value}}" title="An image depicting {{label.value}}" />
+      {{/each}}
+    </dd></dl>'
+  >
+  </semantic-query>
+  <dl>
+    <!-- Alternative Names -->
+    <a name="alternative_names"></a>
+    <dt>
+      <semantic-query
+        query='SELECT ?alternative_name WHERE {
+
+          BIND(<[[urlParam "personiri"]]> as ?person)
+          ?person ecrm:P1_is_identified_by ?alternative_name .
+          ?alternative_name a ecrm:E82_Actor_Appellation .
+
+        }'
+        template='<dt>
+          Other Names
+        </dt>'
+      ></semantic-query>
+    </dt>
+    <dd>
+      <semantic-table
+        query='SELECT ?alternative_name_label (COUNT(?book) as ?num_uses) WHERE {
+          ?person ecrm:P1_is_identified_by ?alternative_name .
+          ?alternative_name a ecrm:E82_Actor_Appellation ;
+            ecrm:P70i_is_documented_in/^ecrm:P128_carries ?book ;
+        	  ecrm:P3_has_note ?alternative_name_label .
+          ?book ecrm:P3_has_note ?book_name .
+          BIND(<[[urlParam "personiri"]]> as ?person)
+        } GROUP BY ?alternative_name_label ORDER BY ?num_uses'
+
+        options='{
+            "resultsPerPage" : 10,
+            "showFilter" : false
+          }'
+
+        column-configuration='[
+          {
+            "displayName" : "Alternative Name",
+            "variableName" : "alternative_name_label"
+          },
+          {
+            "displayName" : "Appears in Books",
+            "variableName" : "num_uses"
+          }
+        ]'
+      >
+      </semantic-table>
+    </dd>
+
+    <!-- Relatives -->
+    <a name="relatives"/></a>
+    <dt>
+      <semantic-query
+        query='SELECT ?attribute_assignment WHERE {
+          {
+            BIND(<[[urlParam "personiri"]]> as ?person)
+            ?attribute_assignment ecrm:P2_has_type sphType:relationshipAssignment ;
+              ecrm:P140_assigned_attribute_to ?person .
+          } UNION {
+            BIND(<[[urlParam "personiri"]]> as ?person)
+            ?attribute_assignment ecrm:P2_has_type sphType:relationshipAssignment ;
+              ecrm:P16_used_specific_object ?person .
+          }
+        }'
+        template='<dt>
+          Relatives
+        </dt>'
+      ></semantic-query>
+    </dt>
+    <dd>
+      <semantic-table
+        query='SELECT DISTINCT ?attribute_assignment ?relationship_label ?relative ?inverse_relationship_label ?relative_label WHERE {
+          {
+            BIND(<[[urlParam "personiri"]]> as ?person)
+            ?attribute_assignment ecrm:P2_has_type sphType:relationshipAssignment ;
+              ecrm:P140_assigned_attribute_to ?person ;
+              ecrm:P141_assigned ?relationship .
+            ?relationship rdfs:label ?relationship_label .
+            ?attribute_assignment ecrm:P16_used_specific_object ?relative .
+            ?relative ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?relative_label .
+          } UNION {
+           BIND(<[[urlParam "personiri"]]> as ?person)
+           ?attribute_assignment ecrm:P16_used_specific_object ?person ;
+             ecrm:P140_assigned_attribute_to ?relative ;
+             ecrm:P141_assigned ?relationship .
+           ?relationship rdfs:label ?relationship_label .
+           ?relative ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?relative_label .
+           OPTIONAL {
+             ?relationship (owl:inverseOf|^owl:inverseOf)/rdfs:label ?inverse_relationship_label .
+           }
+         }
+       }'
+
+       options='{
+            "resultsPerPage" : 10,
+            "showFilter" : false
+          }'
+
+      column-configuration='[
+          {
+            "displayName" : "Relationship",
+            "cellTemplate" : "{{#if inverse_relationship_label.value}}
+              {{inverse_relationship_label.value}}
+            {{else}}
+              {{relationship_label.value}}
+            {{/if}}"
+          },
+          {
+            "displayName" : "Related Person",
+            "cellTemplate" : "
+              <semantic-link
+                [[#if workaround]]
+                  iri=\"[[resolvePrefix ":viewPerson"]]\"
+                [[else]]
+                  iri=\"[[resolvePrefix ":viewPerson-2"]]\"
+                [[/if]]
+                urlqueryparam-personiri=\"{{relative.value}}\"
+                >{{relative_label.value}}
+              </semantic-link>
+              "
+          }
+        ]'>
+      </semantic-table>
+    </dd>
+
+    <!-- Books Authored-->
+    <a name="books_authored"/></a>
+    <dt>
+      <semantic-query
+        query='SELECT ?subject WHERE {
+
+          BIND(<[[urlParam "personiri"]]> as ?person)
+
+          ?person ^ecrm:PC02_has_range ?carried_out_by .
+            ?carried_out_by ecrm:P14.1_in_the_role_of sphRole:author .
+            ?subject ecrm:P128_carries/ecrm:P165_incorporates/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+
+          ?subject a sphaera:Book .
+
+        }'
+        template='<dt>
+          Books authored
+        </dt>'
+      ></semantic-query>
+    </dt>
+    <dd>
+      <div id="table_books_container">
+        <semantic-table
+          query='SELECT DISTINCT [[> :queryBooksSelect ]]  WHERE {
+
+              BIND(<[[urlParam "personiri"]]> as ?person)
+
+              ?person ^ecrm:PC02_has_range ?carried_out_by .
+                ?carried_out_by ecrm:P14.1_in_the_role_of sphRole:author .
+                ?subject ecrm:P128_carries/ecrm:P165_incorporates/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+
+              [[> :queryBooks]]
+
+              }
+              GROUP BY [[> :queryBooksGroup]]
+              ORDER BY ?year_published_from ?date_text'
+
+          options='{
+              "resultsPerPage": 20,
+              "showFilter" : false
+            }'
+
+          column-configuration='[
+            [[> :colConfBooks]]
+          ]'
+        >
+        </semantic-table>
+      </div>
+    </dd>
+
+    <!-- Books Translated-->
+    <dt>
+      <semantic-query
+        query='SELECT ?subject WHERE {
+
+          BIND(<[[urlParam "personiri"]]> as ?person)
+
+          ?person ^ecrm:PC02_has_range ?carried_out_by .
+            ?carried_out_by ecrm:P14.1_in_the_role_of sphRole:translator .
+            ?subject ecrm:P128_carries/ecrm:P165_incorporates/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+
+          ?subject a sphaera:Book .
+
+        }'
+        template='<dt>
+          Books translated
+        </dt>'
+      ></semantic-query>
+    </dt>
+    <dd>
+      <div id="table_books_container">
+        <semantic-table
+          query='SELECT DISTINCT [[> :queryBooksSelect ]]  WHERE {
+
+              BIND(<[[urlParam "personiri"]]> as ?person)
+
+              ?person ^ecrm:PC02_has_range ?carried_out_by .
+                ?carried_out_by ecrm:P14.1_in_the_role_of sphRole:translator .
+                ?subject ecrm:P128_carries/ecrm:P165_incorporates/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+
+              [[> :queryBooks]]
+
+              }
+              GROUP BY [[> :queryBooksGroup]]
+              ORDER BY ?year_published_from ?date_text'
+
+          options='{
+              "resultsPerPage": 20,
+              "showFilter" : false
+            }'
+
+          column-configuration='[
+            [[> :colConfBooks]]
+          ]'
+        >
+        </semantic-table>
+      </div>
+    </dd>
+
+    <!-- Parts Created-->
+    <a name="parts_created"/></a>
+    <dt>
+      <semantic-query
+        query='SELECT ?subject WHERE {
+
+          BIND(<[[urlParam "personiri"]]> as ?person)
+          ?person ^ecrm:PC02_has_range ?carried_out_by .
+          ?subject efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+
+          ?subject a sphaera:Part
+
+        }'
+        template='<dt>
+          Parts Created
+        </dt>'
+      ></semantic-query>
+    </dt>
+    <dd>
+      [[#> :tableParts]]
+            BIND(<[[urlParam "personiri"]]> as ?person)
+
+            ?person ^ecrm:PC02_has_range ?carried_out_by .
+            ?subject efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+
+      [[/ :tableParts]]
+    </dd>
+
+    <!-- Parts Adapted-->
+    <a name="parts_adapted"/></a>
+    <dt>
+      <semantic-query
+        query='SELECT ?subject WHERE {
+
+          BIND(<[[urlParam "personiri"]]> as ?person)
+          ?person ^ecrm:PC02_has_range ?carried_out_by .
+          ?subject efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+
+          ?subject a sphaera:Part_Adaption
+
+        }'
+        template='<dt>
+          Parts Adapted
+        </dt>'
+      ></semantic-query>
+    </dt>
+    <dd>
+      <semantic-table
+        query='SELECT DISTINCT [[> :queryAdaptionsSelect]] WHERE {
+
+            BIND(<[[urlParam "personiri"]]> as ?person)
+
+            ?person ^ecrm:PC02_has_range ?carried_out_by .
+            ?subject efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+
+            [[> :queryAdaptions]]
+
+          } GROUP BY  [[> :queryAdaptionsGroup]]'
+
+        options='{
+            "resultsPerPage":20,
+            "showFilter":false
+          }'
+
+        column-configuration='[
+          [[> :colConfAdaptions]]
+        ]'
+      >
+      </semantic-table>
+    </dd>
+
+    <!-- Books Published and Printed -->
+    <a name="books_published_and_printed"/></a>
+    <dt>
+      <semantic-query
+        query='SELECT ?subject WHERE {
+
+          BIND(<[[urlParam "personiri"]]> as ?person)
+
+          ?subject ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person ;
+            efrbroo:R28i_was_produced_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person .
+
+          ?subject a sphaera:Book .
+
+        }'
+        template='<dt>
+          Books published and printed
+        </dt>'
+      ></semantic-query>
+    </dt>
+    <dd>
+      <div id="table_books_container">
+        <semantic-table
+          query='SELECT DISTINCT [[> :queryBooksSelect ]]  WHERE {
+
+              BIND(<[[urlParam "personiri"]]> as ?person)
+
+              ?subject ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person ;
+                efrbroo:R28i_was_produced_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person .
+
+              [[> :queryBooks]]
+
+              }
+              GROUP BY [[> :queryBooksGroup]]
+              ORDER BY ?year_published_from ?date_text'
+
+          options='{
+              "resultsPerPage": 20,
+              "showFilter" : false
+            }'
+
+          column-configuration='[
+            [[> :colConfBooks]]
+          ]'
+        >
+        </semantic-table>
+      </div>
+    </dd>
+
+    <!-- Books Published-->
+    <a name="books_published"/></a>
+    <dt>
+      <semantic-query
+        query='SELECT ?subject WHERE {
+
+          BIND(<[[urlParam "personiri"]]> as ?person)
+
+          ?subject ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person .
+          FILTER NOT EXISTS { ?subject efrbroo:R28i_was_produced_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person }
+
+          ?subject a sphaera:Book .
+
+        }'
+        template='<dt>
+          Books published
+        </dt>'
+      ></semantic-query>
+    </dt>
+    <dd>
+      <div id="table_books_container">
+        <semantic-table
+          query='SELECT DISTINCT [[> :queryBooksSelect ]]  WHERE {
+
+              BIND(<[[urlParam "personiri"]]> as ?person)
+
+              ?subject ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person .
+              FILTER NOT EXISTS { ?subject efrbroo:R28i_was_produced_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person }
+
+              [[> :queryBooks]]
+
+              }
+              GROUP BY [[> :queryBooksGroup]]
+              ORDER BY ?year_published_from ?date_text'
+
+          options='{
+              "resultsPerPage": 20,
+              "showFilter" : false
+            }'
+
+          column-configuration='[
+            [[> :colConfBooks]]
+          ]'
+        >
+        </semantic-table>
+      </div>
+    </dd>
+
+    <!-- Books Printed-->
+    <a name="books_printed"/></a>
+    <dt>
+      <semantic-query
+        query='SELECT ?subject WHERE {
+
+          BIND(<[[urlParam "personiri"]]> as ?person)
+
+          ?subject efrbroo:R28i_was_produced_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person .
+          FILTER NOT EXISTS { ?subject ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person }
+
+          ?subject a sphaera:Book .
+
+        }'
+        template='<dt>
+          Books printed
+        </dt>'
+      ></semantic-query>
+    </dt>
+    <dd>
+      <div id="table_books_container">
+        <semantic-table
+          query='SELECT DISTINCT [[> :queryBooksSelect ]]  WHERE {
+
+              BIND(<[[urlParam "personiri"]]> as ?person)
+
+              ?subject efrbroo:R28i_was_produced_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person .
+              FILTER NOT EXISTS { ?subject ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range ?person }
+
+              [[> :queryBooks]]
+
+              }
+              GROUP BY [[> :queryBooksGroup]]
+              ORDER BY ?year_published_from ?date_text'
+
+          options='{
+              "resultsPerPage": 20,
+              "showFilter" : false
+            }'
+
+          column-configuration='[
+            [[> :colConfBooks]]
+          ]'
+        >
+        </semantic-table>
+      </div>
+    </dd>
+
+    <!-- External Links-->
+    <semantic-query
+      query="SELECT ?url {
+        {
+          ?url a ecrm:E31_Document ;
+            ^ecrm:P70i_is_documented_in ?person .
+        } UNION {
+          ?person owl:sameAs ?url .
+        }
+        BIND(<[[urlParam "personiri"]]> as ?person).
+      }"
+      template='<dl><dt>External Links</dt>
+      {{#each bindings}}
+        <p><a href="{{url.value}}" target="_blank">{{url.value}}</a></p>
+      {{/each}}</dl>'
+    >
+    </semantic-query>
+
+    [[> :templateDOI iri="personiri"]]
+
+  </dl>
+
+  [[> :identifier iri="personiri"]]
+
+</div>
+
+[[> :footer]]

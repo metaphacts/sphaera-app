@@ -1,0 +1,63 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+  [[> :templateBreadcrumbEditResource bookiri="true" tab="license"]]
+</ol>
+
+[[#if (urlParam "licenseiri")]]
+  <h2>Edit license of book</h2>
+[[else]]
+  <h2>Add license to book</h2>
+[[/if]]
+
+[[#if (urlParam "bookiri")]]
+  <p>Use this form to assign a license to the book: <semantic-query
+    query='SELECT ?book_name WHERE { ?book ecrm:P3_has_note ?book_name . BIND(<[[urlParam "bookiri"]]> as ?book ) } LIMIT 1'
+    template='{{#each bindings}} {{book_name.value}} {{/each}}'
+    >
+   </semantic-query>
+
+  </p>
+  <semantic-form
+      fields="[[fieldDefinitions
+        license_subject="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/license_subject"
+        license_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/license_type"
+        note="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/note"
+        pageFrom="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_page_from"
+        record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/right_record_type"
+      ]]"
+      browser-persistence="false"
+      persistence="LDP"
+      post-action="[[urlParam "bookiri"]]"
+      urlqueryparam-tab="license"
+      subject="[[#if (urlParam "licenseiri")]][[urlParam "licenseiri"]][[else]][[urlParam "bookiri"]]/manifestation/license/[[singleValueFromSelect "SELECT ?uuid WHERE {BIND(STRUUID() as ?uuid )}"]][[/if]]"
+    >
+
+      <semantic-form-select-input for="license_type"></semantic-form-select-input>
+
+      <semantic-form-text-input for="note"></semantic-form-text-input>
+
+      <semantic-form-text-input for="pageFrom"></semantic-form-text-input>
+
+      <div class="disabled hidden-field">
+        <semantic-form-text-input for="license_subject"></semantic-form-text-input>
+        <semantic-form-text-input for="record_type"></semantic-form-text-input>
+      </div>
+
+      <div class="text-right form-submit">
+        <semantic-link iri="[[urlParam "bookiri"]]" urlqueryparam-tab="license" class="btn btn-default btn-md">Cancel</semantic-link>
+
+        <button name="submit" class="btn btn-primary btn-md">Save</button>
+      </div>
+
+    </semantic-form>
+
+    [[> :modalAddAnnotationToBook resourceiri="bookiri"]]
+
+[[else]]
+	No book has been selected. This form needs to be accessed via a book record.
+[[/if]]
+
+[[> :footer]]

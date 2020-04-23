@@ -1,0 +1,10 @@
+
+<semantic-query
+  query="SELECT (COUNT(?subject) as ?num) WHERE {
+      ?subject a crmDig:D35_Area .
+      [[> @partial-block]]
+    }"
+  template='{{#each bindings}}{{#ifCond num.value ">=" 1000}}
+    <bs-alert bs-style="warning" style="margin-top:2rem;"> Note: for performance reasons, only 1000 regions are displayed</bs-alert>
+  {{/ifCond}}{{/each}}'>
+</semantic-query>

@@ -1,0 +1,38 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":manageTerms") label="Manage Terms" tab="languages"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":addLanguageLabel") label="Add new language"]]
+</ol>
+
+<h2>Add new language</h2>
+
+<semantic-form
+  persistence='LDP'
+  browser-persistence='false'
+  post-action='http://sphaera.mpiwg-berlin.mpg.de/resource/manageTerms'
+  urlqueryparam-tab='languages'
+  fields="[[fieldDefinitions
+      label="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_note"
+      equivalent_record="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_language_wd"
+      record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/language_record_type"
+  ]]"
+  subject="http://sphaera.mpiwg-berlin.mpg.de/id/thes/language/[[singleValueFromSelect "SELECT ?label WHERE { <http://sphaera.mpiwg-berlin.mpg.de/id/thes/language/placeholder> rdfs:label ?label }" ]]"
+
+>
+  <semantic-form-text-input for="label"></semantic-form-text-input>
+
+  <semantic-form-autocomplete-input for="equivalent_record" template='<div>{{label.value}} <span style="font-size:0.8em;">{{description.value}}</span></div>'></semantic-form-autocomplete-input>
+
+  <div class="disabled hidden-field">
+    <semantic-form-text-input for="record_type"></semantic-form-text-input>
+  </div>
+
+  <div class="text-right form-submit">
+    <button name="submit" class="btn btn-primary btn-md">Save</button>
+  </div>
+
+</semantic-form>
+
+[[> :footer ]]

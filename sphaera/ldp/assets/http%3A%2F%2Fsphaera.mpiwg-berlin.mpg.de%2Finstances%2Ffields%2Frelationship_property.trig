@@ -1,0 +1,54 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/relationship_property/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/relationship_property> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/qhimn>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/q0foni>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/6kadpyf>;
+    <http://www.metaphacts.com/ontology/fields#askPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/c8mnls>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Select the kind of relationship";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Relationship Property" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/q0foni> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+  $subject ecrm:P141_assigned ?value .
+  ?value rdfs:label ?label .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/c8mnls> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/q0foni> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/6kadpyf> a <http://spinrdf.org/sp#Query>;
+    <http://spinrdf.org/sp#text> """SELECT ?value ?label WHERE {
+  ?value rdfs:domain foaf:Person ;
+  	rdfs:range foaf:Person ;
+   	rdfs:label ?label .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/c8mnls> <http://spinrdf.org/sp#text>
+      """ASK {
+  ?value rdfs:domain foaf:Person ;
+  	rdfs:range foaf:Person .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/qhimn> a <http://spinrdf.org/sp#Query>;
+    <http://spinrdf.org/sp#text> """INSERT { 
+  $subject ecrm:P141_assigned $value ;
+	ecrm:P140_assigned_attribute_to ?person . 
+} WHERE {
+    BIND(URI(STRBEFORE(STR($subject), \"/relationship\")) as ?person)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/relationship_property> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.576+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/relationship_property> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/relationship_property> a <http://www.w3.org/ns/ldp#Resource> .
+}

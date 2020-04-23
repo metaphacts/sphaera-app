@@ -1,0 +1,10 @@
+?custom_identifier
+?subject
+?title
+?label
+(GROUP_CONCAT(DISTINCT ?author_name; SEPARATOR=", ") as ?authors)
+(GROUP_CONCAT(DISTINCT ?original_author_name; SEPARATOR=", ") as ?original_authors)
+(GROUP_CONCAT(DISTINCT ?sort_author_name; SEPARATOR=", ") as ?sort_authors)
+(GROUP_CONCAT(DISTINCT ?adaption_type; SEPARATOR="/ ") as ?adaption_types)
+(COUNT(DISTINCT ?book) as ?num_books)
+(MIN(YEAR(?book_date)) as ?date)

@@ -1,0 +1,75 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+  [[> :templateBreadcrumbEditResource bookiri="true" tab="parts"]]
+</ol>
+
+[[#if (urlParam "hastitleiri")]]
+
+	<semantic-query
+		query='SELECT ?title WHERE {
+			?has_title ecrm:PC02_has_range ?title
+			BIND(<[[urlParam "hastitleiri"]]> as ?has_title)
+			} LIMIT 1'
+		template='<h2>Edit name of the part as stated in the book</h2>'
+		no-result-template='<h2>Add name of the part as stated in the book</h2>'
+	>
+	</semantic-query>
+
+	<semantic-query
+	    query='SELECT ?book_name ?part_name WHERE {
+	       ?book ecrm:P3_has_note ?book_name .
+	       ?part ecrm:P3_has_note ?part_name .
+
+	       BIND(<[[urlParam "bookiri"]]> as ?book )
+	       BIND(<[[urlParam "partiri"]]> as ?part )
+	    } LIMIT 1'
+	    template='{{#each bindings}}
+	    	<p>Enter the title of the part "{{part_name.value}}" as stated in the book "{{book_name.value}}."</p>
+	    {{/each}}'
+		>
+	</semantic-query>
+
+	<semantic-form
+	    fields="[[fieldDefinitions
+	      part_title="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_title_in_book"
+	      record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_title_record_type"
+	    ]]"
+	    browser-persistence="false"
+	    persistence="LDP"
+	    subject="[[urlParam "hastitleiri"]]"
+	    post-action="[[urlParam "bookiri"]]"
+	    urlqueryparam-tab="parts"
+	>
+
+    <bs-tabs>
+      <bs-tab event-key="enter" title="Enter Title">
+        <semantic-form-text-input for="part_title" multiline="true"></semantic-form-text-input>
+      </bs-tab>
+        <bs-tab event-key="lookup" title="Look up">
+          <semantic-form-autocomplete-input
+            for="part_title"
+            template='{{value.value}}'
+          >
+        </semantic-form-autocomplete-input>
+        </bs-tab>
+    </bs-tabs>
+
+    <div class="disabled hidden-field">
+      <semantic-form-text-input for="record_type"></semantic-form-text-input>
+    </div>
+
+    <div class="text-right form-submit">
+      <semantic-link iri="[[urlParam "bookiri"]]" urlqueryparam-tab="parts" class="btn btn-default btn-md">Cancel</semantic-link>
+      <button name="submit" class="btn btn-primary btn-md">Save</button>
+    </div>
+
+	</semantic-form>
+
+[[else]]
+	No part has been selected. This form needs to be accessed via a book record.
+[[/if]]
+
+[[> :footer]]

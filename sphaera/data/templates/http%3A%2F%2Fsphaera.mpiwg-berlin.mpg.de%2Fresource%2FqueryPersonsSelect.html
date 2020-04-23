@@ -1,0 +1,15 @@
+?subject
+?label
+?sort_label
+?has_birth_data
+?has_activity_data
+
+# The following four lines are a workaround due to an issue with correctly extracting Years mainly with BCE dates using YEAR()
+(IF(STRBEFORE(STR(?date_birth), "-") = "", YEAR(?date_birth), STRBEFORE(STR(?date_birth), "-")) as ?year_birth)
+(IF(STRBEFORE(STR(?date_death), "-") = "", YEAR(?date_birth), STRBEFORE(STR(?date_death), "-")) as ?year_death)
+(IF(STRBEFORE(STR(?date_activity_from), "-") = "", YEAR(?date_activity_from), STRBEFORE(STR(?date_activity_from), "-")) as ?year_activity_from)
+(IF(STRBEFORE(STR(?date_activity_to), "-") = "", YEAR(?date_activity_to), STRBEFORE(STR(?date_activity_to), "-")) as ?year_activity_to)
+
+
+(COUNT(DISTINCT ?book) as ?num_books_created)
+(GROUP_CONCAT(DISTINCT ?role; SEPARATOR=", ") as ?roles)

@@ -1,0 +1,17 @@
+  <semantic-map
+    query='PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        SELECT DISTINCT ?wkt ?description ?place WHERE {
+          ?place a ecrm:E53_Place .
+
+          ?place owl:sameAs ?wdPlace ;
+           ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?description .
+          SERVICE <https://query.wikidata.org/sparql> {
+            ?wdPlace wdt:P625 ?wkt .
+          }
+      }'
+
+      tuple-template='<semantic-link
+        uri=":viewPlace"
+        urlqueryparam-placeiri="{{place.value}}"
+      >{{description.value}}</semantic-link>'>
+  </semantic-map>

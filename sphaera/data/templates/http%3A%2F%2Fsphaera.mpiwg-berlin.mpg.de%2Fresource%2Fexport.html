@@ -1,0 +1,27 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+</ol>
+
+<h1>Export</h1>
+
+[[#if (hasPermission "forms:ldp:*")]]
+  <p>Use the button below to download a copy of the entire database to your computer.</p>
+
+  <div>
+    <mp-sparql-download query="CONSTRUCT { ?s ?p ?o } WHERE {?s ?p ?o}"
+      header="application/sparql-results+json"
+      filename="export.ttl"
+      >
+      <a href="#" class="btn btn-default">Export Database</button>
+    </mp-sparql-download>
+  </div>
+[[else]]
+  <div class="alert alert-warning">
+    You do not have permission to export the database
+  </div>
+[[/if]]
+
+
+[[> :footer]]

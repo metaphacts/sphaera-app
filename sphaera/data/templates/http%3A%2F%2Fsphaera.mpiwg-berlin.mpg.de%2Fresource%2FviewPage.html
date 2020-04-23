@@ -1,0 +1,188 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+  <li class="breadcrumb-item">
+    <semantic-query
+      query='SELECT ?book ?label WHERE
+        {
+          BIND(<[[urlParam "pageiri"]]> as ?page) .
+          ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page ;
+            ecrm:P3_has_note ?label .
+         } LIMIT 1'
+      template='
+        {{#each bindings}}
+          <semantic-link
+            iri="[[resolvePrefix ":viewBook"]]
+            urlqueryparam-bookiri="{{book.value}}"
+          >{{label.value}}</semantic-link>
+        {{/each}}'
+    </semantic-query>
+  </li>
+  <li class="breadcrumb-item">
+    <semantic-query
+      query='SELECT ?book WHERE
+        {
+          BIND(<[[urlParam "pageiri"]]> as ?page) .
+          ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page .
+        } LIMIT 1'
+      template='
+        {{#each bindings}}
+          <semantic-link
+            iri="[[resolvePrefix ":viewBookPages"]]"
+            urlqueryparam-bookiri="{{book.value}}"
+          >Pages</semantic-link>
+        {{/each}}'
+    </semantic-query>
+  </li>
+
+</ol>
+
+<semantic-query
+  query='SELECT ?page_num WHERE
+    {
+      BIND(<[[urlParam "pageiri"]]> as ?page)
+      ?page ecrm:P1_is_identified_by ?page_num .
+     }'
+  template="<h4>{{#each bindings}}Page {{page_num.value}}{{/each}}</h4>">
+</semantic-query>
+
+<bs-tab-container default-active-key="page">
+  <bs-row>
+    <bs-col sm="2" sm-push="10" class="tab-bar">
+      [[#if (hasPermission "forms:ldp:*")]]
+          <semantic-link
+            iri="[[urlParam "pageiri"]]"
+            class="btn btn-md btn-primary pull-right"
+            style="margin-bottom:3px;"
+          >Edit</semantic-link>
+      [[/if]]
+    </bs-col>
+    <bs-col sm="10" sm-pull="2" class="tab-bar">
+      <bs-nav bs-style="tabs" >
+
+        <li role="presentation">
+
+          <semantic-query
+            query='SELECT ?book WHERE
+              {
+                BIND(<[[urlParam "pageiri"]]> as ?page) .
+                ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page .
+               }'
+            template='
+              {{#each bindings}}
+                <semantic-link
+                  iri="[[resolvePrefix ":viewBookPages"]]"
+                  urlqueryparam-bookiri="{{book.value}}"
+                ><i class="fa fa-long-arrow-left"></i> Back</semantic-link>
+              {{/each}}'
+          </semantic-query>
+        </li>
+
+        <bs-nav-item event-key="page">
+          Page
+        </bs-nav-item>
+
+        <li role="presentation">
+
+          <semantic-link
+            iri="[[resolvePrefix ":viewPageRegions"]]"
+            urlqueryparam-pageiri="[[urlParam "pageiri"]]"
+          >Regions</semantic-link>
+
+        </li>
+
+      </bs-nav>
+    </bs-col>
+    <div class="content" style="clear:both;">
+      <bs-tab-content animation="true">
+
+        <bs-tab-pane event-key="page">
+
+          [[# if (hasPermission "forms:ldp:*")]]
+            <!-- Mirador Viewer -->
+            <div style="height:700px">
+
+              <rs-iiif-mirador
+                image-or-region="[[urlParam "pageiri"]]"
+                iiif-server-url="[[> :configIIIFPath]]"
+                image-id-pattern= "[[> :queryImageIdPattern]]"
+              />
+
+            </div>
+          [[else]]
+            <semantic-query
+            query="SELECT
+              [[> :queryPagesSelect]]
+            WHERE {
+              BIND(<[[urlParam "pageiri"]]> as ?page) .
+              [[> :queryPages]]
+            } GROUP BY
+              [[> :queryPagesGroup]]
+              LIMIT 1"
+            template='{{#each bindings}}
+              <div class="text-center">
+                <img src="{{IIIFPath.value}}{{imageID.value}}/full/!800,800/0/default.jpg" />
+              </div>
+            {{/each}}'
+            ></semantic-query>
+          [[/if]]
+
+          <!-- Next Pages -->
+
+          <bs-row>
+            <semantic-query
+            query="SELECT
+              [[> :queryPagesSelect]]
+              ?is_current_page
+            WHERE {
+              BIND(<[[urlParam "pageiri"]]> as ?current_page) .
+              ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?current_page .
+    					?current_page ecrm:P1_is_identified_by ?current_page_num .
+    					FILTER(xsd:integer(?page_num) > xsd:integer(?current_page_num) - 6)
+               BIND(IF(?page_num = ?current_page_num, 'true', '') as ?is_current_page)
+
+              [[> :queryPages]]
+            } GROUP BY
+              [[> :queryPagesGroup]]
+              ?is_current_page
+              ORDER BY xsd:integer(?page_num)
+              LIMIT 12"
+            template='<div>
+              {{#each bindings}}
+                <div class="col-xs-1" style="padding:0;margin:0;">
+                  <div class="thumbnail {{#if is_current_page.value}}alert{{/if}}" >
+                    <semantic-link
+                      iri="[[resolvePrefix ":viewPage"]]"
+                      urlqueryparam-pageiri="{{page.value}}"
+                    >
+                      <img src="{{IIIFPath.value}}{{imageID.value}}/full/!200,200/0/default.jpg" />
+                      <div class="caption">
+                        <p>
+                          page {{page_num.value}}
+                          {{#if has_regions.value}}
+                            <small>({{num_regions.value}})</small>
+                          {{/if}}
+                        </p>
+                      </div>
+                    </semantic-link>
+                  </div>
+                </div>
+                {{/each}}
+              </div>'
+            ></semantic-query>
+          </bs-row>
+
+          <bs-row>
+            [[> :identifier iri="pageiri"]]
+          </bs-row>
+
+        </bs-tab-pane>
+
+      </bs-tab-content>
+    </div>
+  </bs-row>
+</bs-tab-container>
+
+[[> :footer]]

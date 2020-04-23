@@ -1,0 +1,21 @@
+SELECT DISTINCT
+	?subject
+	?type
+	?custom_identifier
+	?label WHERE {
+	  ?subject a sphaera:Part_Adaption .
+	  ?subject ecrm:P3_has_note ?label .
+		OPTIONAL {
+		?subject ecrm:P2_has_type ?type .
+		sphType:partType skos:member ?type .
+		}
+	  OPTIONAL {
+	    ?subject efrbroo:R40i_is_representative_expresson_of/ecrm:P102_has_title/ecrm:P3_has_note ?title .
+	  }
+
+		OPTIONAL {
+			?subject ecrm:P1_is_identified_by ?identifier .
+			?identifier ecrm:P2_has_type sphaera:customIdentifier ;
+				ecrm:P3_has_note ?custom_identifier .
+		}
+}

@@ -1,0 +1,116 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+  [[> :templateBreadcrumbEditResource bookiri="true" tab="parts"]]
+</ol>
+
+<h2>Add part to book</h2>
+
+[[#if (urlParam "bookiri")]]
+
+  <semantic-query
+    query='SELECT ?book_name WHERE { ?book ecrm:P3_has_note ?book_name . BIND(<[[urlParam "bookiri"]]> as ?book ) } LIMIT 1'
+    template='<p>Use this form to assign a part to the book {{#each bindings}} {{book_name.value}} {{/each}}</p>'
+  >
+  </semantic-query>
+
+  <bs-tabs class="semantic-form" [[#if (urlParam "tab")]]default-active-key="[[urlParam "tab"]]"[[/if]]>
+    <bs-tab event-key="complete" title="Complete Part">
+
+      <semantic-form
+          fields="[[fieldDefinitions
+            note="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/note"
+            part="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part"
+            pageFrom="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_page_from"
+            pageTo="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_page_to"
+            record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/attribute_assignment_record_type"
+          ]]"
+          browser-persistence="false"
+          persistence="LDP"
+          post-action="[[urlParam "bookiri"]]"
+          urlqueryparam-tab="parts"
+          subject="[[urlParam "bookiri"]]/parts/[[singleValueFromSelect "SELECT ?uuid WHERE {BIND(STRUUID() as ?uuid )}"]]"
+      >
+
+        <div style="margin-bottom:2em">
+          <semantic-form-select-input for="part"></semantic-form-select-input>
+          <semantic-link iri="[[resolvePrefix ":createPart"]]"
+            urlqueryparam-bookiri="[[urlParam "bookiri"]]"
+            urlqueryparam-returniri="http://sphaera.mpiwg-berlin.mpg.de/resource/addPartToBook"
+            urlqueryparam-returntab="complete"
+            >
+            Create new part</semantic-link>
+        </div>
+
+        <semantic-form-text-input for="pageFrom"></semantic-form-text-input>
+        <semantic-form-text-input for="pageTo"></semantic-form-text-input>
+        <semantic-form-text-input for="note"></semantic-form-text-input>
+
+        <div class="disabled hidden-field">
+          <semantic-form-text-input for="record_type"></semantic-form-text-input>
+        </div>
+
+        <div class="text-right form-submit">
+          <semantic-link iri="[[urlParam "bookiri"]]" urlqueryparam-tab="parts" class="btn btn-default btn-md">Cancel</semantic-link>
+          <button name="submit" class="btn btn-primary btn-md">Save</button>
+        </div>
+      </semantic-form>
+
+    </bs-tab>
+    <bs-tab event-key="fragment" title="Part Fragment">
+
+      <semantic-form
+          fields="[[fieldDefinitions
+            note="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/note"
+            part_fragment="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_fragment"
+            pageFrom="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_page_from"
+            pageTo="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_page_to"
+            record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/attribute_assignment_record_type"
+          ]]"
+          browser-persistence="false"
+          persistence="LDP"
+          post-action="[[urlParam "bookiri"]]"
+          urlqueryparam-tab="parts"
+          subject="[[urlParam "bookiri"]]/parts/[[singleValueFromSelect "SELECT ?uuid WHERE {BIND(STRUUID() as ?uuid )}"]]"
+        >
+
+        <div style="margin-bottom:2em">
+          <semantic-form-select-input for="part_fragment"></semantic-form-select-input>
+
+          <semantic-link
+            iri="[[resolvePrefix ":createPart"]]"
+            urlqueryparam-bookiri="[[urlParam "bookiri"]]"
+            urlqueryparam-returniri="http://sphaera.mpiwg-berlin.mpg.de/resource/addPartToBook"
+            urlqueryparam-returntab="fragment"
+            >Create new part</semantic-link>
+        </div>
+
+        <semantic-form-text-input for="pageFrom"></semantic-form-text-input>
+        <semantic-form-text-input for="pageTo"></semantic-form-text-input>
+        <semantic-form-text-input for="note"></semantic-form-text-input>
+
+        <div class="disabled hidden-field">
+          <semantic-form-text-input for="record_type"></semantic-form-text-input>
+        </div>
+
+        <div class="text-right form-submit">
+          <semantic-link iri="[[urlParam "bookiri"]]" urlqueryparam-tab="parts" class="btn btn-default btn-md">Cancel</semantic-link>
+          <button name="submit" class="btn btn-primary btn-md">Save</button>
+        </div>
+      </semantic-form>
+
+    </bs-tab>
+
+  </bs-tabs>
+
+  [[> :modalAddAnnotationToBook resourceiri="bookiri"]]
+
+[[else]]
+
+	No book has been selected. This form needs to be accessed via a book record.
+
+[[/if]]
+
+[[> :footer]]

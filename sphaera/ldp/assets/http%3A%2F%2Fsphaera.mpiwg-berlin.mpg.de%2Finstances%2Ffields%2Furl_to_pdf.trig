@@ -1,0 +1,43 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/url_to_pdf/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/url_to_pdf> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/bt9k5p>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/2xoka>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The URL of the corresponding PDF";
+    <http://www.w3.org/2000/01/rdf-schema#label> "URL to PDF" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/2xoka> <http://spinrdf.org/sp#text>
+      """SELECT ?value WHERE {
+  ?reproduction_document ecrm:P48_has_preferred_identifier $value .
+    BIND(URI(CONCAT(STR($subject), \"/reproduction/document\")) as ?reproduction_document)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/bt9k5p> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/2xoka> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/bt9k5p> <http://spinrdf.org/sp#text>
+      """INSERT { 
+  ?reproduction_event efrbroo:R30_produced ?reproduction_carrier .
+  ?reproduction_carrier a ecrm:E84_Information_Carrier ;
+      ecrm:P128_carries ?reproduction_document .
+  ?reproduction_document a ecrm:E73_Information_Object ;
+      ecrm:P48_has_preferred_identifier $value .
+} WHERE {
+      BIND(URI(CONCAT(STR($subject), \"/reproduction/event\")) as ?reproduction_event)
+      BIND(URI(CONCAT(STR($subject), \"/reproduction/document\")) as ?reproduction_document)
+      BIND(URI(CONCAT(STR($subject), \"/reproduction/carrier\")) as ?reproduction_carrier)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/url_to_pdf> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.912+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/url_to_pdf> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/url_to_pdf> a <http://www.w3.org/ns/ldp#Resource> .
+}

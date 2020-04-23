@@ -1,0 +1,35 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/self-contained_expression_record_type/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/self-contained_expression_record_type>
+    <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/rlpwiex4wktt5m9ggb9>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/6vpr8z7ina287vnp14i>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Defaults to the self-contained expression type";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Self-Contained Expression Record Type" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/rlpwiex4wktt5m9ggb9> <http://spinrdf.org/sp#text>
+      "INSERT { $subject rdf:type $value} WHERE {}";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/6vpr8z7ina287vnp14i> a <http://spinrdf.org/sp#Query>;
+    <http://spinrdf.org/sp#text> """SELECT $value WHERE {
+  BIND(?subject as ?dummy)
+  VALUES ($value) 
+	{ 
+    (<http://erlangen-crm.org/efrbroo/F22_Self-Contained_Expression>) 
+  } }""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/self-contained_expression_record_type>
+    a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.332+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/self-contained_expression_record_type> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/self-contained_expression_record_type>
+    a <http://www.w3.org/ns/ldp#Resource> .
+}

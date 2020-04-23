@@ -1,0 +1,329 @@
+[[> :header]]
+
+<div id="home-head">
+    <bs-row>
+      <bs-col sm=12>
+        <div class="global_search">
+          <semantic-search limit=10>
+
+            <semantic-search-query-keyword
+              domain='<http://www.w3.org/2000/01/rdf-schema#Resource>'
+              query='
+                PREFIX fn: <http://www.w3.org/2005/xpath-functions#>
+                PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    						PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    						PREFIX bds: <http://www.bigdata.com/rdf/search#>
+                SELECT ?subject WHERE {
+                  ?subject a ?type ;
+                    ecrm:P3_has_note|
+                    rdfs:label|
+                    (ecrm:P1_is_identified_by/ecrm:P3_has_note)|
+                    (ecrm:P102_has_title/ecrm:P3_has_note)|
+                    (ecrm:P128_carries/ecrm:P102_has_title/ecrm:P3_has_note)|
+                    (ecrm:PC01_is_domain_of/ecrm:PC02_has_range/ecrm:P3_has_note)|
+                    (^oa:hasTarget/oa:hasBody/cnt:chars) ?label .
+
+                  OPTIONAL {
+                    ?type rdfs:label ?typelabel .
+                  }
+
+                  VALUES ( ?type ?typelabel ) {
+                    ( sphaera:Book "Book" )
+                    ( sphaera:Part "Part" )
+                    ( sphaera:Part_Adaption "Adaption" )
+                    ( efrbroo:F10_Person "Person" )
+                    ( ecrm:E53_Place "Place" )
+                  }
+                  BIND(fn:lower-case(?typelabel) as ?typelabelllc)
+                  ?label bds:search ?__token__ ;
+                    # bds:minRelevance "0.5" ;
+                    bds:relevance ?score ;
+                    bds:matchAllTerms "true" .
+                  BIND(STRLEN(?label) as ?length)
+                } ORDER BY DESC(?score) ?length
+              '
+            ></semantic-search-query-keyword>
+
+            <semantic-search-result-holder>
+                <semantic-search-result>
+                  <semantic-query id="result-list"
+                    query='SELECT DISTINCT ?subject ?label ?typelabel ?typelabelllc WHERE {
+                    }'
+                    template='{{> result-list}}'
+                    no-result-template='{{> no-results}}'>
+                  >
+                    <template id="no-results">
+                      <ul class="form-search-results">
+                        <li><small>No Results</small></li>
+                      </ul>
+                    </template>
+                    <template id="result-list">
+                      <ul class="form-search-results">
+                        {{#each bindings}}
+                          <li>
+                            <semantic-link
+                              iri="[[resolvePrefix ":view{{typelabel.value}}"]]"
+                              urlqueryparam-{{typelabelllc.value}}iri="{{subject.value}}">
+                                <span title="{{subject.value}}">{{label.value}} {{#if typelabel.value}}<small>({{typelabel.value}})</small>{{else}}({{type.value}}){{/if}}</span>
+                            </semantic-link>
+                          </li>
+                        {{/each}}
+                      </ul>
+                    </template>
+                  </semantic-query>
+            		</semantic-search-result>
+            </semantic-search-result-holder>
+          </semantic-search>
+        </div>
+      </bs-col>
+    </bs-row>
+</div>
+
+[[#if (hasPermission "forms:ldp:*")]]
+  <div id="admin-actions" class="gap-bottom">
+    <bs-row>
+      <bs-col md=8>
+        <semantic-link
+          iri="[[resolvePrefix ":createBook"]]"
+          class="btn btn-primary"
+        >Add new Book</semantic-link>
+        <semantic-link
+          iri="[[resolvePrefix ":createPerson"]]"
+          class="btn btn-primary"
+        >Add new Person</semantic-link>
+      </bs-col>
+      <bs-col md=4 class="text-right">
+          [[#if (hasPermission "api:config")]]
+            <semantic-link
+              iri="http://www.mpiwg-berlin.mpg.de/FieldDefinitionCatalog"
+              class="btn btn-default pull-right"
+            >Manage Fields</semantic-link>
+              <semantic-link
+                iri="[[resolvePrefix ":lastEdits"]]"
+                class="btn btn-default pull-right"
+              >Last Edits</semantic-link>
+          [[/if]]
+      </bs-col>
+    </bs-row>
+  </div>
+[[/if]]
+
+<div id="home-body" class="content">
+
+    <bs-row>
+      <bs-col md=6 sm=12>
+        <h2>Books</h2>
+        <semantic-query
+          query='SELECT (COUNT(?book) as ?num_books) WHERE { ?book a sphaera:Book }'
+          template='<p>
+            {{#each bindings}}
+              There are currently {{num_books.value}} books in the database.
+            {{/each}}
+          </p>'
+        >
+        </semantic-query>
+        <semantic-link class="btn btn-default btn-secondary btn-md" iri="[[resolvePrefix ":listBooks"]]">List all books</semantic-link>
+
+        <h4>Recently edited</h4>
+
+        <semantic-query
+          query='SELECT DISTINCT ?book ?label ?book_title ?date_published ?year_published_from ?year_published_to ?years_equal ?generated (GROUP_CONCAT(DISTINCT ?author_label; SEPARATOR=", ") as ?authors) (GROUP_CONCAT(DISTINCT ?translator_label; SEPARATOR=", ") as ?translators) (GROUP_CONCAT(DISTINCT ?publisher_label; SEPARATOR=", ") as ?publishers) WHERE {
+            ?book a sphaera:Book ;
+				ecrm:P3_has_note ?label;
+  				ecrm:P128_carries ?publication_expression .
+
+            ?container prov:generatedAtTime ?generated.
+  			BIND(URI(CONCAT(STR(?book), "/container")) as ?container)
+
+            ?publication_expression ecrm:P165_incorporates/efrbroo:R17i_was_created_by ?expression_creation .
+
+            OPTIONAL {
+          	   ?publication_expression ecrm:P102_has_title/ecrm:P3_has_note ?book_title .
+            }
+
+  			    OPTIONAL {
+              ?expression_creation ecrm:PC01_is_domain_of ?carried_out_by .
+              ?carried_out_by a ecrm:PC14_carried_out_by .
+          		  ?carried_out_by ecrm:P14.1_in_the_role_of sphRole:author ;
+                  ecrm:PC02_has_range/ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?author .
+                [[> :queryFormatName input="?author" output="?author_label"]]
+            }
+            OPTIONAL {
+              ?publication_expression efrbroo:R24i_was_created_through/ecrm:P4_has_time-span ?publication_date .
+              OPTIONAL {
+                ?publication_date ecrm:P3_has_note ?date_published .
+              }
+              OPTIONAL {
+          	   	?publication_date ecrm:P82a_begin_of_the_beginning ?date_published_from .
+                  BIND(SUBSTR(STR(?date_published_from),0,4) as ?year_published_from)
+              }
+              OPTIONAL {
+          	   	?publication_date ecrm:P82b_end_of_the_end ?date_published_to .
+                  BIND(SUBSTR(STR(?date_published_to),0,4) as ?year_published_to)
+              }
+          	  BIND(xsd:string(if(?year_published_from = ?year_published_to,"true", "")) as ?years_equal)
+            }
+            OPTIONAL {
+              ?publication_expression efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range/ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?publisher .
+              [[> :queryFormatName input="?publisher" output="?publisher_label"]]
+            }
+          }
+          GROUP BY ?book ?label ?book_title ?date_published ?year_published_from ?year_published_to ?years_equal ?generated
+          ORDER BY DESC(?generated)
+          LIMIT 10'
+          template='
+            <div>
+            {{#each bindings}}
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <dl>
+                    <dt>Title</dt>
+                    <dd>
+                      <strong>
+                        <semantic-link iri="[[resolvePrefix ":viewBook"]]" urlqueryparam-bookiri="{{book.value}}" class="title">
+                          {{#if book_title.value}}
+                            {{book_title.value}}
+                          {{else}}
+                            {{label.value}}
+                          {{/if}}
+                        </semantic-link>
+                      </strong>
+                    </dd>
+                    {{#if authors.value}}
+                      <dt>Author</dt>
+                      <dd>
+                        {{authors.value}}
+                      </dd>
+                    {{/if}}
+                    {{#if translators.value}}
+                      <dt>Translator</dt>
+                      <dd>
+                        {{translators.value}}
+                      </dd>
+                    {{/if}}
+                    {{#if publishers.value}}
+                      <dt>Publisher</dt>
+                      <dd>
+                        {{publishers.value}}
+                      </dd>
+                    {{/if}}
+                    <dt>Date of publication</dt>
+                    <dd>
+                      {{#if date_published.value}}
+                        {{date_published.value}}
+                      {{else}}
+                        {{#if year_published_from}}
+                          {{#if years_equal.value}}
+                            {{year_published_from.value}}
+                          {{else}}
+                            between {{year_published_from.value}} and {{year_published_to.value}}
+                          {{/if}}
+                        {{/if}}
+                      {{/if}}
+                    </dd>
+                  </dl>
+                  <div class="text-right">
+                    [[#if (hasPermission "forms:ldp:*")]]
+                      <semantic-link iri="{{book.value}}" class="btn btn-default btn-sm">Edit</semantic-link>
+                    [[/if]]
+                    <semantic-link iri="[[resolvePrefix ":viewBook"]]" urlqueryparam-bookiri="{{book.value}}" class="btn btn-primary btn-sm">View</semantic-link>
+                  </div>
+                </div>
+              </div>
+            {{/each}}
+          </div>'
+          >
+        </semantic-query>
+      </bs-col>
+      <bs-col md=6 sm=12>
+        <h2>Persons</h2>
+        <semantic-query
+          query='SELECT (COUNT(?person) as ?num_persons) WHERE { ?person a efrbroo:F10_Person }'
+          template='<p>{{#each bindings}}There are currently {{num_persons.value}} persons in the database.{{/each}}</p>'
+        >
+        </semantic-query>
+        <semantic-link class="btn btn-default btn-secondary btn-md" iri="[[resolvePrefix ":listPersons"]]">List all persons</semantic-link>
+        <h4>Recently edited</h4>
+        <semantic-query
+          query='SELECT DISTINCT ?person ?label (SAMPLE(YEAR(?dateOfBirth)) as ?yearOfBirth) (SAMPLE(YEAR(?dateOfDeath)) as ?yearOfDeath) ?image ?generated ?label_formatted WHERE {
+            ?person a efrbroo:F10_Person ;
+          	ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?label .
+            ?container <http://www.w3.org/ns/prov#generatedAtTime> ?generated .
+
+            [[> :queryFormatName input="?label" output="?label_formatted"]]
+            BIND(URI(CONCAT(STR(?person), "/container")) as ?container)
+
+            OPTIONAL {
+              ?person owl:sameAs ?wdPerson .
+              SERVICE <https://query.wikidata.org/sparql> {
+
+                OPTIONAL {
+                  ?wdPerson <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth .
+                }
+                OPTIONAL {
+                  ?wdPerson <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath .
+                }
+                OPTIONAL {
+                  ?wdPerson <http://www.wikidata.org/prop/direct/P18> ?image .
+                }
+              }
+            }
+          }
+          GROUP BY ?person ?label ?image ?generated ?label_formatted
+          ORDER BY DESC(?generated)
+          LIMIT 15'
+          template='
+            <div>
+            {{#each bindings}}
+              <div class="panel panel-default">
+                <div class="panel-body">
+                  <dl>
+                    <dt>Name</dt>
+                    <dd>
+                      <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="{{person.value}}" class="title">
+                        <strong>
+                          {{label_formatted.value}}
+                        </strong>
+                      </semantic-link>
+                    </dd>
+                    {{#if yearOfBirth.value}}
+                      <dt>Dates</dt>
+                    {{else}}
+                      {{#if yearOfDeath.value}}
+                        <dt>Dates</dt>
+                      {{/if}}
+                    {{/if}}
+                    <dd>
+                      {{yearOfBirth.value}}
+                      {{#if yearOfBirth.value}}
+                        &ndash;
+                      {{else}}
+                        {{#if yearOfDeath.value}}
+                          &ndash;
+                        {{/if}}
+                      {{/if}}
+                      {{yearOfDeath/value}}
+                    </dd>
+                    <dt></dt>
+                    <dd>
+                      {{#if image.value}}
+                        <img class="panel-fill" src="{{image.value}}" title="An image depicting {{label.value}}" />
+                      {{/if}}
+                    </dd>
+                  </dl>
+                  <div class="text-right">
+                    [[#if (hasPermission "forms:ldp:*")]]
+                      <semantic-link iri="{{person.value}}" class="btn btn-default btn-sm">Edit</semantic-link>
+                    [[/if]]
+                    <semantic-link iri="[[resolvePrefix ":viewPerson"]]" urlqueryparam-personiri="{{person.value}}" class="btn btn-primary btn-sm">View</semantic-link>
+                  </div>
+                </div>
+              </div>
+            {{/each}}
+          </div>'
+      </bs-col>
+    </bs-row>
+
+</div>
+
+[[> :footer]]

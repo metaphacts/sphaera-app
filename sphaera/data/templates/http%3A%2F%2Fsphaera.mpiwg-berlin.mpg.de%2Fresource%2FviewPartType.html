@@ -1,0 +1,63 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":manageTerms") label="Manage Terms" tab="partTypes"]]
+</ol>
+
+<semantic-query
+  query='SELECT ?type_name WHERE
+    {
+      ?type ecrm:P3_has_note ?type_name .
+      BIND(<[[urlParam "parttypeiri"]]> as ?type)
+     }'
+  template="<h3>{{#each bindings}}{{type_name.value}}{{/each}}</h3>">
+</semantic-query>
+
+<semantic-link
+  iri="[[resolvePrefix ":addPartType"]]"
+  urlqueryparam-resiri="[[urlParam "parttypeiri"]]"
+  class="btn btn-md btn-primary gap-bottom" >Edit</semantic-link>
+
+<div id="view-record-body" class="content">
+
+  <h4 style="margin:2em 0">Parts of this type</h4>
+
+  <semantic-table
+    query='SELECT DISTINCT ?subject ?label WHERE {
+      ?subject a sphaera:Part ;
+        ecrm:P3_has_note ?label ;
+        ecrm:P2_has_type ?type .
+      OPTIONAL {
+        ?subject ecrm:P102_has_title/ecrm:P3_has_note ?title .
+      }
+      BIND(<[[urlParam "parttypeiri"]]> as ?type)
+    } LIMIT 1000'
+
+    options='{
+        "resultsPerPage":100
+      }'
+
+  	column-configuration='[
+  		{
+  			"displayName" : "Title",
+        "variableName" : "label",
+  			"cellTemplate" : "<semantic-link iri=\"[[resolvePrefix ":viewPart"]]\" urlqueryparam-partiri=\"{{subject.value}}\">{{#if title.value}}{{title.value}}{{else}}{{label.value}}{{/if}}</semantic-link>"
+  		},
+      {
+        "displayName" : "&nbsp;",
+        "cellTemplate" : "<semantic-link iri=\"{{subject.value}}\" >Edit</semantic-link>"
+      }
+  	]'
+  >
+  </semantic-table>
+
+  <dl>
+
+    [[> :identifier iri="parttypeiri"]]
+
+  </dl>
+
+</div>
+
+[[> :footer]]

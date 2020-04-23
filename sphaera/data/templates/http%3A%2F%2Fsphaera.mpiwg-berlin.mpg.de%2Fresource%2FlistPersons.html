@@ -1,0 +1,26 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+</ol>
+
+<h1>All persons</h1>
+
+<div class="gap-bottom">
+  <semantic-link iri="[[resolvePrefix ":listAppellations"]]">List additional appellations</semantic-link>
+</div>
+
+[[# if (hasPermission "forms:ldp:*")]]
+  <p class="gap-bottom">
+    <semantic-link iri="http://sphaera.mpiwg-berlin.mpg.de/resource/createPerson" class="btn btn-primary btn-md">Add new person</semantic-link>
+  </p>
+[[/if]]
+
+<div class="content">
+  [[> :tablePersons]]
+  <div>
+      [[> :csvDownload persons="true"]]
+  </div>
+</div>
+
+[[> :footer]]

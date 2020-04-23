@@ -1,0 +1,157 @@
+SELECT DISTINCT
+  ?assigned_part
+  ?assigned_part_fragment_of
+  ?assigned_part_class
+  ?assigned_title
+  ?attribute_assignment
+  ?has_title
+  ?is_adaption
+  ?is_fragment
+  ?page_from
+  ?page_from_page
+  ?page_to
+  ?page_to_page
+  ?short_title
+  (GROUP_CONCAT(DISTINCT ?ancestor_author_formatted;separator=", ") as ?ancestor_authors)
+  (GROUP_CONCAT(DISTINCT ?ancestor_adaptions_short_title;separator="/") as ?ancestor_adaptions_short_titles)
+  (GROUP_CONCAT(DISTINCT ?ancestor_adaption_label;separator="<br />") as ?ancestor_adaption_labels)
+  (GROUP_CONCAT(DISTINCT ?author_formatted;separator=", ") as ?authors)
+  (GROUP_CONCAT(DISTINCT ?assigned_part_author_formatted;separator=", ") as ?assigned_part_authors)
+  (GROUP_CONCAT(DISTINCT ?language;separator="/") as ?languages)
+  (GROUP_CONCAT(DISTINCT ?original_short_title;separator="/") as ?original_short_titles)
+  (GROUP_CONCAT(DISTINCT ?part_type_label;separator="/") as ?part_types)
+WHERE {
+
+  BIND(<[[#if (urlParam "bookiri")]][[urlParam "bookiri"]][[else]][[this]][[/if]]> as ?book)
+
+  [[> :queryPartsForBook]]
+
+  ?assigned_part ecrm:P3_has_note ?short_title ;
+    ecrm:P2_has_type ?part_type .
+
+  ?part_type ecrm:P3_has_note ?part_type_label ;
+    ^skos:member ?partAndAdaptionTypes .
+
+  VALUES (?partAndAdaptionTypes) {
+    ( sphType:partType )
+    ( sphType:adaptionType )
+  }
+
+  ?original_part ecrm:P3_has_note ?original_short_title .
+
+  OPTIONAL {
+    ?assigned_part efrbroo:R15i_is_fragment_of/a ?fragment_original_part_class ;
+      efrbroo:R15i_is_fragment_of ?assigned_part_fragment_of .
+    VALUES ( ?fragment_original_part_class ) {
+     ( sphaera:Part )
+     ( sphaera:Part_Adaption )
+   }
+  }
+
+  OPTIONAL {
+    ?attribute_assignment sphaera:pageFrom ?page_from .
+  }
+
+  OPTIONAL {
+    ?attribute_assignment sphaera:pageTo ?page_to .
+  }
+
+  OPTIONAL {
+    ?page_from_page ecrm:P1_is_identified_by ?page_from .
+    ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page_from_page .
+  }
+
+  OPTIONAL {
+    ?page_to_page ecrm:P1_is_identified_by ?page_to .
+    ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page_to_page .
+  }
+
+  OPTIONAL {
+    ?original_part efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?carried_out_by .
+    ?carried_out_by a ecrm:PC14_carried_out_by ;
+      (ecrm:PC02_has_range/ecrm:P48_has_preferred_identifier/ecrm:P3_has_note) ?author
+
+    [[> :queryFormatName input="?author" output="?author_formatted"]]
+   }
+
+   OPTIONAL {
+
+     ?attribute_assignment ecrm:P141_assigned/([[> :queryPart]]) ?ancestor_adaptions .
+
+     ?ancestor_adaptions a ?adaption_type .
+     VALUES ( ?adaption_type ) {
+       ( sphaera:Part )
+       ( sphaera:Part_Adaption )
+     }
+     FILTER(?ancestor_adaptions != ?assigned_part)
+
+     { SELECT ?ancestor_adaptions ?ancestor_adaption_label WHERE {
+
+         ?ancestor_adaptions ecrm:P2_has_type ?ancestor_adaption_type .
+
+          ?ancestor_adaption_type ecrm:P3_has_note ?ancestor_adaption_type_label ;
+             ^skos:member ?adaption_type_values .
+          VALUES (?adaption_type_values) {
+              (sphType:adaptionType)
+              (sphType:partType)
+          }
+
+         OPTIONAL {
+           ?ancestor_adaptions ecrm:P3_has_note ?ancestor_adaptions_short_title .
+         }
+
+         OPTIONAL {
+
+           {
+             SELECT ?ancestor_adaptions (GROUP_CONCAT(?ancestor_author_formatted; SEPARATOR="/") as ?ancestor_authors) WHERE {
+               ?ancestor_adaptions efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?ancestor_carried_out_by .
+               ?ancestor_carried_out_by a ecrm:PC14_carried_out_by ;
+                 (ecrm:PC02_has_range/ecrm:P48_has_preferred_identifier/ecrm:P3_has_note) ?ancestor_author
+
+               [[> :queryFormatName input="?ancestor_author" output="?ancestor_author_formatted"]]
+            } GROUP BY ?ancestor_adaptions
+           }
+         }
+         BIND(CONCAT(?ancestor_adaptions_short_title, " - ", ?ancestor_adaption_type_label, " by ", ?ancestor_authors )as ?ancestor_adaption_label)
+       }
+     }
+  }
+
+   OPTIONAL {
+     ?assigned_part efrbroo:R15i_is_fragment_of?/efrbroo:R17i_was_created_by/ecrm:PC01_is_domain_of ?assigned_part_carried_out_by .
+     ?assigned_part_carried_out_by a ecrm:PC14_carried_out_by ;
+       (ecrm:PC02_has_range/ecrm:P48_has_preferred_identifier/ecrm:P3_has_note) ?assigned_part_author
+
+     [[> :queryFormatName input="?assigned_part_author" output="?assigned_part_author_formatted"]]
+   }
+
+   OPTIONAL {
+     ?assigned_part efrbroo:R15i_is_fragment_of?/ecrm:P165_incorporates*/ecrm:P72_has_language/ecrm:P3_has_note ?language .
+   }
+
+  BIND(URI(CONCAT(STR(?assigned_part), "/title/", STRAFTER("[[#if (urlParam "bookiri")]][[urlParam "bookiri"]][[else]][[this]][[/if]]", "/item/"))) as ?has_title)
+
+  BIND( IF( ?assigned_part_class = sphaera:Part_Adaption || ?fragment_original_part_class = sphaera:Part_Adaption, "true", "") as ?is_adaption)
+  BIND( IF ( BOUND(?fragment_original_part_class ), "true", "") as ?is_fragment )
+
+  OPTIONAL {
+    ?has_title ecrm:PC02_has_range/ecrm:P3_has_note ?assigned_title .
+  }
+
+} GROUP BY
+    ?assigned_part
+    ?assigned_part_fragment_of
+    ?assigned_part_class
+    ?assigned_title
+    ?attribute_assignment
+    ?has_title
+    ?is_adaption
+    ?is_fragment
+    ?page_from
+    ?page_from_page
+    ?page_to
+    ?page_to_page
+    ?part_types
+    ?short_title
+
+  ORDER BY ?page_from ?page_to ?short_title

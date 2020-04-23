@@ -1,0 +1,40 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/keyword/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/keyword> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/kg3nla>;
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/6vokw8>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/9rva2j>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Add a keyword";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Keyword" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/kg3nla> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/9rva2j> a <http://spinrdf.org/sp#Query>;
+    <http://spinrdf.org/sp#text> """SELECT ?value ?label WHERE {
+  ?value a ecrm:E55_Type ;
+    ecrm:P3_has_note ?label .
+    sphType:keywords skos:member ?value .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/6vokw8> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+    $subject ecrm:P2_has_type $value .
+    sphType:keywords skos:member $value .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/kg3nla> <http://spinrdf.org/sp#text>
+      "INSERT { $subject ecrm:P2_has_type $value} WHERE {}" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/6vokw8> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/keyword> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.347+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/keyword> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/keyword> a <http://www.w3.org/ns/ldp#Resource> .
+}

@@ -1,0 +1,17 @@
+
+<semantic-query
+	query='SELECT ?doi ?label WHERE {
+		BIND(<[[urlParam iri]]> as ?subject) .
+		?subject ecrm:P1_is_identified_by ?identifier ;
+			ecrm:P3_has_note ?label .
+		?identifier ecrm:P2_has_type <http://www.doi.org> ;
+			ecrm:P3_has_note ?doi .
+	} LIMIT 1'
+	template='<div>
+		<dl>
+		<dt>Cite as</dt>
+		<dd>
+			<small>{{#each bindings}}<p>Valleriani, M., Kräutli, F. et al. 2019. {{label.value}}. In <i>Sphaera Database</i>. Available at: hdl.handle.net/{{doi.value}}{{/each}}</small>
+		</dd>
+	</div>'>
+</semantic-query>

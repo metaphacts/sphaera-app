@@ -1,0 +1,51 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  	[[#if (ask "ASK { ?? oa:hasTarget ?target . ?target a sphaera:Book}")]]
+    [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+    <li class="breadcrumb-item">
+			<semantic-query
+				query='SELECT ?book_name ?book WHERE {
+					?book ecrm:P3_has_note ?book_name .
+					?? oa:hasTarget ?book.
+				} LIMIT 1'
+				template='{{#each bindings}}
+					<semantic-link iri="{{book.value}}" urlqueryparam-tab="meta">{{book_name.value}}</semantic-link>
+				{{/each}}'
+			>
+			</semantic-query>
+		</li>
+	[[/if]]
+</ol>
+
+<h2>Edit annotation</h2>
+
+	<semantic-form
+		persistence='LDP'
+    browser-persistence='false'
+		fields="[[fieldDefinitions
+			annotation_body="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_body"
+			annotation_note="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_note"
+			annotation_target="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_target"
+			record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_record_type"
+    ]]"
+		post-action="[[singleValueFromSelect "SELECT ?redirect WHERE {BIND(URI(STRBEFORE(STR(??), '/annotation')) as ?redirect)}" ]]"
+		urlqueryparam-tab="meta"
+    subject="[[this]]"
+	>
+    <semantic-form-text-input for="annotation_body" multiline="true"></semantic-form-text-input>
+		<semantic-form-text-input for="annotation_note"></semantic-form-text-input>
+
+    <span class="disabled hidden-field">
+      <semantic-form-text-input for="annotation_target"></semantic-form-text-input>
+      <semantic-form-text-input for="record_type"></semantic-form-text-input>
+    </span>
+
+    <div class="text-right form-submit">
+			<semantic-link iri="[[singleValueFromSelect "SELECT ?redirect WHERE {BIND(URI(STRBEFORE(STR(??), '/annotation')) as ?redirect)}" ]]" urlqueryparam-tab="meta" class="btn btn-default btn-md">Cancel</semantic-link>
+      <button name="submit" class="btn btn-primary btn-md">Save</button>
+    </div>
+  </semantic-form>
+
+[[> :footer]]

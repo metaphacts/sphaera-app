@@ -1,0 +1,56 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listPlaces") label="Places"]]
+</ol>
+
+<h2>Create new place record</h2>
+<semantic-form
+  persistence='LDP'
+	browser-persistence='false'
+  fields="[[fieldDefinitions
+        doi="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/doi"
+        equivalent_record="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_place"
+        record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/place_record_type"
+        place_name="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/main_place_name"
+  ]]"
+  [[#if (urlParam "noredirect")]]
+  [[else]]
+    post-action='redirect'
+  [[/if]]
+  subject=[[singleValueFromSelect "SELECT ?newIRI WHERE { BIND(uri(concat(\"http://sphaera.mpiwg-berlin.mpg.de/id/place/\",STRUUID())) as ?newIRI)}"]]
+
+>
+
+  <semantic-form-text-input for="place_name">
+  </semantic-form-text-input>
+
+  <bs-tabs>
+    <bs-tab event-key="lookup" title="Look up">
+      <semantic-form-autocomplete-input
+        for="equivalent_record"
+        template='<div>{{label.value}} <span style="font-size:0.8em;">{{description.value}}</span></div>'
+      >
+      </semantic-form-autocomplete-input>
+    </bs-tab>
+    <bs-tab event-key="enter" title="Enter URI">
+      <semantic-form-text-input for="equivalent_record">
+      </semantic-form-text-input>
+    </bs-tab>
+  </bs-tabs>
+
+  <span class="disabled hidden-field">
+    <semantic-form-text-input for="doi"></semantic-form-text-input>
+    <semantic-form-text-input for="record_type"></semantic-form-text-input>
+  </span>
+
+  <div class="text-right form-submit">
+
+      <button name="submit" class="btn btn-primary btn-md">Save</button>
+
+  </div>
+
+</semantic-form>
+
+[[> :footer]]

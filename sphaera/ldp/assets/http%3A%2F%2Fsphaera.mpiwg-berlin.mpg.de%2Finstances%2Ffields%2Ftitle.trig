@@ -1,0 +1,39 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/title/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/title> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/cqyucry6bdwvky2pgb9>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/xb164dqmyipnb384cxr>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "A (given) title";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Title" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/xb164dqmyipnb384cxr> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/cqyucry6bdwvky2pgb9> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/xb164dqmyipnb384cxr> <http://spinrdf.org/sp#text>
+      """SELECT ?value WHERE {
+	$subject ecrm:P102_has_title ?title .
+      ?title ecrm:P3_has_note ?value .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/cqyucry6bdwvky2pgb9> <http://spinrdf.org/sp#text>
+      """INSERT {
+  $subject ecrm:P102_has_title ?title .
+      ?title a ecrm:E35_Title ;
+      ecrm:P3_has_note $value .
+} WHERE {
+      BIND(URI(CONCAT(STR($subject), \"/title\")) as ?title)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/title> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:19.663+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/title> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/title> a <http://www.w3.org/ns/ldp#Resource> .
+}

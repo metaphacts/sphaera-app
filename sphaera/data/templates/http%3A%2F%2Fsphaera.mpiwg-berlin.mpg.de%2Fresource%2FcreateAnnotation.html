@@ -1,0 +1,62 @@
+[[> :header]]
+
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+
+  [[#if (urlParam "resourceiri")]]
+    [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+    [[> :templateBreadcrumbEditResource resourceiri="true" tab="meta"]]
+  [[/if]]
+</ol>
+
+[[#if (urlParam "resourceiri")]]
+
+  <h2>Create annotation</h2>
+
+	[[#if (urlParam "note")]]
+		Context: [[urlParam "note"]]
+  [[/if]]
+
+	<semantic-form
+		persistence='LDP'
+    browser-persistence='false'
+		fields="[[fieldDefinitions
+			annotation_body="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_body"
+			annotation_note="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_note"
+			annotation_target="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_target"
+			record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/annotation_record_type"
+    ]]"
+		subject="[[urlParam "resourceiri"]]/annotation/[[singleValueFromSelect "SELECT ?newIRI WHERE { BIND(STRUUID() as ?newIRI)}"]]"
+    [[#if (urlParam "noredirect")]]
+    [[else]]
+  		post-action="[[urlParam "resourceiri"]]"
+    [[/if]]
+		urlqueryparam-tab="meta"
+	>
+    <semantic-form-text-input for="annotation_body" multiline="true"></semantic-form-text-input>
+		<semantic-form-text-input for="annotation_note"></semantic-form-text-input>
+
+    <span class="disabled hidden-field">
+      <semantic-form-text-input for="annotation_target"></semantic-form-text-input>
+      <semantic-form-text-input for="record_type"></semantic-form-text-input>
+    </span>
+
+    <div class="text-right form-submit">
+      [[#if (urlParam "noredirect")]]
+      [[else]]
+  			<semantic-link iri="[[urlParam "resourceiri"]]" urlqueryparam-tab="meta" class="btn btn-default btn-md">Cancel</semantic-link>
+      [[/if]]
+      <button name="submit" class="btn btn-primary btn-md">Save</button>
+    </div>
+  </semantic-form>
+
+[[else]]
+
+    <div class="alert alert-warning">
+      You can only access this page through another resource
+	  </div>
+
+[[/if]]
+
+[[> :footer]]

@@ -1,0 +1,69 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":manageTerms") label="Manage Terms" tab="keywords"]]
+  [[#if (urlParam "resiri")]]
+      [[> :templateBreadcrumbViewResource
+      iri=(resolvePrefix ":viewKeyword")
+      urlqueryparam="keywordtypeiri"
+      resiri="true" ]]
+  [[/if]]
+</ol>
+
+[[#if (urlParam "resiri")]]
+  <h2>Edit keyword</h2>
+[[else]]
+  <h2>Add new keyword</h2>
+[[/if]]
+<semantic-form
+  persistence='LDP'
+	browser-persistence='false'
+  [[#if (urlParam "noredirect")]]
+  [[else]]
+    post-action='http://sphaera.mpiwg-berlin.mpg.de/resource/manageTerms'
+    urlqueryparam-tab='keywords'
+  [[/if]]
+  fields="[[fieldDefinitions
+      description="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/description"
+ 			keyword_type_member="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/keyword_type_member"
+  		label="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/has_note"
+      record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/type_record_type"
+  ]]"
+  [[#if (urlParam "resiri")]]
+    subject="[[urlParam "resiri"]]"
+  [[else]]
+    subject="[[singleValueFromSelect "SELECT ?newIRI WHERE { BIND(uri(concat(\"http://sphaera.mpiwg-berlin.mpg.de/id/thes/type/keyword/\",STRUUID())) as ?newIRI)}"]]"
+  [[/if]]
+>
+ 	<semantic-form-text-input for="label"></semantic-form-text-input>
+ 	<semantic-form-text-input for="description" multiline="true"></semantic-form-text-input>
+
+  <div class="disabled hidden-field">
+    <semantic-form-text-input for="keyword_type_member"></semantic-form-text-input>
+    <semantic-form-text-input for="record_type"></semantic-form-text-input>
+  </div>
+
+  <div class="text-right form-submit">
+     <semantic-link iri="http://sphaera.mpiwg-berlin.mpg.de/resource/manageTerms" urlqueryparam-tab="keywords" class="btn btn-default">Cancel</semantic-link>
+     <button name="submit" class="btn btn-primary">Save</button>
+  </div>
+
+</semantic-form>
+
+
+[[#if (urlParam "resiri")]]
+  <div>
+    <semantic-link
+        iri="[[resolvePrefix ":deleteResource"]]"
+        urlqueryparam-resiri="[[urlParam "resiri"]]"
+        urlqueryparam-back=":manageTerms"
+        urlqueryparam-tab="keywords"
+        urlqueryparam-backtitle="Manage Terms"
+      >
+        Delete Keyword
+      </semantic-link>
+    </div>
+[[/if]]
+
+[[> :footer]]

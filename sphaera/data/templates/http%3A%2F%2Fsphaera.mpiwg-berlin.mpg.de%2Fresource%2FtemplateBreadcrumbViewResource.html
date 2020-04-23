@@ -1,0 +1,44 @@
+[[!--
+
+Usage examples:
+
+  [[> :templateBreadcrumbViewResource
+    iri=(resolvePrefix ":viewBook")
+    urlqueryparam="bookiri"
+    bookiri="true" ]]
+
+  [[> :templateBreadcrumbViewResource
+    iri=(resolvePrefix ":viewAdaptionType"))
+    urlqueryparam="adaptiontypeiri"
+    resiri="true" ]]
+
+Supported URL params:
+  - bookiri
+  - resiri
+
+ --]]
+
+  <li class="breadcrumb-item">
+    <semantic-query
+      query='SELECT ?subject ?label WHERE
+      {
+        ?subject ecrm:P3_has_note ?label .
+        [[#if bookiri]]
+          BIND(<[[urlParam "bookiri"]]> as ?subject)
+        [[/if]]
+        [[#if resiri]]
+          BIND(<[[urlParam "resiri"]]> as ?subject)
+        [[/if]]
+      } LIMIT 1'
+      template='{{#each bindings}}
+        <semantic-link iri="[[iri]]"
+          [[#if tab]]
+            urlqueryparam-tab="[[tab]]"
+          [[/if]]
+          [[#if urlqueryparam]]
+            urlqueryparam-[[urlqueryparam]]="{{subject.value}}"
+          [[/if]]
+        >{{label.value}}</semantic-link>
+      {{/each}}'>
+    </semantic-query>
+  </li>

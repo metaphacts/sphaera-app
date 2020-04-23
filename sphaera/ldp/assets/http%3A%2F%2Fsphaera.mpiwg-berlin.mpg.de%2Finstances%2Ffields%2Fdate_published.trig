@@ -1,0 +1,40 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/date_published/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/date_published> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/64fdca>;
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/auu96q>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#decimal>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The date the book has been published";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Date Published (YYYY)" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/64fdca> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/auu96q> a <http://spinrdf.org/sp#Query>;
+    <http://spinrdf.org/sp#text> """SELECT ?value WHERE {
+	$subject ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:P4_has_time-span/ecrm:P82_at_some_time_within ?value .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/64fdca> <http://spinrdf.org/sp#text>
+      """INSERT { 
+  ?publication_event ecrm:P4_has_time-span ?time_span .
+  ?time_span a ecrm:E52_Time-Span ;
+      ecrm:P82a_begin_of_the_beginning ?value_begin ;
+      ecrm:P82b_end_of_the_end ?value_end ;
+      ecrm:P82_at_some_time_within $value .
+} WHERE {
+      BIND(CONCAT(STR($value), \"-01-01\") as ?value_begin )
+      BIND(CONCAT(STR($value), \"-12-31\") as ?value_end ) 
+  BIND(URI(CONCAT(STR($subject), \"/publication/event\")) as ?publication_event)
+  BIND(URI(CONCAT(STR($subject), \"/publication/date\")) as ?time_span)
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/date_published> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.974+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/date_published> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/date_published> a <http://www.w3.org/ns/ldp#Resource> .
+}

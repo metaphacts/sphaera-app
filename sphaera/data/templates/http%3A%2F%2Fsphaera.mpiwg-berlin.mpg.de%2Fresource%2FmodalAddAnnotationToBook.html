@@ -1,0 +1,14 @@
+<div class="gap-bottom">
+	<mp-overlay-dialog title="Add Annotation" type="modal" bs-size="large">
+		<mp-overlay-dialog-trigger><a>Add Annotation to Book</a></mp-overlay-dialog-trigger>
+		<mp-overlay-dialog-content>
+			<div width="800px">
+				<mp-page-loader iri="http://sphaera.mpiwg-berlin.mpg.de/resource/createAnnotation"
+					urlqueryparam-noredirect="true"
+					urlqueryparam-resourceiri="[[urlParam resourceiri]]"
+				>
+				</mp-page-loader>
+			</div>
+		</mp-overlay-dialog-content>
+	</mp-overlay-dialog>
+</div>

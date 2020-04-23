@@ -1,0 +1,32 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":manageTerms") label="Manage Terms" tab="partContentTypes"]]
+</ol>
+
+<h2>Add new Part Content Type</h2>
+
+<semantic-form
+  persistence='LDP'
+	browser-persistence='false'
+  post-action='http://sphaera.mpiwg-berlin.mpg.de/resource/addPartContentType'
+  fields="[[fieldDefinitions
+  			label="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/placeholder_label"
+  ]]"
+  subject="http://sphaera.mpiwg-berlin.mpg.de/id/thes/type/placeholder"
+>
+
+  [[> :templateTypeIdentifierWarning ]]
+
+  <semantic-form-text-input for="label">
+  </semantic-form-text-input>
+
+  <div class="text-right form-submit">
+    <semantic-link iri="http://sphaera.mpiwg-berlin.mpg.de/resource/manageTerms" urlqueryparam-tab="partContentTypes" class="btn btn-default btn-md">Cancel</semantic-link>
+    <button name="submit" class="btn btn-primary btn-md">Add</button>
+  </div>
+
+</semantic-form>
+
+[[> :footer]]

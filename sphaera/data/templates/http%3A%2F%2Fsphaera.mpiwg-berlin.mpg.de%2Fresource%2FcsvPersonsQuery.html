@@ -1,0 +1,39 @@
+SELECT DISTINCT
+  ?subject
+  ?label
+  (YEAR(?date_birth) as ?year_birth)
+  (YEAR(?date_death) as ?year_death)
+  (YEAR(?date_activity_from) as ?year_activity_from)
+  (YEAR(?date_activity_to) as ?year_activity_to)
+  (GROUP_CONCAT(DISTINCT ?person_role;SEPARATOR=';') as ?person_roles)
+WHERE {
+  ?subject ecrm:P2_has_type/skos:prefLabel ?person_role ;
+    ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?label .
+  OPTIONAL {
+    ?subject ecrm:P98i_was_born/ecrm:P4_has_time-span/ecrm:P3_has_note ?date_birth .
+    BIND('TRUE' as ?has_birth_data)
+  }
+  OPTIONAL {
+    ?subject ecrm:P100i_died_in/ecrm:P4_has_time-span/ecrm:P3_has_note ?date_death .
+    BIND('TRUE' as ?has_birth_data)
+  }
+  OPTIONAL {
+    ?subject ecrm:P11i_participated_in ?activity .
+    ?activity ecrm:P2_has_type sphType:periodOfActivity .
+    BIND('TRUE' as ?has_activity_data)
+    OPTIONAL {
+      ?activity ecrm:P4_has_time-span/ecrm:P82a_begin_of_the_beginning ?date_activity_from
+    }
+    OPTIONAL {
+      ?activity ecrm:P4_has_time-span/ecrm:P82b_end_of_the_end ?date_activity_to
+    }
+  }
+} GROUP BY
+  ?subject
+  ?label
+  ?has_birth_data
+  ?has_activity_data
+  ?date_birth
+  ?date_death
+  ?date_activity_to
+  ?date_activity_from

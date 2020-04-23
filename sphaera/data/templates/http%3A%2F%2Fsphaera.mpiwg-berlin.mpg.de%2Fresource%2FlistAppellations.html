@@ -1,0 +1,69 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listPersons") label="Persons"]]
+</ol>
+
+<h1>Additional Appellations</h1>
+
+<p class="gap-bottom">
+  <semantic-link iri="http://sphaera.mpiwg-berlin.mpg.de/resource/listPersons" class="btn btn-default btn-md">Back to persons</semantic-link>
+</p>
+
+<div class="content">
+  <semantic-table
+    query="SELECT ?subject ?label (COUNT(?actor_secondary) as ?num_use) WHERE {
+        ?subject a ecrm:E82_Actor_Appellation ;
+          ecrm:P3_has_note ?label .
+        OPTIONAL {
+          ?actor_main ecrm:P48_has_preferred_identifier ?subject .
+        }
+        OPTIONAL {
+        	?subject ^ecrm:P1_is_identified_by ?actor_secondary ;
+  			     ecrm:P70i_is_documented_in ?expression .
+        }
+        FILTER(! BOUND(?actor_main))
+      } GROUP BY ?subject ?label
+   "
+
+		column-configuration='[
+  			{
+  				"displayName" : "Appellation",
+          "cellTemplate" : "
+          [[# if (hasPermission "forms:ldp:*")]]
+            <semantic-link iri=\"{{subject.value}}\">{{label.value}}</semantic-link>
+          [[else]]
+            {{label.value}}
+          [[/if]]
+          "
+  			},
+        {
+          "variableName" : "num_use",
+          "displayName" : "Usage Count"
+        }
+
+        [[# if (hasPermission "forms:ldp:*")]]
+          ,
+    			{
+    				"displayName" : "&nbsp;",
+            "cellTemplate" : "<semantic-link
+                iri=\"[[resolvePrefix ":deleteResource"]]\"
+                urlqueryparam-resiri=\"{{subject.value}}\"
+                urlqueryparam-back=\"http://sphaera.mpiwg-berlin.mpg.de/resource/listAppellations\"
+                urlqueryparam-backtitle=\"Appellations\"
+              >
+                <i class=\"fa fa-trash\" aria-hidden=\"true\"></i>
+              </semantic-link>"
+    			}
+        [[/if]]
+  		]'
+
+		options='{
+				"resultsPerPage":100
+		}'
+  >
+  </semantic-table>
+</div>
+
+[[> :footer]]

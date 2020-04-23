@@ -1,0 +1,58 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/adaption_translated_part_record_type/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/adaption_translated_part_record_type>
+    <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/lxwngo>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/awd0ek>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/uu5lz>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "A work may have been fully or partially translated";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Translation Type" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/lxwngo> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/awd0ek> <http://spinrdf.org/sp#text>
+      """SELECT $value $label WHERE { 
+  $subject a $value .
+  VALUES ($value $label) { 
+    (<http://erlangen-crm.org/efrbroo/F22_Self-Contained_Expression> \"Full Translation\") 
+    (<http://erlangen-crm.org/efrbroo/F23_Expression_Fragment> \"Partial Translation\")}
+}""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/uu5lz> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+  VALUES ($value $label) { 
+    (<http://erlangen-crm.org/efrbroo/F22_Self-Contained_Expression> \"Full Translation\") 
+    (<http://erlangen-crm.org/efrbroo/F23_Expression_Fragment> \"Partial Translation\")}
+}""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/lxwngo> <http://spinrdf.org/sp#text>
+      """INSERT { 
+    $subject rdf:type $value ;
+      ecrm:P2_has_type ?type , sphType:translation .
+    ?adaption ecrm:P165_incorporates $subject .
+} WHERE {
+    BIND(URI(STRBEFORE(STR($subject), \"/translation\")) as ?adaption)
+    OPTIONAL { FILTER (STR($value) = \"http://erlangen-crm.org/efrbroo/F22_Self-Contained_Expression\")
+      BIND(sphType:full AS ?type)
+    }
+    OPTIONAL { FILTER (STR($value) = \"http://erlangen-crm.org/efrbroo/F23_Expression_Fragment\")
+      BIND(sphType:partial AS ?type)
+    }
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/adaption_translated_part_record_type>
+    a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.233+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/adaption_translated_part_record_type> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/adaption_translated_part_record_type>
+    a <http://www.w3.org/ns/ldp#Resource> .
+}

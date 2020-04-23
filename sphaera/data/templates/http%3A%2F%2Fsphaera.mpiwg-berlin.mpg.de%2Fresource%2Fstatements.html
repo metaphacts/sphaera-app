@@ -1,0 +1,47 @@
+<h3>Statements</h3>
+
+<h4>Outgoing Statements</h4>
+
+<semantic-table
+	query="SELECT ?property ?object WHERE { ?? ?property ?object  } LIMIT 1000"
+	column-configuration='[
+    {"variableName":"property", "displayName":"Property"},
+    {"variableName":"object", "displayName":"Object"}
+	]'
+	options='{
+		"resultsPerPage":10
+	}'>
+</semantic-table>
+
+<h4>Incoming Statements</h4>
+
+<semantic-table
+	query="SELECT ?property ?subject WHERE { ?subject ?property ??  } LIMIT 1000"
+	column-configuration='[
+    {"variableName":"property", "displayName":"Property"},
+    {"variableName":"subject", "displayName":"Subject"}
+	]'
+	options='{
+		"resultsPerPage":10
+	}'>
+</semantic-table>
+
+<h4>Download</h4>
+
+<mp-sparql-download
+	query='CONSTRUCT {
+		?s ?p ?o
+	} WHERE {
+		GRAPH ?g {
+			?container a <http://www.w3.org/ns/ldp#Resource> .
+			?s ?p ?o
+		}
+		FILTER(STRSTARTS(STR(?container), STR(??)))
+		FILTER(STRENDS(STR(?container), "/container"))
+	} ORDER BY ?container
+	'
+	header="application/x-turtle"
+	filename="download.ttl"
+	>
+	<a class="btn btn-default">Download</a>
+</mp-sparql-download>

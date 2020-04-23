@@ -1,0 +1,62 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_person_wd/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_person_wd> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      "t255";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> "t257";
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#autosuggestionPattern> "t256";
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Find and match a person on WikiData";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Equivalent Person (WikiData)" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t257> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+  $subject owl:sameAs ?value
+  # SERVICE <https://wikidata.metaphacts.com/sparql>
+  # {  
+  #     OPTIONAL {?value rdfs:label ?label }
+  # }
+}""" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t256> <http://spinrdf.org/sp#text>
+      """SELECT distinct ?value ?label (year(?dateOfBirth) as ?yearOfBirth) (year(?dateOfDeath) as ?yearOfDeath) ?description WHERE {
+     SERVICE <https://wikidata.metaphacts.com/sparql?repository=ephedra> {
+         ?value <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5> .
+         SERVICE <http://www.metaphacts.com/ontologies/platform/repository/federation#wikidata-text>  {
+
+                             ?value <http://www.metaphacts.com/ontology/hasWikidataSearchToken> "?token".
+                             ?value rdfs:label ?label;
+                               <http://schema.org/description> ?description ;
+                               <http://www.metaphacts.com/ontology/orderNr> ?orderNr .
+         }
+                           BIND( xsd:integer(substr(str(?value), 33)) as ?q)
+         OPTIONAL {
+           ?value <http://schema.org/description> ?description .
+        }
+         OPTIONAL {
+           ?value <http://www.wikidata.org/prop/direct/P569> ?dateOfBirth ;
+                  <http://www.wikidata.org/prop/direct/P570> ?dateOfDeath .
+         }
+       }
+     }
+ ORDER BY ?q
+ LIMIT 10""" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t255> <http://spinrdf.org/sp#text>
+      "INSERT { $subject owl:sameAs $value} WHERE {}" .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t256> a <http://spinrdf.org/sp#Query> .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t257> a <http://spinrdf.org/sp#Query> .
+  
+  <http://localhost:8080/blazegraph/namespace/sphaera/t255> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_person_wd> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.557+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_person_wd> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/equivalent_person_wd> a <http://www.w3.org/ns/ldp#Resource> .
+}

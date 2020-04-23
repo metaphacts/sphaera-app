@@ -1,0 +1,71 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_author/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_author>
+    <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/7ltyd9>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/0p8khm>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/acxy4a>;
+    <http://www.metaphacts.com/ontology/fields#autosuggestionPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/e5bwq>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "The name of an author as stated in a book";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Alternative Name for Author" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/acxy4a> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+    ?value a ecrm:E82_Actor_Appellation ;
+        ecrm:P3_has_note ?label .
+    OPTIONAL {
+        ?actor ecrm:P48_has_preferred_identifier ?value .
+    }
+    FILTER(!(BOUND(?actor)))
+} ORDER BY ?label""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/0p8khm> <http://spinrdf.org/sp#text>
+      """SELECT ?value WHERE {
+  ?subject ecrm:P141_assigned ?value .
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/7ltyd9> <http://spinrdf.org/sp#text>
+      """INSERT {
+  $subject ecrm:P140_assigned_attribute_to ?author ;
+      ecrm:P141_assigned $value ;
+      ecrm:P16_used_specific_object ?reproduction .  
+  ?author ecrm:P1_is_identified_by $value .
+  $value ecrm:P70i_is_documented_in ?publication_expression .
+} WHERE {
+  ?carried_out_by ecrm:PC02_has_range ?author
+  BIND(URI(STRBEFORE(STR($subject), \"/name\")) as ?carried_out_by)
+  BIND(URI(CONCAT(STRBEFORE(STR(?carried_out_by), \"/expression/author\"), \"/publication/expression\")) as ?publication_expression )
+  BIND(URI(CONCAT(STRBEFORE(STR(?carried_out_by), \"/expression/author\"), \"/reproduction/document\")) as ?reproduction )
+}""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/e5bwq> <http://spinrdf.org/sp#text>
+      """SELECT ?value ?label WHERE {
+    ?value a ecrm:E82_Actor_Appellation ;
+        ecrm:P3_has_note ?label .
+    OPTIONAL {
+        ?actor ecrm:P48_has_preferred_identifier ?value .
+    }
+    FILTER(!(BOUND(?actor)))
+} ORDER BY ?label LIMIT 10""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/acxy4a> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/0p8khm> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/7ltyd9> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_author>
+    a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.732+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_author> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/alternative_name_for_author>
+    a <http://www.w3.org/ns/ldp#Resource> .
+}

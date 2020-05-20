@@ -4,9 +4,9 @@
 
 This is the app for the [Sphaera](http://sphaera.mpiwg-berlin.mpg.de) project database.
 
-It contains templates and configurations for the metaphacts platform for building a declarative knowledge graph application, which enables end-users to capture, curate, trace and visualise knowledge in history around one book: De sphaera of Johannes de Sacrobosco. 
+It contains templates and configurations for the metaphacts platform for building a declarative knowledge graph application, which enables end-users to capture, curate, trace and visualise knowledge in the history around a specific text: the Tractatus De sphaera by Johannes de Sacrobosco. 
 
-The [Sphaera](http://sphaera.mpiwg-berlin.mpg.de)  project is led by [Matteo Valleriani](http://www.mpiwg-berlin.mpg.de/en/users/valleriani) and the main application was developed by [Florian Kräutli](http://www.mpiwg-berlin.mpg.de/en/users/fkraeutli) from Max Planck Institute for the History of Science.
+The [Sphaera](http://sphaera.mpiwg-berlin.mpg.de) project based at the [Max Planck Institute for the History of Science](https://www.mpiwg-berlin.mpg.de) and is led by [Matteo Valleriani](http://www.mpiwg-berlin.mpg.de/en/users/valleriani). [Florian Kräutli](http://www.mpiwg-berlin.mpg.de/en/users/fkraeutli) leads the digital development and is responsible for the design of the app.
 
 The app and project was initially developed in 2017. This version of the app has been migrated in April 2020 by metaphacts to be compatible with newer versions (>= 3.2) for public usage and demonstration purpose.
 
@@ -30,7 +30,7 @@ The Sphaera app makes use of the following platform components:
 
 * authoring forms including field definitions over complex CIDOC CRM and FRBRoo pattern
 * different visualization components (semantic maps, lists, carousels, graphs)
-* IIIF image viewer for deep zoom image viewing and annotations (e.g. of book scanned pages)
+* IIIF image viewer for deep zoom image viewing and annotations (e.g. of scanned book pages)
 * components for knowledge graph administration
 
 ## How to deploy

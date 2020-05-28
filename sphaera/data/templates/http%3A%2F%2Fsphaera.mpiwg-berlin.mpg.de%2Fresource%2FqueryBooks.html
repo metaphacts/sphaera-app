@@ -20,10 +20,6 @@
     ?subject ecrm:P1_is_identified_by ?fingerprintIdentifier .
     ?fingerprintIdentifier ecrm:P2_has_type sphaera:fingerprint ;
       ecrm:P3_has_note ?fingerprint .
-    OPTIONAL {
-      ?fingerprintIdentifier ecrm:P106_is_composed_of ?fingerprint_part .
-      BIND("yes" as ?fingerprint_converted)
-    }
   }
 
   OPTIONAL {
@@ -42,6 +38,14 @@
     ?source ecrm:P2_has_type sphType:source ;
       ecrm:P48_has_preferred_identifier ?source_url .
     BIND(IF(CONTAINS(STR(?source_url),"mpiwg-berlin.mpg.de"),"True","") as ?mpiwg_source)
+  }
+
+  OPTIONAL {
+    ?subject ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:PC01_is_domain_of/ecrm:PC02_has_range/ecrm:P3_has_note ?publisher_or_printer_name .
+  }
+
+  OPTIONAL {
+    ?subject efrbroo:R28i_was_produced_by/ecrm:PC01_is_domain_of/ecrm:PC02_has_range/ecrm:P3_has_note ?publisher_or_printer_name .
   }
 
   BIND( IF(BOUND(?book_title), ?book_title, "&nbsp;") as ?full_title )

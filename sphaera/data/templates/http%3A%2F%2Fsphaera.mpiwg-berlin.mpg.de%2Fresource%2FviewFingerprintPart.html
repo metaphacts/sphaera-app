@@ -1,0 +1,95 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+</ol>
+
+<h3>Fingerprint</h3>
+[[#if (urlParam "fingerprintpart1")]]
+  <h4>Part 1: [[urlParam "fingerprintpart1"]]</h4>
+[[/if]]
+[[#if (urlParam "fingerprintpart2")]]
+  <h4>Part 2: [[urlParam "fingerprintpart2"]]</h4>
+[[/if]]
+[[#if (urlParam "fingerprintpart3")]]
+  <h4>Part 3: [[urlParam "fingerprintpart3"]]</h4>
+[[/if]]
+[[#if (urlParam "fingerprintpart4")]]
+  <h4>Part 4: [[urlParam "fingerprintpart4"]]</h4>
+[[/if]]
+[[#if (urlParam "fingerprintpart5")]]
+  <h4>Part 5: [[urlParam "fingerprintpart5"]]</h4>
+[[/if]]
+[[#if (urlParam "fingerprintpart6")]]
+  <h4>Part 6: [[urlParam "fingerprintpart6"]]</h4>
+[[/if]]
+[[#if (urlParam "fingerprintpart7")]]
+  <h4>Part 7: [[urlParam "fingerprintpart7"]]</h4>
+[[/if]]
+
+
+<div class="content">
+
+  <h4 style="margin:2em 0">Books with this fingerprint part</h4>
+  <div id="table_books_container">
+    <semantic-table
+      query='SELECT DISTINCT [[> :queryBooksSelect ]]  WHERE {
+
+        ?subject ecrm:P1_is_identified_by ?fingerprintIdentifier .
+        ?fingerprintIdentifier ecrm:P2_has_type sphaera:fingerprint ;
+          ecrm:P106_is_composed_of ?fingerprint_part .
+                
+        [[#if (urlParam "fingerprintpart1")]]
+          ?fingerprint_part ecrm:P1_is_identified_by "1"  ;
+            ecrm:P3_has_note "[[urlParam "fingerprintpart1"]]" .
+        [[/if]]
+                
+        [[#if (urlParam "fingerprintpart2")]]
+          ?fingerprint_part ecrm:P1_is_identified_by "2"  ;
+            ecrm:P3_has_note "[[urlParam "fingerprintpart2"]]" .
+        [[/if]]
+                
+        [[#if (urlParam "fingerprintpart3")]]
+          ?fingerprint_part ecrm:P1_is_identified_by "3"  ;
+            ecrm:P3_has_note "[[urlParam "fingerprintpart3"]]" .
+        [[/if]]
+                
+        [[#if (urlParam "fingerprintpart4")]]
+          ?fingerprint_part ecrm:P1_is_identified_by "4"  ;
+            ecrm:P3_has_note "[[urlParam "fingerprintpart4"]]" .
+        [[/if]]
+                
+        [[#if (urlParam "fingerprintpart5")]]
+          ?fingerprint_part ecrm:P1_is_identified_by "5"  ;
+            ecrm:P3_has_note "[[urlParam "fingerprintpart5"]]" .
+        [[/if]]
+                
+        [[#if (urlParam "fingerprintpart6")]]
+          ?fingerprint_part ecrm:P1_is_identified_by "6"  ;
+            ecrm:P3_has_note "[[urlParam "fingerprintpart6"]]" .
+        [[/if]]
+                
+        [[#if (urlParam "fingerprintpart7")]]
+          ?fingerprint_part ecrm:P1_is_identified_by "7"  ;
+            ecrm:P3_has_note "[[urlParam "fingerprintpart7"]]" .
+        [[/if]]
+
+        [[> :queryBooks]]
+      } GROUP BY [[> :queryBooksGroup]]
+      ORDER BY ?year_published_from ?date_text'
+
+      options='{
+          "showFilter" : false,
+          "resultsPerPage":100
+        }'
+      
+      no-result-template="no results"
+
+      column-configuration='[
+        [[> :colConfBooks]]
+      ]'
+    >
+    </semantic-table>
+  </div>
+</div>

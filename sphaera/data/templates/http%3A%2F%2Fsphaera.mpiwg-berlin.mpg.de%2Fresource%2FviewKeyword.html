@@ -48,6 +48,7 @@
         ?is_book
         ?is_element
         ?is_part
+        ?is_page
         ?is_region
         (GROUP_CONCAT(DISTINCT ?other_keyword_label; SEPARATOR=', ') as ?other_keywords)
         ?page
@@ -82,6 +83,16 @@
             BIND(IF(?annotation_target_type = sphaera:Part, 'true', '') as ?annotates_part)
           }
           OPTIONAL {
+            ?subject a ecrm:E36_Visual_Item ;
+              ^ecrm:P106_is_composed_of/^ecrm:P128_carries/^efrbroo:R30_produced/^efrbroo:R29i_was_reproduced_by ?page_book .
+            ?page_book ecrm:P3_has_note ?page_book_label .
+
+            :configIIIFPath ecrm:P3_has_note ?IIIFPath .
+            BIND('full' as ?boundingBox)
+            BIND(?subject as ?imageIRI) .
+            [[> :queryImageIdPattern]]
+          }
+          OPTIONAL {
             ?subject a crmDig:D35_Area ;
               crmDig:L49_is_primary_area_of ?page ;
               rs:boundingBox ?bbox .
@@ -109,11 +120,13 @@
             (sphaera:Book)
             (sphaera:Part)
             (sphaera:Element)
+            (ecrm:E36_Visual_Item)
             (crmDig:D35_Area)
             (oa:Annotation)
           }
           BIND(IF(?type = sphaera:Book, 'true', '') as ?is_book)
           BIND(IF(?type = sphaera:Part, 'true', '') as ?is_part)
+          BIND(IF(?type = ecrm:E36_Visual_Item, 'true', '') as ?is_page)
           BIND(IF(?type = sphaera:Element, 'true', '') as ?is_element)
           BIND(IF(?type = crmDig:D35_Area, 'true', '') as ?is_region)
           BIND(IF(?type = oa:Annotation, 'true', '') as ?is_annotation)
@@ -132,6 +145,7 @@
         ?is_book
         ?is_element
         ?is_part
+        ?is_page
         ?is_region
         ?page
         ?page_book_label

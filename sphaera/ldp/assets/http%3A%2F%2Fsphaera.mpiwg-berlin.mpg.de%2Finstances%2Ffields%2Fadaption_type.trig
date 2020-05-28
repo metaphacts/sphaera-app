@@ -1,32 +1,31 @@
 
 <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/adaption_type/context> {
-  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/adaption_type> <http://www.metaphacts.com/ontology/fields#insertPattern>
-      "t336";
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/adaption_type> <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t336>;
     <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
-    <http://www.metaphacts.com/ontology/fields#selectPattern> "t335";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t335>;
     <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
-    <http://www.metaphacts.com/ontology/fields#valueSetPattern> "t334";
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t334>;
     a <http://www.metaphacts.com/ontology/fields#Field>;
     <http://www.w3.org/2000/01/rdf-schema#comment> "The type of the adaption (translation, annotated, etc.)";
     <http://www.w3.org/2000/01/rdf-schema#label> "Adaption Type" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t334> a <http://spinrdf.org/sp#Query> .
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t334> a <http://spinrdf.org/sp#Query> .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t335> a <http://spinrdf.org/sp#Query> .
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t335> a <http://spinrdf.org/sp#Query> .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t336> a <http://spinrdf.org/sp#Query>;
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t336> a <http://spinrdf.org/sp#Query>;
     <http://spinrdf.org/sp#text> """INSERT { 
     $subject ecrm:P2_has_type $value .
 } WHERE {}""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t334> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t334> <http://spinrdf.org/sp#text>
       """SELECT ?value ?label WHERE {
   ?value a ecrm:E55_Type ;
     ecrm:P3_has_note ?label .
     sphType:adaptionType skos:member ?value .
 }""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t335> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t335> <http://spinrdf.org/sp#text>
       """SELECT ?value ?label WHERE {
     $subject ecrm:P2_has_type ?value .
     ?value ecrm:P3_has_note ?label .

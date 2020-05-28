@@ -1,15 +1,14 @@
 
 <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_content_type_member/context> {
-  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_content_type_member> <http://www.metaphacts.com/ontology/fields#insertPattern>
-      "t675";
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_content_type_member> <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t675>;
     <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
     <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
-    <http://www.metaphacts.com/ontology/fields#selectPattern> "t674";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t674>;
     a <http://www.metaphacts.com/ontology/fields#Field>;
     <http://www.w3.org/2000/01/rdf-schema#comment> "Defaults to adding instance to member of part content type";
     <http://www.w3.org/2000/01/rdf-schema#label> "Part Content Type Member" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t675> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t675> <http://spinrdf.org/sp#text>
       """INSERT {
    sphType:partContentType skos:member $subject
 } WHERE {
@@ -17,7 +16,7 @@
 }""";
     a <http://spinrdf.org/sp#Query> .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t674> a <http://spinrdf.org/sp#Query>;
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t674> a <http://spinrdf.org/sp#Query>;
     <http://spinrdf.org/sp#text> """SELECT ?value WHERE {
   BIND(\"sphType:partContentType skos:member $subject\" as ?value)
   BIND(?subject as ?dummy)

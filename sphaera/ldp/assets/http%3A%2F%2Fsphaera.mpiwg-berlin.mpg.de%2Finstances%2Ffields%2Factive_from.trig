@@ -1,22 +1,21 @@
 
 <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/active_from/context> {
-  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/active_from> <http://www.metaphacts.com/ontology/fields#insertPattern>
-      "t765";
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/active_from> <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t765>;
     <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
     <http://www.metaphacts.com/ontology/fields#minOccurs> "0";
-    <http://www.metaphacts.com/ontology/fields#selectPattern> "t764";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t764>;
     <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#integer>;
     a <http://www.metaphacts.com/ontology/fields#Field>;
     <http://www.w3.org/2000/01/rdf-schema#label> "Active from (year)" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t764> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t764> <http://spinrdf.org/sp#text>
       """SELECT (xsd:integer(?value_str) as ?value) WHERE {
 	$subject ecrm:P11i_participated_in/ecrm:P4_has_time-span/ecrm:P82a_begin_of_the_beginning ?value_raw .
     BIND(STRBEFORE(STR(?value_raw), \"-01\") as ?value_str)
 }""";
     a <http://spinrdf.org/sp#Query> .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t765> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t765> <http://spinrdf.org/sp#text>
       """INSERT { 
 	$subject ecrm:P11i_participated_in ?activity .
     ?activity ecrm:P2_has_type sphType:periodOfActivity ;

@@ -10,7 +10,7 @@
           ?? ecrm:P3_has_note ?book_name .
         } LIMIT 1'
       template='{{#each bindings}}
-          <semantic-link iri="[[resolvePrefix ":viewBook"]] urlqueryparam-bookiri="[[this]]">
+          <semantic-link iri="[[resolvePrefix ":viewBook"]]" urlqueryparam-bookiri="[[this]]">
             {{book_name.value}}
           </semantic-link>
         </li>{{/each}}'

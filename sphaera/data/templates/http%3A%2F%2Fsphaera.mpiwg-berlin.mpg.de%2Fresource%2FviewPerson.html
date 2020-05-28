@@ -203,12 +203,12 @@
                 ?person_name )
                as ?person_firstname)
              OPTIONAL {
-               ?person ecrm:P98i_was_born/ecrm:P4_has_time-span/ecrm:P3_has_note ?date_of_birth .
+               ?person ecrm:P98i_was_born/ecrm:P4_has_time-span/ecrm:P82a_begin_of_the_beginning ?date_of_birth .
                BIND(STRBEFORE(STR(?date_of_birth), "-01") as ?year_of_birth)
                BIND("true" as ?data_present)
              }
              OPTIONAL {
-               ?person ecrm:P100i_died_in/ecrm:P4_has_time-span/ecrm:P3_has_note ?date_of_death .
+               ?person ecrm:P100i_died_in/ecrm:P4_has_time-span/ecrm:P82b_end_of_the_end ?date_of_death .
                BIND(STRBEFORE(STR(?date_of_death), "-12") as ?year_of_death)
                BIND("true" as ?data_present)
              }

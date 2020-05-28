@@ -97,9 +97,6 @@ table > tbody + tbody {
 table > tbody + tbody tr:hover {
   background: none;
 }
-table tbody tr {
-  border-bottom: 0 !important;
-}
 table tbody tr td {
   border-color: #fafafa;
   padding-left: 0 !important;
@@ -107,6 +104,9 @@ table tbody tr td {
 table tbody tr td:first-child {
   font-size: 1.2em;
   width: 40%;
+}
+table tbody + tbody tr {
+  border-bottom: none;
 }
 table thead {
   border-bottom: 0 !important;

@@ -5,9 +5,9 @@
 ?label
 ?full_title
 ?fingerprint
-?fingerprint_converted
 ?page
 ?region
 ?source_url
 ?mpiwg_source
+(GROUP_CONCAT(DISTINCT ?publisher_or_printer_name; SEPARATOR=", ") as ?publisher_or_printer_names)
 (COUNT(DISTINCT ?attribute_assignment) as ?num_parts)

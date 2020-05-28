@@ -418,7 +418,16 @@
                 [[> :templateDOI iri="bookiri"]]
 
                 <semantic-query
-                  query='SELECT ?fingerprint WHERE {
+                  query='SELECT 
+                      ?fingerprint 
+                      ?fp1_value
+                      ?fp2_value
+                      ?fp3_value
+                      ?fp4_value
+                      ?fp5_value
+                      ?fp6_value
+                      ?fp7_value
+                    WHERE {
                     BIND(<[[urlParam "bookiri"]]> as ?book) .
                     ?book ecrm:P1_is_identified_by ?identifier .
                     ?identifier ecrm:P2_has_type sphaera:fingerprint ;
@@ -445,7 +454,34 @@
                       ecrm:P3_has_note ?fp7_value .
                     BIND(CONCAT(?fp1_value, " ", ?fp2_value, " ", ?fp3_value, " ", ?fp4_value, " ", ?fp5_value, " ", ?fp6_value, " ", ?fp7_value) as ?fingerprint)
                   }'
-                  template='<dl><dt>Fingerprint</dt>{{#each bindings}}<dd>{{fingerprint.value}}</dd>{{/each}}</dl>'>
+                  template='<dl>
+                    <dt>Fingerprint</dt>
+                    {{#each bindings}}
+                      <dd>
+                        <semantic-link 
+                          uri="[[ resolvePrefix ":viewFingerprintPart"]]"
+                          urlqueryparam-fingerprintpart1="{{fp1_value.value}}">{{fp1_value.value}} </semantic-link>
+                        <semantic-link 
+                          uri="[[ resolvePrefix ":viewFingerprintPart"]]"
+                          urlqueryparam-fingerprintpart2="{{fp2_value.value}}">{{fp2_value.value}} </semantic-link>
+                        <semantic-link 
+                          uri="[[ resolvePrefix ":viewFingerprintPart"]]"
+                          urlqueryparam-fingerprintpart3="{{fp3_value.value}}">{{fp3_value.value}} </semantic-link>
+                        <semantic-link 
+                          uri="[[ resolvePrefix ":viewFingerprintPart"]]"
+                          urlqueryparam-fingerprintpart4="{{fp4_value.value}}">{{fp4_value.value}} </semantic-link>
+                        <semantic-link 
+                          uri="[[ resolvePrefix ":viewFingerprintPart"]]"
+                          urlqueryparam-fingerprintpart5="{{fp5_value.value}}">{{fp5_value.value}} </semantic-link>
+                        <semantic-link 
+                          uri="[[ resolvePrefix ":viewFingerprintPart"]]"
+                          urlqueryparam-fingerprintpart6="{{fp6_value.value}}">{{fp6_value.value}} </semantic-link>
+                        <semantic-link 
+                          uri="[[ resolvePrefix ":viewFingerprintPart"]]"
+                          urlqueryparam-fingerprintpart7="{{fp7_value.value}}">{{fp7_value.value}} </semantic-link>
+                      </dd>
+                    {{/each}}
+                  </dl>'>
                 </semantic-query>
 
                 <semantic-query

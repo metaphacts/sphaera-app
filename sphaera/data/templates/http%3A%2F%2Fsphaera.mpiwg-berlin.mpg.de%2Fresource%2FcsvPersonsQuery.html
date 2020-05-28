@@ -10,11 +10,11 @@ WHERE {
   ?subject ecrm:P2_has_type/skos:prefLabel ?person_role ;
     ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?label .
   OPTIONAL {
-    ?subject ecrm:P98i_was_born/ecrm:P4_has_time-span/ecrm:P3_has_note ?date_birth .
+    ?subject ecrm:P98i_was_born/ecrm:P4_has_time-span/ecrm:P82a_begin_of_the_beginning ?date_birth .
     BIND('TRUE' as ?has_birth_data)
   }
   OPTIONAL {
-    ?subject ecrm:P100i_died_in/ecrm:P4_has_time-span/ecrm:P3_has_note ?date_death .
+    ?subject ecrm:P100i_died_in/ecrm:P4_has_time-span/ecrm:P82b_end_of_the_end ?date_death .
     BIND('TRUE' as ?has_birth_data)
   }
   OPTIONAL {
@@ -37,3 +37,4 @@ WHERE {
   ?date_death
   ?date_activity_to
   ?date_activity_from
+ORDER BY ?label

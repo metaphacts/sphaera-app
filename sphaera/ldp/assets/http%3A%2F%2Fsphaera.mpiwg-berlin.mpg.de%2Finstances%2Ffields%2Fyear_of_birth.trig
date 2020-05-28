@@ -1,26 +1,27 @@
 
 <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/year_of_birth/context> {
-  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/year_of_birth> <http://www.metaphacts.com/ontology/fields#insertPattern>
-      "t991";
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/year_of_birth> <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t991>;
     <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
     <http://www.metaphacts.com/ontology/fields#minOccurs> "0";
-    <http://www.metaphacts.com/ontology/fields#selectPattern> "t992";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t992>;
     <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#integer>;
     a <http://www.metaphacts.com/ontology/fields#Field>;
     <http://www.w3.org/2000/01/rdf-schema#label> "Year of Birth" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t992> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t992> <http://spinrdf.org/sp#text>
       """SELECT (xsd:integer(?value_str) as ?value) WHERE {
-	$subject ecrm:P98i_was_born/ecrm:P4_has_time-span/ecrm:P3_has_note ?value_raw .
+	$subject ecrm:P98i_was_born/ecrm:P4_has_time-span/ecrm:P82a_begin_of_the_beginning ?value_raw .
     BIND(STRBEFORE(STR(?value_raw), \"-01\") as ?value_str)
 }""";
     a <http://spinrdf.org/sp#Query> .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t991> a <http://spinrdf.org/sp#Query>;
-    <http://spinrdf.org/sp#text> """INSERT { 
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t991> a <http://spinrdf.org/sp#Query>;
+    <http://spinrdf.org/sp#text>  """INSERT { 
 	$subject ecrm:P98i_was_born ?birth .
-    ?birth ecrm:P4_has_time-span ?birth_date .
-    ?birth_date ecrm:P3_has_note ?birth_year .
+    ?birth a ecrm:E67_Birth ;
+      ecrm:P4_has_time-span ?birth_date .
+    ?birth_date a ecrm:E52_Time-Span ;
+      ecrm:P82a_begin_of_the_beginning ?birth_year .
 } WHERE {
     BIND(URI(CONCAT(STR($subject), \"/birth\")) as ?birth)
     BIND(URI(CONCAT(STR($subject), \"/birth/date\")) as ?birth_date)

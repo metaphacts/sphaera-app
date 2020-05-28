@@ -1,36 +1,35 @@
 
 <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_or_adaption_language/context> {
-  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_or_adaption_language> <http://www.metaphacts.com/ontology/fields#insertPattern>
-      "t154";
-    <http://www.metaphacts.com/ontology/fields#selectPattern> "t153";
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_or_adaption_language> <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t154>;
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t153>;
     <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
-    <http://www.metaphacts.com/ontology/fields#valueSetPattern> "t152";
-    <http://www.metaphacts.com/ontology/fields#autosuggestionPattern> "t155";
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t152>;
+    <http://www.metaphacts.com/ontology/fields#autosuggestionPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t155>;
     a <http://www.metaphacts.com/ontology/fields#Field>;
     <http://www.w3.org/2000/01/rdf-schema#comment> "The language of the part or adaption";
     <http://www.w3.org/2000/01/rdf-schema#label> "Language" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t152> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t152> <http://spinrdf.org/sp#text>
       """SELECT ?value ?label WHERE {
   ?value a ecrm:E56_Language ;
   	ecrm:P3_has_note ?label .
 } ORDER BY ?label""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t154> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t154> <http://spinrdf.org/sp#text>
       "INSERT { $subject ecrm:P72_has_language $value} WHERE {}" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t155> a <http://spinrdf.org/sp#Query>;
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t155> a <http://spinrdf.org/sp#Query>;
     <http://spinrdf.org/sp#text> """SELECT ?value ?label WHERE {
     ?value a ecrm:E56_Language ; 
   		ecrm:P3_has_note ?label .
   FILTER REGEX(STR(?label), \"?token\", \"i\" )
   } LIMIT 10""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t154> a <http://spinrdf.org/sp#Query> .
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t154> a <http://spinrdf.org/sp#Query> .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t152> a <http://spinrdf.org/sp#Query> .
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t152> a <http://spinrdf.org/sp#Query> .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t153> a <http://spinrdf.org/sp#Query>;
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t153> a <http://spinrdf.org/sp#Query>;
     <http://spinrdf.org/sp#text> """SELECT ?value ?label WHERE {
   $subject ecrm:P72_has_language ?value .
   ?value ecrm:P3_has_note ?label

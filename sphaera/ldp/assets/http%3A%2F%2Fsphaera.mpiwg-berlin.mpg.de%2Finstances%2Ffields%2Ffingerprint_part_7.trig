@@ -1,15 +1,14 @@
 
 <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_part_7/context> {
-  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_part_7> <http://www.metaphacts.com/ontology/fields#insertPattern>
-      "t219";
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/fingerprint_part_7> <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t219>;
     <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
-    <http://www.metaphacts.com/ontology/fields#selectPattern> "t220";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t220>;
     <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
     a <http://www.metaphacts.com/ontology/fields#Field>;
     <http://www.w3.org/2000/01/rdf-schema#comment> "The first part of the fingerprint identifier for the book";
     <http://www.w3.org/2000/01/rdf-schema#label> "Fingerprint Part 7" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t219> a <http://spinrdf.org/sp#Query>;
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t219> a <http://spinrdf.org/sp#Query>;
     <http://spinrdf.org/sp#text> """INSERT {
   ?fingerprint ecrm:P106_is_composed_of ?part7 .
   ?part7 a ecrm:E90_Symbolic_Object ;
@@ -20,7 +19,7 @@
   BIND(URI(CONCAT(STR($subject), \"/fingerprint/7\")) as ?part7)
 }""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t220> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t220> <http://spinrdf.org/sp#text>
       """SELECT ?value WHERE {
   $subject ecrm:P1_is_identified_by ?fingerprint .
   ?fingerprint ecrm:P2_has_type sphaera:fingerprint ;

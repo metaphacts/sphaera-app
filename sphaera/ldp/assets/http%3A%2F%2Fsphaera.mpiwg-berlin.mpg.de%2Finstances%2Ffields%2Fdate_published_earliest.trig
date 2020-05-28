@@ -1,22 +1,21 @@
 
 <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/date_published_earliest/context> {
-  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/date_published_earliest> <http://www.metaphacts.com/ontology/fields#insertPattern>
-      "t682";
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/date_published_earliest> <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t682>;
     <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
-    <http://www.metaphacts.com/ontology/fields#selectPattern> "t681";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t681>;
     <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#integer>;
     a <http://www.metaphacts.com/ontology/fields#Field>;
     <http://www.w3.org/2000/01/rdf-schema#comment> "The earliest possible year the book has been published";
     <http://www.w3.org/2000/01/rdf-schema#label> "Date Published Earliest (YYYY)" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t681> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t681> <http://spinrdf.org/sp#text>
       """SELECT (xsd:integer(?value_str) as ?value) WHERE {
 	$subject ecrm:P128_carries/efrbroo:R24i_was_created_through/ecrm:P4_has_time-span/ecrm:P82a_begin_of_the_beginning ?value_raw .
       BIND(STRBEFORE(STR(?value_raw), \"-01\") as ?value_str)
 }""";
     a <http://spinrdf.org/sp#Query> .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t682> a <http://spinrdf.org/sp#Query>;
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t682> a <http://spinrdf.org/sp#Query>;
     <http://spinrdf.org/sp#text> """INSERT { 
   ?publication_event ecrm:P4_has_time-span ?time_span .
   ?time_span a ecrm:E52_Time-Span ;

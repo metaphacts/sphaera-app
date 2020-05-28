@@ -1,30 +1,29 @@
 
 <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/placeholder_label/context> {
-  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/placeholder_label> <http://www.metaphacts.com/ontology/fields#insertPattern>
-      "t171";
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/placeholder_label> <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t171>;
     <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
     <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
-    <http://www.metaphacts.com/ontology/fields#selectPattern> "t169";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t169>;
     <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
-    <http://www.metaphacts.com/ontology/fields#askPattern> "t170";
+    <http://www.metaphacts.com/ontology/fields#askPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t170>;
     a <http://www.metaphacts.com/ontology/fields#Field>;
     <http://www.w3.org/2000/01/rdf-schema#comment> "A label for an IRI to be created by a separate form";
     <http://www.w3.org/2000/01/rdf-schema#label> "Identifier" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t171> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t171> <http://spinrdf.org/sp#text>
       """INSERT { 
   $subject rdfs:label ?cleanValue
 } WHERE {
   BIND(REPLACE($value, \" \", \"\", \"i\") AS ?cleanValue)    
 }""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t169> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t169> <http://spinrdf.org/sp#text>
       """SELECT ?value WHERE {
   $subject a ?dummy .
   BIND(\"\" as ?value)
 }""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t170> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t170> <http://spinrdf.org/sp#text>
       """ASK {
   BIND(REPLACE(?value, \"[a-z]\", \"\", \"i\") AS ?verify)
   FILTER(STRLEN(?verify) = 0)
@@ -35,11 +34,11 @@
   FILTER(!BOUND(?label))
 }""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t169> a <http://spinrdf.org/sp#Query> .
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t169> a <http://spinrdf.org/sp#Query> .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t170> a <http://spinrdf.org/sp#Query> .
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t170> a <http://spinrdf.org/sp#Query> .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t171> a <http://spinrdf.org/sp#Query> .
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t171> a <http://spinrdf.org/sp#Query> .
   
   <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/placeholder_label> a <http://www.w3.org/ns/prov#Entity>;
     <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;

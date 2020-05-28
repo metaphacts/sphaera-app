@@ -1,19 +1,18 @@
 
 <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_title_in_book/context> {
-  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_title_in_book> <http://www.metaphacts.com/ontology/fields#insertPattern>
-      "t826";
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_title_in_book> <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t826>;
     <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
     <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
-    <http://www.metaphacts.com/ontology/fields#selectPattern> "t828";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t828>;
     <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#string>;
-    <http://www.metaphacts.com/ontology/fields#autosuggestionPattern> "t827";
+    <http://www.metaphacts.com/ontology/fields#autosuggestionPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t827>;
     a <http://www.metaphacts.com/ontology/fields#Field>;
     <http://www.w3.org/2000/01/rdf-schema#comment> "The title of a part as stated in a given book";
     <http://www.w3.org/2000/01/rdf-schema#label> "Part Title in Book" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t826> a <http://spinrdf.org/sp#Query> .
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t826> a <http://spinrdf.org/sp#Query> .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t827> a <http://spinrdf.org/sp#Query>;
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t827> a <http://spinrdf.org/sp#Query>;
     <http://spinrdf.org/sp#text> """SELECT DISTINCT ?value ?label WHERE {
   ?subject a ecrm:PC102_has_title ;
     ecrm:P102.1_has_type sphType:secondary ;
@@ -22,12 +21,12 @@
   BIND(?value as ?label)
 }""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t828> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t828> <http://spinrdf.org/sp#text>
       """SELECT ?value WHERE {
   $subject ecrm:PC02_has_range/ecrm:P3_has_note ?value .
 }""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t826> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t826> <http://spinrdf.org/sp#text>
       """INSERT { 
   ?part ecrm:PC01_is_domain_of $subject .
   $subject ecrm:PC02_has_range ?title ;
@@ -42,7 +41,7 @@
     BIND(URI(CONCAT(STR(?book), \"/publication/expression\")) as ?publication_expression)
 }""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t828> a <http://spinrdf.org/sp#Query> .
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t828> a <http://spinrdf.org/sp#Query> .
   
   <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_title_in_book> a <http://www.w3.org/ns/prov#Entity>;
     <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;

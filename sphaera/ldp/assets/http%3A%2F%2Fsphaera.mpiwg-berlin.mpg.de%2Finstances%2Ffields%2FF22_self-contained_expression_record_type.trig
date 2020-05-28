@@ -1,26 +1,26 @@
 
 <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/F22_self-contained_expression_record_type/context> {
   <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/F22_self-contained_expression_record_type>
-    <http://www.metaphacts.com/ontology/fields#insertPattern> "t1033";
+    <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t1033>;
     <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
     <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
-    <http://www.metaphacts.com/ontology/fields#selectPattern> "t1034";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t1034>;
     <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
     <http://www.metaphacts.com/ontology/fields#defaultValue> "http://erlangen-crm.org/efrbroo/F22_Self-Contained_Expression";
     a <http://www.metaphacts.com/ontology/fields#Field>;
     <http://www.w3.org/2000/01/rdf-schema#comment> "Defaults to the F22 Self-Contained Expression record type";
     <http://www.w3.org/2000/01/rdf-schema#label> "F22 Self-Contained Expression Record Type" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t1033> a <http://spinrdf.org/sp#Query> .
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t1033> a <http://spinrdf.org/sp#Query> .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t1034> a <http://spinrdf.org/sp#Query>;
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t1034> a <http://spinrdf.org/sp#Query>;
     <http://spinrdf.org/sp#text> """SELECT $value WHERE { 
   BIND(?subject as ?dummy) 
   VALUES ($value) { 
     (<http://erlangen-crm.org/efrbroo/F22_Self-Contained_Expression>) } 
 }""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t1033> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t1033> <http://spinrdf.org/sp#text>
       "INSERT { $subject rdf:type $value} WHERE {}" .
   
   <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/F22_self-contained_expression_record_type>

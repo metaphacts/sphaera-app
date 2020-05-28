@@ -1,34 +1,35 @@
 
 <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/year_of_death/context> {
-  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/year_of_death> <http://www.metaphacts.com/ontology/fields#insertPattern>
-      "t986";
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/year_of_death> <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t986>;
     <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
     <http://www.metaphacts.com/ontology/fields#minOccurs> "0";
-    <http://www.metaphacts.com/ontology/fields#selectPattern> "t985";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t985>;
     <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#integer>;
     a <http://www.metaphacts.com/ontology/fields#Field>;
     <http://www.w3.org/2000/01/rdf-schema#label> "Year of Death" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t985> a <http://spinrdf.org/sp#Query> .
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t985> a <http://spinrdf.org/sp#Query> .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t986> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t986> <http://spinrdf.org/sp#text>
       """INSERT { 
 	$subject ecrm:P100i_died_in ?death .
-    ?death ecrm:P4_has_time-span ?death_date .
-    ?death_date ecrm:P3_has_note ?death_year .
+    ?death a ecrm:E69_Death ;
+      ecrm:P4_has_time-span ?death_date .
+    ?death_date a ecrm:E52_Time-Span ;
+      ecrm:P82b_end_of_the_end ?death_year .
 } WHERE {
     BIND(URI(CONCAT(STR($subject), \"/death\")) as ?death)
     BIND(URI(CONCAT(STR($subject), \"/death/date\")) as ?death_date)
     BIND(STRDT(CONCAT(STR($value), \"-12-31\"), xsd:date) as ?death_year )
 }""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t985> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t985> <http://spinrdf.org/sp#text>
       """SELECT (xsd:integer(?value_str) as ?value) WHERE {
-	$subject ecrm:P100i_died_in/ecrm:P4_has_time-span/ecrm:P3_has_note ?value_raw .
+	$subject ecrm:P100i_died_in/ecrm:P4_has_time-span/ecrm:P82b_end_of_the_end ?value_raw .
     BIND(STRBEFORE(STR(?value_raw), \"-12\") as ?value_str)
 }""" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t986> a <http://spinrdf.org/sp#Query> .
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t986> a <http://spinrdf.org/sp#Query> .
   
   <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/year_of_death> a <http://www.w3.org/ns/prov#Entity>;
     <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;

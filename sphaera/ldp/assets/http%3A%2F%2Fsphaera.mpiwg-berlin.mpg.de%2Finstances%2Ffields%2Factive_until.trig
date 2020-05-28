@@ -1,15 +1,14 @@
 
 <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/active_until/context> {
-  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/active_until> <http://www.metaphacts.com/ontology/fields#insertPattern>
-      "t1020";
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/active_until> <http://www.metaphacts.com/ontology/fields#insertPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t1020>;
     <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
     <http://www.metaphacts.com/ontology/fields#minOccurs> "0";
-    <http://www.metaphacts.com/ontology/fields#selectPattern> "t1021";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t1021>;
     <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#integer>;
     a <http://www.metaphacts.com/ontology/fields#Field>;
     <http://www.w3.org/2000/01/rdf-schema#label> "Active until (year)" .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t1020> <http://spinrdf.org/sp#text>
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t1020> <http://spinrdf.org/sp#text>
       """INSERT { 
 	$subject ecrm:P11i_participated_in ?activity .
     ?activity ecrm:P2_has_type sphType:periodOfActivity ;
@@ -22,7 +21,7 @@
 }""";
     a <http://spinrdf.org/sp#Query> .
   
-  <http://localhost:8080/blazegraph/namespace/sphaera/t1021> a <http://spinrdf.org/sp#Query>;
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t1021> a <http://spinrdf.org/sp#Query>;
     <http://spinrdf.org/sp#text> """SELECT (xsd:integer(?value_str) as ?value) WHERE {
 	$subject ecrm:P11i_participated_in/ecrm:P4_has_time-span/ecrm:P82b_end_of_the_end ?value_raw .
     BIND(STRBEFORE(STR(?value_raw), \"-12\") as ?value_str)

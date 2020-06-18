@@ -1,0 +1,55 @@
+[[> :header]]
+
+<ol class="page-breadcrumb">
+  [[> :templateBreadcrumb iri=(resolvePrefix ":Start") label="Home"]]
+  [[> :templateBreadcrumb iri=(resolvePrefix ":listBooks") label="Books"]]
+  [[> :templateBreadcrumbEditResource bookiri="true" tab="parts"]]
+</ol>
+
+[[#if (urlParam "chapterassignmentiri")]]
+
+	<h2>Edit chapter page numbers</h2>
+
+	<semantic-form
+          fields="[[fieldDefinitions
+			part_chapter_assignment="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_chapter_assignment"
+          ]]"
+          browser-persistence="false"
+          persistence="LDP"
+          post-action="[[urlParam "bookiri"]]"
+          urlqueryparam-tab="parts"
+          subject="[[urlParam "chapterassignmentiri"]]"
+	  >
+
+		<semantic-form-composite-input
+			for="part_chapter_assignment"
+			new-subject-template="/{{UUID}}"
+			fields="[[fieldDefinitions
+				assignment_type_default="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/chapter_assignment_type_default"
+				note="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/note"
+				pageFrom="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_page_from"
+				pageTo="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_page_to"
+				record_type="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/attribute_assignment_record_type"
+			]]"
+		>
+			<semantic-form-text-input for="pageFrom"></semantic-form-text-input>
+			<semantic-form-text-input for="pageTo"></semantic-form-text-input>
+			<semantic-form-text-input for="note"></semantic-form-text-input>
+
+			<semantic-form-text-input for="record_type"></semantic-form-text-input>
+			<semantic-form-text-input for="assignment_type_default"></semantic-form-text-input>
+			<div class="disabled hidden-field">put>
+			</div>
+
+		</semantic-form-composite-input>
+
+        <div class="text-right form-submit">
+          <semantic-link iri="[[urlParam "bookiri"]]" urlqueryparam-tab="parts" class="btn btn-default btn-md">Cancel</semantic-link>
+          <button name="submit" class="btn btn-primary btn-md">Save</button>
+        </div>
+      </semantic-form>
+[[else]]
+	No part has been selected. This form needs to be accessed via a book record.
+[[/if]]
+
+[[> :footer]]

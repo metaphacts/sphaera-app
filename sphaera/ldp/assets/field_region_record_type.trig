@@ -1,0 +1,45 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/region_record_type/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/region_record_type> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/region_record_type_insert_query>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/region_record_type_select_query>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    <http://www.metaphacts.com/ontology/fields#valueSetPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/region_record_type_value_set_pattern>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Defaults to the region record type";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Region Record Type" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/region_record_type_insert_query> <http://spinrdf.org/sp#text>
+      "INSERT { $subject rdf:type $value} WHERE {}" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/region_record_type_select_query> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/region_record_type_insert_query> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/region_record_type_value_set_pattern> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/region_record_type_select_query> <http://spinrdf.org/sp#text>
+      """SELECT $value WHERE { 
+  BIND(?subject as ?dummy) 
+  VALUES ($value) { 
+    (<http://www.ics.forth.gr/isl/CRMdig/D35_Area>) } }
+""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/region_record_type_value_set_pattern> <http://spinrdf.org/sp#text>
+      """SELECT $value $label WHERE { 
+  VALUES ($value $label) 
+	{ 
+    (<http://www.ics.forth.gr/isl/CRMdig/D35_Area> \"D35 Area\") 
+  } }""" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/region_record_type> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.954+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/region_record_type> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/region_record_type> a <http://www.w3.org/ns/ldp#Resource> .
+}

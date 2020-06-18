@@ -1,0 +1,100 @@
+@prefix : <http://sphaera.mpiwg-berlin.mpg.de/resource/> .
+@prefix rs: <http://www.researchspace.org/ontology/> .
+@prefix Help: <http://help.metaphacts.com/resource/> .
+@prefix User: <http://www.metaphacts.com/resource/user/> .
+@prefix Platform: <http://www.metaphacts.com/ontologies/platform/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix wdt: <http://www.wikidata.org/prop/direct/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sphaera: <http://ontologies.mpiwg-berlin.mpg.de/sphaera/> .
+@prefix oa: <http://www.w3.org/ns/oa#> .
+@prefix rel: <http://purl.org/vocab/relationship/> .
+@prefix sp: <http://spinrdf.org/sp#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix cnt: <http://www.w3.org/2011/content#> .
+@prefix sphType: <http://sphaera.mpiwg-berlin.mpg.de/id/thes/type/> .
+@prefix sphRole: <http://sphaera.mpiwg-berlin.mpg.de/id/thes/role/> .
+@prefix crmDig: <http://www.ics.forth.gr/isl/CRMdig/> .
+@prefix Admin: <http://www.metaphacts.com/resource/admin/> .
+@prefix bds: <http://www.bigdata.com/rdf/search#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ecrm: <http://erlangen-crm.org/current/> .
+@prefix efrbroo: <http://erlangen-crm.org/efrbroo/> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+
+
+<http://sphaera.mpiwg-berlin.mpg.de/id/thes/roles/container> {
+	sphRole:commentator a ecrm:E55_Type .
+	
+	sphRole:printer skos:broader <http://sphaera.mpiwg-berlin.mpg.de/id/thes/role> .
+	
+	sphRole:publisher a skos:Concept .
+	
+	sphRole:author owl:sameAs <https://www.wikidata.org/entity/Q36180> .
+	
+	sphRole:publisher owl:sameAs <http://d-nb.info/gnd/041595750> .
+	
+	sphRole:commentator a skos:Concept .
+	
+	sphRole:translator a skos:Concept , ecrm:E55_Type .
+	
+	sphRole:publisher a ecrm:E55_Type ;
+		owl:sameAs <http://dbpedia.org/resource/Publishing> .
+	
+	sphRole:printer owl:sameAs <http://dbpedia.org/resource/Printer_(publishing)> .
+	
+	sphRole:editor owl:sameAs <http://dbpedia.org/resource/Author_editing> ;
+		a skos:Concept .
+	
+	<http://sphaera.mpiwg-berlin.mpg.de/id/thes/role> skos:prefLabel "Role" .
+	
+	sphRole:editor a ecrm:E55_Type .
+	
+	sphRole:author owl:sameAs <http://dbpedia.org/resource/Author> .
+	
+	sphRole:printer a skos:Concept .
+	
+	sphRole:publisher owl:sameAs <https://www.wikidata.org/entity/Q2085381> .
+	
+	sphRole:author owl:sameAs <http://d-nb.info/gnd/040533093> .
+	
+	sphRole:translator owl:sameAs <http://www.wikidata.org/entity/Q333634> .
+	
+	sphRole:publisher skos:prefLabel "Publisher" .
+	
+	sphRole:author skos:prefLabel "Author" .
+	
+	<http://sphaera.mpiwg-berlin.mpg.de/id/thes/role> a skos:Concept .
+	
+	sphRole:commentator skos:prefLabel "Commentator" .
+	
+	<http://sphaera.mpiwg-berlin.mpg.de/id/thes/role> a ecrm:E55_Type .
+	
+	sphRole:commentator skos:broader <http://sphaera.mpiwg-berlin.mpg.de/id/thes/role> .
+	
+	sphRole:publisher skos:broader <http://sphaera.mpiwg-berlin.mpg.de/id/thes/role> .
+	
+	sphRole:author skos:broader <http://sphaera.mpiwg-berlin.mpg.de/id/thes/role> .
+	
+	sphRole:printer skos:prefLabel "Printer" .
+	
+	sphRole:editor skos:prefLabel "Editor" .
+	
+	sphRole:translator skos:prefLabel "Translator" .
+	
+	sphRole:printer owl:sameAs <https://www.wikidata.org/entity/Q175151> .
+	
+	sphRole:editor owl:sameAs <https://www.wikidata.org/entity/Q1607826> .
+	
+	sphRole:printer a ecrm:E55_Type .
+	
+	sphRole:author a ecrm:E55_Type , skos:Concept .
+	
+	sphRole:translator owl:sameAs <http://schema.org/translator> .
+	
+	sphRole:editor skos:broader <http://sphaera.mpiwg-berlin.mpg.de/id/thes/role> .
+}

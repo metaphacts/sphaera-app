@@ -525,6 +525,7 @@ explanation
       "queryPattern": "{
           ?subject a sphaera:Part .
           ?__value__ (ecrm:P128_carries/ecrm:P165_incorporates)/^ecrm:P140_assigned_attribute_to ?attribute_assignment .
+          ?attribute_assignment ecrm:P2_has_type sphType:partAssignment .
           ?attribute_assignment ecrm:P141_assigned/[[> :queryPart]] ?subject .
           ?attribute_assignment ecrm:P141_assigned  ?assigned_part .
           ?assigned_part (efrbroo:R15i_is_fragment_of)?/ecrm:P2_has_type ?part_type .

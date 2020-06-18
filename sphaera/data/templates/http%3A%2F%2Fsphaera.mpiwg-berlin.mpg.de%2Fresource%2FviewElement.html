@@ -141,7 +141,8 @@
 
               ?assigned_part a ?type ;
             	ecrm:P3_has_note ?assigned_part_label .
-              ?attribute_assignment ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?assigned_part ;
+              ?attribute_assignment ecrm:P2_has_type sphType:partAssignment;
+                  ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?assigned_part ;
                   sphaera:pageFrom ?page_from ;
                   sphaera:pageTo ?page_to ;
                   ecrm:P140_assigned_attribute_to/^ecrm:P165_incorporates/^ecrm:P128_carries/efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?page .

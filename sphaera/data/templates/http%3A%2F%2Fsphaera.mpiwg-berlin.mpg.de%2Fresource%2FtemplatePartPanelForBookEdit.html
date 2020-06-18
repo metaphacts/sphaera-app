@@ -1,0 +1,172 @@
+<li>
+  <div class="panel">
+    <bs-row class="panel-body">
+      <bs-col md=4 sm=12 class="panel-header">
+
+        <dl style="margin-left:1em">
+
+          <dt>Part Type</dt>
+          <dd>{{part_types.value}}</dd>
+
+          <dt>Title</dt>
+          <dd>
+            <em>{{short_title.value}}</em>
+          </dd>
+        
+          <dt>
+            {{#if is_adaption.value}}
+              Original Author(s)
+            {{else}}
+              Author(s)
+            {{/if}}
+          </dt>
+          <dd>
+            {{authors.value}}
+          </dd>
+
+          <dt>Pages</dt>
+          <dd>
+            {{page_from.value}}&ndash;{{page_to.value}}
+          </dd>
+
+          <dt style="padding-top:1em;">
+            {{#if has_title.value}}
+              <mp-ldp-remove-from-container-action
+                iri="{{has_title.value}}/container"
+                container="http://www.metaphacts.com/ontologies/platform#formContainer">
+                <div style="display:inline-block">
+                  <mp-ldp-remove-from-container-action
+                    iri="{{attribute_assignment.value}}/container"
+                    container="http://www.metaphacts.com/ontologies/platform#formContainer">
+                    <a class="btn-default btn btn-sm">Remove</a>
+                  </mp-ldp-remove-from-container-action>
+                </div>
+              </mp-ldp-remove-from-container-action>
+            {{else}}
+              <mp-ldp-remove-from-container-action
+                iri="{{attribute_assignment.value}}/container"
+                container="http://www.metaphacts.com/ontologies/platform#formContainer">
+                <a class="btn-default btn btn-sm">Remove</a>
+              </mp-ldp-remove-from-container-action>
+            {{/if}}
+
+            {{#if is_fragment.value}}
+              <semantic-link
+                iri="[[resolvePrefix ":editPartFragmentInBook"]]"
+                urlqueryparam-attributeassignmentiri="{{attribute_assignment.value}}"
+                urlqueryparam-bookiri="{{ book.value }}"
+                class="btn btn-default btn-sm">
+                  Edit
+              </semantic-link>
+            {{else}}
+              <semantic-link
+                iri="[[resolvePrefix ":editPartInBook"]]"
+                urlqueryparam-attributeassignmentiri="{{attribute_assignment.value}}"
+                urlqueryparam-bookiri="{{ book.value }}"
+                class="btn btn-default btn-sm">
+                  Edit
+              </semantic-link>
+            {{/if}}
+          </dt>
+        </dl>
+      </bs-col>
+      
+
+
+      <bs-col md=8 sm=12>
+        <dl>
+          <dt>Title in Book</dt>
+          <dd>
+            {{#if assigned_title.value}}
+              {{assigned_title.value}}
+            {{/if}}
+
+            {{#if assigned_title.value}}
+              <mp-ldp-remove-from-container-action
+                iri="{{has_title.value}}/container"
+                container="http://www.metaphacts.com/ontologies/platform#formContainer">
+                <a class="btn btn-default btn-xs">Remove</a>
+              </mp-ldp-remove-from-container-action>
+            {{/if}}
+
+            <semantic-link
+              iri="[[resolvePrefix ":addPartTitleInBook"]]"
+              urlqueryparam-hastitleiri="{{has_title.value}}"
+              urlqueryparam-bookiri="{{ book.value }}"
+              urlqueryparam-partiri="{{assigned_part.value}}"
+              class="btn btn-xs btn-default"
+            >
+              {{#if assigned_title.value}}
+                Edit
+              {{else}}
+                Add
+              {{/if}}
+            </semantic-link>
+
+          </dd>
+
+          {{#if is_adaption.value}}
+            {{#if assigned_part_authors.value}}
+              <dt>
+                Part Author(s)
+              </dt>
+              <dd>
+                {{assigned_part_authors.value}}
+              </dd>
+            {{/if}}
+
+            {{#if ancestor_adaption_labels.value}}
+              <dt>
+                Based on
+              </dt>
+              <dd>
+                {{{ancestor_adaption_labels.value}}}
+              </dd>
+            {{/if}}
+
+          {{/if}}
+
+          {{#if languages.value}}
+            <dt>
+              Language
+            </dt>
+            <dd>
+              {{languages.value}}
+            </dd>
+          {{/if}}
+
+        </dl>
+
+        <semantic-query
+          query="SELECT
+              ?attribute_assignment
+              ?book
+              ?chapter
+              ?chapter_label
+              ?pageFrom
+              ?pageTo
+            WHERE {
+              BIND( <{{ attribute_assignment.value }}> as ?attribute_assignment )
+              BIND( <{{ assigned_part.value }}> as ?assigned_part )
+              BIND( <{{ book.value }}> as ?book )
+
+              ?assigned_part [[> :queryPart]]/ecrm:P106_is_composed_of ?chapter .
+              ?chapter a sphaera:Part_Chapter ;
+                ecrm:P3_has_note ?chapter_label .
+              OPTIONAL {
+                ?chapter_assignment a ecrm:E13_Attribute_Assignment ;
+                  ecrm:P2_has_type sphType:chapterAssignment ;
+                  ecrm:P141_assigned ?chapter ;
+                  ecrm:P140_assigned_attribute_to/^ecrm:P165_incorporates/^ecrm:P128_carries ?book ;
+                  sphaera:pageFrom ?pageFrom ;
+                  sphaera:pageTo ?pageTo .
+                
+              }
+            } ORDER BY ?pageFrom"
+          template="<dl><dt>Chapters</dt><dd>{{> :templateChaptersForPartEditPanel }}</dd></dl>"
+        </semantic-query>
+      </bs-col>
+
+    </bs-row>
+  </div>
+</li>

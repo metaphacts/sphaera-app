@@ -5,7 +5,7 @@
   [[> :templateBreadcrumb iri=(resolvePrefix ":manageTerms") label="Manage Terms" tab="regionTypes"]]
   [[#if (urlParam "resiri")]]
     [[> :templateBreadcrumbViewResource
-      iri=(resolvePrefix ":viewRegionType"))
+      iri=(resolvePrefix ":viewRegionType")
       urlqueryparam="regiontypeiri"
       resiri="true" ]]
   [[else]]
@@ -71,7 +71,7 @@
     <semantic-link
         iri="[[resolvePrefix ":deleteResource"]]"
         urlqueryparam-resiri="[[urlParam "resiri"]]"
-        urlqueryparam-back=":manageTerms"
+        urlqueryparam-back="[[resolvePrefix ":manageTerms"]]"
         urlqueryparam-tab="regionTypes"
         urlqueryparam-backtitle="Manage Terms"
       >

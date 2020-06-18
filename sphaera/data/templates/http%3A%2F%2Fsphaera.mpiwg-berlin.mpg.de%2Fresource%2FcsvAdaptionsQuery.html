@@ -7,7 +7,7 @@ SELECT DISTINCT
 	  ?subject ecrm:P3_has_note ?label .
 		OPTIONAL {
 		?subject ecrm:P2_has_type ?type .
-		sphType:partType skos:member ?type .
+		sphType:adaptionType skos:member ?type .
 		}
 	  OPTIONAL {
 	    ?subject efrbroo:R40i_is_representative_expresson_of/ecrm:P102_has_title/ecrm:P3_has_note ?title .

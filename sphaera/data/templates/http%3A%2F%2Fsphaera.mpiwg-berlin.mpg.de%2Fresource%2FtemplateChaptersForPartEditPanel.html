@@ -1,0 +1,38 @@
+<ul class="chapterListView">
+  {{#each bindings}}
+    <li>
+      <semantic-link
+        uri="{{ chapter.value }}"
+      >{{ chapter_label.value}}</semantic-link>
+      
+      {{#if pageFromPage.value}}
+        : <semantic-link
+          iri="[[resolvePrefix ":viewPage"]]"
+          urlqueryparam-pageiri="{{pageFromPage.value}}"
+        >{{pageFrom.value}}</semantic-link>
+      {{else}}
+        : {{pageFrom.value}}
+      {{/if}}
+      {{#if pageToPage.value}}
+        &ndash;
+        <semantic-link
+          iri="[[resolvePrefix ":viewPage"]]"
+          urlqueryparam-pageiri="{{pageToPage.value}}"
+        >{{pageTo.value}}</semantic-link>
+      {{else}}
+        &ndash;{{pageTo.value}}
+      {{/if}}
+    </li>
+  {{/each}}
+</ul>
+
+{{#each bindings}}
+  {{#if @first}}
+    <semantic-link
+      iri="[[resolvePrefix ":addPartChaptersInBook"]]"
+      urlqueryparam-attributeassignmentiri="{{ attribute_assignment.value }}"
+      urlqueryparam-chapterassignmentiri="{{ attribute_assignment.value }}/chapters"
+      urlqueryparam-bookiri="{{ book.value }}"
+    >Edit</semantic-link>
+  {{/if}}
+{{/each}}

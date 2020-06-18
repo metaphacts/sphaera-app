@@ -128,7 +128,7 @@
                 [[> :queryImageIdPattern]]
 
               } ORDER BY xsd:integer(?page_num)"
-              template='[[> :templatePageRegions redirect=":viewPageRegions"]]'
+              template='[[> :templatePageRegions redirect=(resolvePrefix ":viewPageRegions")]]'
             ></semantic-query>
           </bs-row>
 

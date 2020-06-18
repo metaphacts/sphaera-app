@@ -12,7 +12,8 @@
 :configIIIFPath ecrm:P3_has_note ?IIIFPath .
 
 OPTIONAL {
-  ?attribute_assignment ecrm:P140_assigned_attribute_to/^ecrm:P165_incorporates/^ecrm:P128_carries ?book ;
+  ?attribute_assignment ecrm:P2_has_type sphType:partAssignment;
+    ecrm:P140_assigned_attribute_to/^ecrm:P165_incorporates/^ecrm:P128_carries ?book ;
     ecrm:P141_assigned ?part_or_adaption ;
     sphaera:pageFrom ?page_from ;
     sphaera:pageTo ?page_to .

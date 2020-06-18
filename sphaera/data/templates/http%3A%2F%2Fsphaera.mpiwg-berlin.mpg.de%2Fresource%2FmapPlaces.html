@@ -11,7 +11,7 @@
       }'
 
       tuple-template='<semantic-link
-        uri=":viewPlace"
+        uri="[[ resolvePrefix ":viewPlace" ]]"
         urlqueryparam-placeiri="{{place.value}}"
       >{{description.value}}</semantic-link>'>
   </semantic-map>

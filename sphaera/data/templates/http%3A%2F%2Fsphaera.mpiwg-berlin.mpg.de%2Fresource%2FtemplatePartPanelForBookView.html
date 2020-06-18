@@ -1,0 +1,171 @@
+<li>
+  <div class="panel">
+    <div class="panel-body">
+      {{#if assigned_title.value}}
+        {{#if is_adaption.value}}
+
+          {{#if assigned_part_fragment_of.value}}
+            <h3><semantic-link iri="[[resolvePrefix ":viewAdaption"]]" urlqueryparam-adaptioniri="{{assigned_part_fragment_of.value}}">{{assigned_title.value}}</semantic-link></h3>
+            <dl>
+              <dt>Part Title</dt>
+              <dd>{{short_title.value}}</dd>
+          {{else}}
+            <h3><semantic-link iri="[[resolvePrefix ":viewAdaption"]]" urlqueryparam-adaptioniri="{{assigned_part.value}}">{{assigned_title.value}}</semantic-link></h3>
+            <dl>
+              <dt>Adaption Title</dt>
+              <dd>{{short_title.value}}</dd>
+          {{/if}}
+
+        {{else}}
+
+          {{#if assigned_part_fragment_of.value}}
+            <h3><semantic-link iri="[[resolvePrefix ":viewPart"]]" urlqueryparam-partiri="{{assigned_part_fragment_of.value}}">{{assigned_title.value}}</semantic-link></h3>
+            <dl>
+              <dt>Part Title</dt>
+              <dd>{{short_title.value}}</dd>
+          {{else}}
+            <h3><semantic-link iri="[[resolvePrefix ":viewPart"]]" urlqueryparam-partiri="{{assigned_part.value}}">{{assigned_title.value}}</semantic-link></h3>
+            <dl>
+              <dt>Part Title</dt>
+              <dd>{{short_title.value}}</dd>
+          {{/if}}
+        {{/if}}
+      {{else}}
+        {{#if is_adaption.value}}
+          <h3><semantic-link iri="[[resolvePrefix ":viewAdaption"]]" urlqueryparam-adaptioniri="{{assigned_part.value}}">{{short_title.value}}</semantic-link></h3>
+        {{else}}
+          <h3><semantic-link iri="[[resolvePrefix ":viewPart"]]" urlqueryparam-partiri="{{assigned_part.value}}">{{short_title.value}}</semantic-link></h3>
+        {{/if}}
+        <dl>
+      {{/if}}
+        <dt>
+          Part Type
+        </dt>
+        <dd>
+          {{part_types.value}}
+          {{#if is_adaption.value}}
+            {{#if assigned_part_authors.value}}
+            by {{assigned_part_authors.value}}
+            {{/if}}
+          {{/if}}
+        </dd>
+        <dt>
+          {{#if is_adaption.value}}
+            Original Author(s)
+          {{else}}
+            Author(s)
+          {{/if}}
+        </dt>
+        <dd>
+          {{authors.value}}
+        </dd>
+        {{#if is_adaption.value}}
+
+          {{#if ancestor_adaption_labels.value}}
+            <dt>
+              Based on
+            </dt>
+            <dd>
+              {{{ancestor_adaption_labels.value}}}
+            </dd>
+          {{/if}}
+
+        {{/if}}
+
+        {{#if languages.value}}
+          <dt>
+            Language
+          </dt>
+          <dd>
+            {{languages.value}}
+          </dd>
+        {{/if}}
+
+        {{#if part_annotated.value}}
+          <dt>
+            Author of Annotations
+          </dt>
+          <dd>
+            {{annotation_authors.value}}
+          </dd>
+        {{/if}}
+
+        {{#if part_translation.value}}
+          <dt>
+            Translator(s)
+          </dt>
+          <dd>
+            {{translators.value}}
+          </dd>
+          <dt>
+            Translated into
+          </dt>
+          <dd>
+            {{translation_language.value}}
+          </dd>
+        {{/if}}
+        <dt>
+          Pages
+        </dt>
+        <dd>
+          {{#if page_from_page.value}}
+            <semantic-link
+              iri="[[resolvePrefix ":viewPage"]]"
+              urlqueryparam-pageiri="{{page_from_page.value}}"
+            >{{page_from.value}}</semantic-link>
+          {{else}}
+            {{page_from.value}}
+          {{/if}}
+          {{#if page_to_page.value}}
+            &ndash;
+            <semantic-link
+              iri="[[resolvePrefix ":viewPage"]]"
+              urlqueryparam-pageiri="{{page_to_page.value}}"
+            >{{page_to.value}}</semantic-link>
+          {{else}}
+            &ndash;{{page_to.value}}
+          {{/if}}
+        </dd>
+      </dl>
+
+      <semantic-query
+        query="SELECT
+            ?chapter
+            ?chapter_label
+            ?pageFrom
+            ?pageFromPage
+            ?pageTo
+            ?pageToPage
+          WHERE {
+          BIND( <{{ assigned_part.value }}> as ?assigned_part )
+          BIND( <{{ book.value }}> as ?book )
+
+          ?assigned_part [[> :queryPart]]/ecrm:P106_is_composed_of ?chapter .
+          ?chapter a sphaera:Part_Chapter ;
+            ecrm:P3_has_note ?chapter_label .
+          OPTIONAL {
+            ?attribute_assignment a ecrm:E13_Attribute_Assignment ;
+              ecrm:P2_has_type sphType:chapterAssignment ;
+              ecrm:P141_assigned ?chapter ;
+              ecrm:P140_assigned_attribute_to/^ecrm:P165_incorporates/^ecrm:P128_carries ?book ;
+              sphaera:pageFrom ?pageFrom ;
+              sphaera:pageTo ?pageTo .
+
+              OPTIONAL {
+                ?pageFromPage ecrm:P1_is_identified_by ?pageFrom .
+                ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?pageFromPage .
+              }
+
+              OPTIONAL {
+                ?pageToPage ecrm:P1_is_identified_by ?pageTo .
+                ?book efrbroo:R29i_was_reproduced_by/efrbroo:R30_produced/ecrm:P128_carries/ecrm:P106_is_composed_of ?pageToPage .
+              }
+          }
+        } ORDER BY ?pageFrom"
+        template="<dl><dt>Chapters</dt><dd>{{> :templateChaptersForPartViewPanel }}</dd></dl>"
+      </semantic-query>
+      
+
+    </div>
+  </div>
+</li>

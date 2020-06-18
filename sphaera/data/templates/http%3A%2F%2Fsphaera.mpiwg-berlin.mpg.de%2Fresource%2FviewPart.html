@@ -32,6 +32,7 @@
             query='SELECT (COUNT(?region) as ?num_regions) WHERE {
               BIND(<[[urlParam "partiri"]]> as ?part)
               ?attribute_assignment
+                ecrm:P2_has_type sphType:partAssignment ;  
                 sphaera:pageFrom ?page_from ;
                 sphaera:pageTo ?page_to ;
                 ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?part ;
@@ -53,6 +54,7 @@
             query='SELECT (COUNT(DISTINCT ?element) as ?num_elements) WHERE {
               BIND(<[[urlParam "partiri"]]> as ?part)
               ?attribute_assignment
+                ecrm:P2_has_type sphType:partAssignment ;
                 sphaera:pageFrom ?page_from ;
                 sphaera:pageTo ?page_to ;
                 ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?part ;
@@ -154,7 +156,7 @@
               {{#each bindings}}
                 <dd>
                   <semantic-link
-                    uri=":viewPartContentType"
+                    uri="[[resolvePrefix ":viewPartContentType"]]"
                     urlqueryparam-partcontenttypeiri="{{type.value}}">
                     {{label.value}}
                   </semantic-link>
@@ -176,7 +178,7 @@
               {{#each bindings}}
                 <dd>
                   <semantic-link
-                    uri=":viewLanguage"
+                    uri="[[resolvePrefix ":viewLanguage"]]"
                     urlqueryparam-languageiri="{{language.value}}">
                     {{label.value}}
                   </semantic-link>
@@ -192,7 +194,8 @@
               query='SELECT DISTINCT ?attribute_assignment WHERE {
                 BIND(<[[urlParam "partiri"]]> as ?part)
                 ?book ecrm:P128_carries/ecrm:P165_incorporates/^ecrm:P140_assigned_attribute_to ?attribute_assignment .
-                ?attribute_assignment ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?part .
+                ?attribute_assignment ecrm:P2_has_type sphType:partAssignment;
+                  ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?part .
               } LIMIT 1'
               template='<dt>
                 Appears in
@@ -225,11 +228,10 @@
                       ?book ecrm:P128_carries/ecrm:P165_incorporates/^ecrm:P140_assigned_attribute_to ?attribute_assignment ;
                         ecrm:P3_has_note ?book_short_title .
 
-                      # Use materialised triples instead of ?attribute_assignment ecrm:P141_assigned/\[\[> :queryPart\]\] ?part ;.
+                      # Use materialised triples instead of ?attribute_assignment ecrm:P141_assigned/\[\[> :queryPart\]\] ?part ;. 
                       # Query for materialisation is defined in jobs/materialise/query.sparql
                       ?attribute_assignment sphaera:assigned ?part ;
-                        ecrm:P141_assigned ?assigned_part .
-
+                          ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?assigned_part .
 
                       OPTIONAL {
                         ?attribute_assignment sphaera:pageFrom ?page_from .
@@ -583,6 +585,7 @@
                 WHERE {
                 BIND(<[[urlParam "partiri"]]> as ?part)
                 ?attribute_assignment
+                  ecrm:P2_has_type sphType:partAssignment ;
                   sphaera:pageFrom ?page_from ;
                   sphaera:pageTo ?page_to ;
                   ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?part ;
@@ -604,7 +607,8 @@
             [[#> :tableElements]]
 
               BIND(<[[urlParam "partiri"]]> as ?part)
-              ?attribute_assignment
+              ?attribute_assignment 
+                ecrm:P2_has_type sphType:partAssignment ;
                 sphaera:pageFrom ?page_from ;
                 sphaera:pageTo ?page_to ;
                 ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?part ;

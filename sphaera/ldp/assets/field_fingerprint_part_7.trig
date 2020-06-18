@@ -10,7 +10,10 @@
   
   <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t219> a <http://spinrdf.org/sp#Query>;
     <http://spinrdf.org/sp#text> """INSERT {
-  ?fingerprint ecrm:P106_is_composed_of ?part7 .
+  $subject ecrm:P1_is_identified_by ?fingerprint .
+  ?fingerprint a ecrm:E42_Identifier ;
+     ecrm:P2_has_type sphaera:fingerprint ;
+     ecrm:P106_is_composed_of ?part7 .
   ?part7 a ecrm:E90_Symbolic_Object ;
       ecrm:P1_is_identified_by \"7\" ;
       ecrm:P3_has_note $value .

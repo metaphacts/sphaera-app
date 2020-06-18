@@ -19,7 +19,10 @@
   
   <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/t161> <http://spinrdf.org/sp#text>
       """INSERT {
-  ?fingerprint ecrm:P106_is_composed_of ?part4 .
+  $subject ecrm:P1_is_identified_by ?fingerprint .
+  ?fingerprint a ecrm:E42_Identifier ;
+     ecrm:P2_has_type sphaera:fingerprint ;
+     ecrm:P106_is_composed_of ?part4 .
   ?part4 a ecrm:E90_Symbolic_Object ;
       ecrm:P1_is_identified_by \"4\" ;
       ecrm:P3_has_note $value .

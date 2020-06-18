@@ -1,0 +1,41 @@
+@prefix : <http://sphaera.mpiwg-berlin.mpg.de/resource/> .
+@prefix rs: <http://www.researchspace.org/ontology/> .
+@prefix Help: <http://help.metaphacts.com/resource/> .
+@prefix User: <http://www.metaphacts.com/resource/user/> .
+@prefix Platform: <http://www.metaphacts.com/ontologies/platform/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix wdt: <http://www.wikidata.org/prop/direct/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sphaera: <http://ontologies.mpiwg-berlin.mpg.de/sphaera/> .
+@prefix oa: <http://www.w3.org/ns/oa#> .
+@prefix rel: <http://purl.org/vocab/relationship/> .
+@prefix sp: <http://spinrdf.org/sp#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix cnt: <http://www.w3.org/2011/content#> .
+@prefix sphType: <http://sphaera.mpiwg-berlin.mpg.de/id/thes/type/> .
+@prefix sphRole: <http://sphaera.mpiwg-berlin.mpg.de/id/thes/role/> .
+@prefix crmDig: <http://www.ics.forth.gr/isl/CRMdig/> .
+@prefix Admin: <http://www.metaphacts.com/resource/admin/> .
+@prefix bds: <http://www.bigdata.com/rdf/search#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ecrm: <http://erlangen-crm.org/current/> .
+@prefix efrbroo: <http://erlangen-crm.org/efrbroo/> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+
+
+<http://sphaera.mpiwg-berlin.mpg.de/id/thes/type/full/container/context> {
+	<http://sphaera.mpiwg-berlin.mpg.de/id/thes/type/full/container> prov:wasAttributedTo User:admin ;
+		a prov:Entity , <http://www.w3.org/ns/ldp#Resource> .
+	
+	sphType:translationType skos:member sphType:full .
+	
+	<http://sphaera.mpiwg-berlin.mpg.de/id/thes/type/full/container> prov:generatedAtTime "2017-04-21T11:23:35.706Z"^^xsd:dateTime .
+	
+	sphType:full a ecrm:E55_Type .
+	
+	sphType:full ecrm:P3_has_note "Full" .
+}

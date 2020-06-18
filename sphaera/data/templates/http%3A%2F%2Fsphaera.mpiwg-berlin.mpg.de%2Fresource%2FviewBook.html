@@ -37,7 +37,8 @@
 
         <bs-nav-item event-key="parts">
             <semantic-query query='SELECT (COUNT(DISTINCT ?attribute_assignment) as ?num_parts) WHERE {
-                ?attribute_assignment ecrm:P140_assigned_attribute_to ?expression .
+                ?attribute_assignment ecrm:P2_has_type sphType:partAssignment;
+                  ecrm:P140_assigned_attribute_to ?expression .
                 BIND(<[[urlParam "bookiri"]]/expression> as ?expression)
               } LIMIT 1'
               template='{{#each bindings}}Parts ({{num_parts.value}}){{/each}}'
@@ -809,143 +810,11 @@
         <bs-tab-pane event-key="parts">
           <semantic-query
             query='[[> :queryPartsForBookEdit bookiri="bookiri"]]'
-            template='
-              <ol class="panel-numbering">
+            template='<ol class="panel-numbering">
                 {{#each bindings}}
-                  <li>
-                  <div class="panel">
-                    <div class="panel-body">
-                      {{#if assigned_title.value}}
-                        {{#if is_adaption.value}}
-
-                          {{#if assigned_part_fragment_of.value}}
-                            <h3><semantic-link iri="[[resolvePrefix ":viewAdaption"]]" urlqueryparam-adaptioniri="{{assigned_part_fragment_of.value}}">{{assigned_title.value}}</semantic-link></h3>
-                            <dl>
-                              <dt>Part Title</dt>
-                              <dd>{{short_title.value}}</dd>
-                          {{else}}
-                            <h3><semantic-link iri="[[resolvePrefix ":viewAdaption"]]" urlqueryparam-adaptioniri="{{assigned_part.value}}">{{assigned_title.value}}</semantic-link></h3>
-                            <dl>
-                              <dt>Adaption Title</dt>
-                              <dd>{{short_title.value}}</dd>
-                          {{/if}}
-
-                        {{else}}
-
-                          {{#if assigned_part_fragment_of.value}}
-                            <h3><semantic-link iri="[[resolvePrefix ":viewPart"]]" urlqueryparam-partiri="{{assigned_part_fragment_of.value}}">{{assigned_title.value}}</semantic-link></h3>
-                            <dl>
-                              <dt>Part Title</dt>
-                              <dd>{{short_title.value}}</dd>
-                          {{else}}
-                            <h3><semantic-link iri="[[resolvePrefix ":viewPart"]]" urlqueryparam-partiri="{{assigned_part.value}}">{{assigned_title.value}}</semantic-link></h3>
-                            <dl>
-                              <dt>Part Title</dt>
-                              <dd>{{short_title.value}}</dd>
-                          {{/if}}
-                        {{/if}}
-                      {{else}}
-                        {{#if is_adaption.value}}
-                          <h3><semantic-link iri="[[resolvePrefix ":viewAdaption"]]" urlqueryparam-adaptioniri="{{assigned_part.value}}">{{short_title.value}}</semantic-link></h3>
-                        {{else}}
-                          <h3><semantic-link iri="[[resolvePrefix ":viewPart"]]" urlqueryparam-partiri="{{assigned_part.value}}">{{short_title.value}}</semantic-link></h3>
-                        {{/if}}
-                        <dl>
-                      {{/if}}
-                        <dt>
-                          Part Type
-                        </dt>
-                        <dd>
-                          {{part_types.value}}
-                          {{#if is_adaption.value}}
-                            {{#if assigned_part_authors.value}}
-                            by {{assigned_part_authors.value}}
-                            {{/if}}
-                          {{/if}}
-                        </dd>
-                        <dt>
-                          {{#if is_adaption.value}}
-                            Original Author(s)
-                          {{else}}
-                            Author(s)
-                          {{/if}}
-                        </dt>
-                        <dd>
-                          {{authors.value}}
-                        </dd>
-                        {{#if is_adaption.value}}
-
-                          {{#if ancestor_adaption_labels.value}}
-                            <dt>
-                              Based on
-                            </dt>
-                            <dd>
-                              {{{ancestor_adaption_labels.value}}}
-                            </dd>
-                          {{/if}}
-
-                        {{/if}}
-
-                        {{#if languages.value}}
-                          <dt>
-                            Language
-                          </dt>
-                          <dd>
-                            {{languages.value}}
-                          </dd>
-                        {{/if}}
-
-                        {{#if part_annotated.value}}
-                          <dt>
-                            Author of Annotations
-                          </dt>
-                          <dd>
-                            {{annotation_authors.value}}
-                          </dd>
-                        {{/if}}
-
-                        {{#if part_translation.value}}
-                          <dt>
-                            Translator(s)
-                          </dt>
-                          <dd>
-                            {{translators.value}}
-                          </dd>
-                          <dt>
-                            Translated into
-                          </dt>
-                          <dd>
-                            {{translation_language.value}}
-                          </dd>
-                        {{/if}}
-                        <dt>
-                          Pages
-                        </dt>
-                        <dd>
-                          {{#if page_from_page.value}}
-                            <semantic-link
-                              iri="[[resolvePrefix ":viewPage"]]"
-                              urlqueryparam-pageiri="{{page_from_page.value}}"
-                            >{{page_from.value}}</semantic-link>
-                          {{else}}
-                            {{page_from.value}}
-                          {{/if}}
-                          {{#if page_to_page.value}}
-                            &ndash;
-                            <semantic-link
-                              iri="[[resolvePrefix ":viewPage"]]"
-                              urlqueryparam-pageiri="{{page_to_page.value}}"
-                            >{{page_to.value}}</semantic-link>
-                          {{else}}
-                            &ndash;{{page_to.value}}
-                          {{/if}}
-                        </dd>
-                      </dl>
-                    </div>
-                  </div>
-                </li>
-              {{/each}}
-            </ol>'
+                  {{> :templatePartPanelForBookView}}
+                {{/each}}
+              </ol>'
            no-result-template='<p>No parts have been specified.</p>'
           >
          </semantic-query>

@@ -1,0 +1,15 @@
+<http://sphaera.mpiwg-berlin.mpg.de/id/thes/dimensions/container> {
+
+    <http://sphaera.mpiwg-berlin.mpg.de/id/thes/dimension/folio> <http://erlangen-crm.org/current/P3_has_note> "Folio" ;
+        a <http://erlangen-crm.org/current/E54_Dimension> ;
+        <http://www.w3.org/2000/01/rdf-schema#label> "Folio" .
+
+    <http://sphaera.mpiwg-berlin.mpg.de/id/thes/dimension/octavo> <http://erlangen-crm.org/current/P3_has_note> "Octavo" ;
+        a <http://erlangen-crm.org/current/E54_Dimension> ;
+        <http://www.w3.org/2000/01/rdf-schema#label> "Octavo" .
+
+    <http://sphaera.mpiwg-berlin.mpg.de/id/thes/dimension/quarto> <http://erlangen-crm.org/current/P3_has_note> "Quarto" ;
+        a <http://erlangen-crm.org/current/E54_Dimension> ;
+        <http://www.w3.org/2000/01/rdf-schema#label> "Quarto" .
+
+}

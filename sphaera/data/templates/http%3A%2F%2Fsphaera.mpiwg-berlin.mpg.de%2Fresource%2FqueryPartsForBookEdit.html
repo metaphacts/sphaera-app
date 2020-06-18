@@ -4,6 +4,7 @@ SELECT DISTINCT
   ?assigned_part_class
   ?assigned_title
   ?attribute_assignment
+  ?book
   ?has_title
   ?is_adaption
   ?is_fragment
@@ -26,9 +27,9 @@ WHERE {
 
   [[> :queryPartsForBook]]
 
-  ?assigned_part ecrm:P3_has_note ?short_title ;
-    ecrm:P2_has_type ?part_type .
+  ?assigned_part ecrm:P3_has_note ?short_title .
 
+  ?assigned_part ecrm:P2_has_type ?part_type .
   ?part_type ecrm:P3_has_note ?part_type_label ;
     ^skos:member ?partAndAdaptionTypes .
 
@@ -37,6 +38,7 @@ WHERE {
     ( sphType:adaptionType )
   }
 
+  
   ?original_part ecrm:P3_has_note ?original_short_title .
 
   OPTIONAL {
@@ -49,11 +51,13 @@ WHERE {
   }
 
   OPTIONAL {
-    ?attribute_assignment sphaera:pageFrom ?page_from .
+    ?attribute_assignment ecrm:P2_has_type sphType:partAssignment;
+      sphaera:pageFrom ?page_from .
   }
 
   OPTIONAL {
-    ?attribute_assignment sphaera:pageTo ?page_to .
+    ?attribute_assignment ecrm:P2_has_type sphType:partAssignment;
+      sphaera:pageTo ?page_to .
   }
 
   OPTIONAL {
@@ -76,7 +80,8 @@ WHERE {
 
    OPTIONAL {
 
-     ?attribute_assignment ecrm:P141_assigned/([[> :queryPart]]) ?ancestor_adaptions .
+     ?attribute_assignment  ecrm:P2_has_type sphType:partAssignment;
+        ecrm:P141_assigned/([[> :queryPart]]) ?ancestor_adaptions .
 
      ?ancestor_adaptions a ?adaption_type .
      VALUES ( ?adaption_type ) {
@@ -144,6 +149,7 @@ WHERE {
     ?assigned_part_class
     ?assigned_title
     ?attribute_assignment
+    ?book
     ?has_title
     ?is_adaption
     ?is_fragment

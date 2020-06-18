@@ -1,6 +1,7 @@
 ?book ecrm:P128_carries/ecrm:P165_incorporates ?expression .
 
-?attribute_assignment ecrm:P140_assigned_attribute_to ?expression ;
+?attribute_assignment ecrm:P2_has_type sphType:partAssignment ;
+    ecrm:P140_assigned_attribute_to ?expression ;
     ecrm:P141_assigned ?assigned_part ;
     ecrm:P141_assigned/[[> :queryPart]] ?original_part  .
 

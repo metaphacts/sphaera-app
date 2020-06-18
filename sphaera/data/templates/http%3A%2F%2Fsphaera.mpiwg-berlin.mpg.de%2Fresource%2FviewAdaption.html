@@ -32,7 +32,8 @@
           <semantic-query
             query='SELECT (COUNT(?region) as ?num_regions) WHERE {
               BIND(<[[urlParam "adaptioniri"]]> as ?part)
-              ?attribute_assignment
+              ?attribute_assignment 
+                ecrm:P2_has_type sphType:partAssignment ;
                 sphaera:pageFrom ?page_from ;
                 sphaera:pageTo ?page_to ;
                 ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?part ;
@@ -153,7 +154,7 @@
             {{#each bindings}}
               <dd>
                 <semantic-link
-                  uri=":viewPartContentType"
+                  uri="[[resolvePrefix ":viewPartContentType"]]"
                   urlqueryparam-partcontenttypeiri="{{type.value}}">
                   {{label.value}}
                 </semantic-link>
@@ -292,7 +293,8 @@
             query='SELECT DISTINCT ?attribute_assignment WHERE {
               BIND(<[[urlParam "adaptioniri"]]> as ?adaption)
               ?book ecrm:P128_carries/ecrm:P165_incorporates/^ecrm:P140_assigned_attribute_to ?attribute_assignment .
-              ?attribute_assignment ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?adaption .
+              ?attribute_assignment ecrm:P2_has_type sphType:partAssignment;
+                ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?adaption .
             }'
             template='<dt>
               Appears in
@@ -322,7 +324,8 @@
                     ?book ecrm:P128_carries/ecrm:P165_incorporates/^ecrm:P140_assigned_attribute_to ?attribute_assignment ;
                       ecrm:P3_has_note ?book_short_title .
 
-                    ?attribute_assignment ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?adaption .
+                    ?attribute_assignment ecrm:P2_has_type sphType:partAssignment;
+                      ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?adaption .
 
                     OPTIONAL {
                       ?attribute_assignment sphaera:pageFrom ?page_from .
@@ -602,6 +605,7 @@
                 WHERE {
                 BIND(<[[urlParam "adaptioniri"]]> as ?part)
                 ?attribute_assignment
+                  ecrm:P2_has_type sphType:partAssignment;
                   sphaera:pageFrom ?page_from ;
                   sphaera:pageTo ?page_to ;
                   ecrm:P141_assigned/efrbroo:R15i_is_fragment_of? ?part ;

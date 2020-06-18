@@ -14,7 +14,7 @@
       template='
         {{#each bindings}}
           <semantic-link
-            iri="[[resolvePrefix ":viewBook"]]
+            iri="[[resolvePrefix ":viewBook"]]"
             urlqueryparam-bookiri="{{book.value}}"
           >{{label.value}}</semantic-link>
         {{/each}}'

@@ -18,6 +18,7 @@
 
     <semantic-form
         fields="[[fieldDefinitions
+          assignment_type_default="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_assignment_type_default"
           note="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/note"
           part="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part"
           pageFrom="http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_page_from"
@@ -49,6 +50,7 @@
       <semantic-form-text-input for="note"></semantic-form-text-input>
 
       <div class="disabled hidden-field">
+        <semantic-form-text-input for="assignment_type_default"></semantic-form-text-input>
         <semantic-form-text-input for="record_type"></semantic-form-text-input>
       </div>
 

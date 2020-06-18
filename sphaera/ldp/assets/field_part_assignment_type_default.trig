@@ -1,0 +1,34 @@
+
+<http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_assignment_type_default/context> {
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_assignment_type_default> <http://www.metaphacts.com/ontology/fields#insertPattern>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/8Nq3jdd>;
+    <http://www.metaphacts.com/ontology/fields#maxOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#minOccurs> "1";
+    <http://www.metaphacts.com/ontology/fields#selectPattern> <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/h3hjabE>;
+    <http://www.metaphacts.com/ontology/fields#xsdDatatype> <http://www.w3.org/2001/XMLSchema#anyURI>;
+    a <http://www.metaphacts.com/ontology/fields#Field>;
+    <http://www.w3.org/2000/01/rdf-schema#comment> "Defaults to the part assignment type";
+    <http://www.w3.org/2000/01/rdf-schema#label> "Part Assignment Type Default" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/8Nq3jdd> <http://spinrdf.org/sp#text>
+      "INSERT { $subject ecrm:P2_has_type $value} WHERE {}" .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/h3hjabE> <http://spinrdf.org/sp#text>
+      """SELECT $value WHERE { 
+  BIND(?subject as ?dummy) 
+  VALUES ($value) { 
+    (<http://sphaera.mpiwg-berlin.mpg.de/id/thes/type/partAssignment>) } 
+}""";
+    a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/8Nq3jdd> a <http://spinrdf.org/sp#Query> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_assignment_type_default> a <http://www.w3.org/ns/prov#Entity>;
+    <http://www.w3.org/ns/prov#wasAttributedTo> <http://www.metaphacts.com/resource/user/admin>;
+    <http://www.w3.org/ns/prov#generatedAtTime> "2020-04-06T13:49:20.767+03:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+  
+  <http://www.metaphacts.com/ontologies/platform#fieldDefinitionContainer> <http://www.w3.org/ns/ldp#contains>
+      <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_assignment_type_default> .
+  
+  <http://sphaera.mpiwg-berlin.mpg.de/instances/fields/part_assignment_type_default> a <http://www.w3.org/ns/ldp#Resource> .
+}

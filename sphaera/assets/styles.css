@@ -185,6 +185,19 @@ table thead tr th {
   background-size: 80% !important;
   background-position: center !important;
 }
+.chapterListView {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.chapterListView li {
+  background: #fcfcfc;
+  border: 1px solid #e3e3e3;
+  display: inline-block;
+  font-size: 0.75em;
+  margin: 0 0.3em;
+  padding: 0 0.3em;
+}
 .content,
 .semantic-form {
   background: #fcfcfc;
@@ -435,5 +448,4 @@ textarea {
 .hidden, .hidden-field {
   display:block;
 }
-
 */

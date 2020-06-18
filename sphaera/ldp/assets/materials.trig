@@ -1,0 +1,15 @@
+<http://sphaera.mpiwg-berlin.mpg.de/id/thes/materials/container> {
+
+    <http://sphaera.mpiwg-berlin.mpg.de/id/thes/material/paper> <http://erlangen-crm.org/current/P3_has_note> "Paper" ;
+        a <http://erlangen-crm.org/current/E57_Material> ;
+        <http://www.w3.org/2000/01/rdf-schema#label> "Paper" .
+
+    <http://sphaera.mpiwg-berlin.mpg.de/id/thes/material/parchment> <http://erlangen-crm.org/current/P3_has_note> "Parchment" ;
+        a <http://erlangen-crm.org/current/E57_Material> ;
+        <http://www.w3.org/2000/01/rdf-schema#label> "Parchment" .
+
+    <http://sphaera.mpiwg-berlin.mpg.de/id/thes/material/vellum> <http://erlangen-crm.org/current/P3_has_note> "Vellum" ;
+        a <http://erlangen-crm.org/current/E57_Material> ;
+        <http://www.w3.org/2000/01/rdf-schema#label> "Vellum" .
+
+}

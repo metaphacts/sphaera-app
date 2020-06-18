@@ -35,8 +35,10 @@ SELECT distinct ?value ?label ?description WHERE {
        wdt:P279* wd:Q20162172 .
     BIND( xsd:integer(substr(str(?value), 33)) as ?q)
     FILTER(REGEX(?label, \"?token\", \"i\"))
+    FILTER(LANG(?label) = \"en\")
     OPTIONAL {
       ?value <http://schema.org/description> ?description .
+      FILTER(LANG(?description) = \"en\")
   	}
   }
 }

@@ -29,7 +29,7 @@
 
 [[#if (urlParam "partiri")]]
   <semantic-query
-    query='SELECT ?part_name WHERE { ?part ecrm:P3_has_note ?part_name . BIND(<[[urlParam "partiri"]]> as ?part ) }'
+    query='SELECT ?part_name WHERE { BIND(<[[urlParam "partiri"]]> as ?part . ?part ecrm:P3_has_note ?part_name . ) }'
     template='<p>Use this form to assign an author to the part {{#each bindings}} {{part_name.value}} {{/each}}</p>'
   >
   </semantic-query>

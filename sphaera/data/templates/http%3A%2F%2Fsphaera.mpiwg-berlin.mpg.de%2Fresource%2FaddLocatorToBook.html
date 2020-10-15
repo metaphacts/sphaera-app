@@ -15,7 +15,7 @@
 [[#if (urlParam "bookiri") ]]
 
   <p>Use this form to assign a locator to the book: <semantic-query
-  	query='SELECT ?book_name WHERE { ?book ecrm:P3_has_note ?book_name . BIND(<[[urlParam "bookiri"]]> as ?book ) } LIMIT 1'
+  	query='SELECT ?book_name WHERE { BIND(<[[urlParam "bookiri"]]> as ?book ) . ?book ecrm:P3_has_note ?book_name . } LIMIT 1'
     template='{{#each bindings}} {{book_name.value}} {{/each}}'
   	>
    </semantic-query>

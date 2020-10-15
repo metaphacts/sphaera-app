@@ -11,7 +11,7 @@
 [[#if (urlParam "carriedoutbyiri")]]
 
   <semantic-query
-	query='SELECT ?book_name ?book WHERE { ?book ecrm:P3_has_note ?book_name . BIND(URI(STRBEFORE("[[urlParam "carriedoutbyiri"]]","/publication/publisher")) as ?book ) } LIMIT 1'
+	query='SELECT ?book_name ?book WHERE { BIND(URI(STRBEFORE("[[urlParam "carriedoutbyiri"]]","/publication/publisher")) as ?book ) . ?book ecrm:P3_has_note ?book_name . } LIMIT 1'
   template='<p>Use this form to edit the publisher of the book {{#each bindings}}<semantic-link iri={{book.value}}>{{book_name.value}}</semantic-link>{{/each}}</p>'
 	>
  </semantic-query>
@@ -20,9 +20,10 @@
     Publisher:
     <semantic-query
   	query='SELECT ?publisher_name WHERE {
+           BIND(<[[urlParam "carriedoutbyiri"]]> as ?carried_out_by ) .
            ?carried_out_by ecrm:PC02_has_range ?publisher .
           ?publisher ecrm:P48_has_preferred_identifier/ecrm:P3_has_note ?publisher_name .
-           BIND(<[[urlParam "carriedoutbyiri"]]> as ?carried_out_by ) } LIMIT 1'
+           } LIMIT 1'
     template='{{#each bindings}}{{publisher_name.value}}{{/each}}'
   	>
    </semantic-query>

@@ -10,8 +10,8 @@
 
 	<semantic-query
 		query='SELECT ?title WHERE {
-			?has_title ecrm:PC02_has_range ?title
 			BIND(<[[urlParam "hastitleiri"]]> as ?has_title)
+			?has_title ecrm:PC02_has_range ?title
 			} LIMIT 1'
 		template='<h2>Edit name of the part as stated in the book</h2>'
 		no-result-template='<h2>Add name of the part as stated in the book</h2>'
@@ -20,11 +20,11 @@
 
 	<semantic-query
 	    query='SELECT ?book_name ?part_name WHERE {
-	       ?book ecrm:P3_has_note ?book_name .
-	       ?part ecrm:P3_has_note ?part_name .
-
 	       BIND(<[[urlParam "bookiri"]]> as ?book )
 	       BIND(<[[urlParam "partiri"]]> as ?part )
+
+	       ?book ecrm:P3_has_note ?book_name .
+	       ?part ecrm:P3_has_note ?part_name .
 	    } LIMIT 1'
 	    template='{{#each bindings}}
 	    	<p>Enter the title of the part "{{part_name.value}}" as stated in the book "{{book_name.value}}."</p>

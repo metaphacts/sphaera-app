@@ -35,7 +35,7 @@
 
 [[#if (urlParam "adaptioniri")]]
   <semantic-query
-    query='SELECT ?adaption_name WHERE { ?adaption ecrm:P3_has_note ?adaption_name . BIND(<[[urlParam "adaptioniri"]]> as ?adaption ) }'
+    query='SELECT ?adaption_name WHERE { BIND(<[[urlParam "adaptioniri"]]> as ?adaption ) . ?adaption ecrm:P3_has_note ?adaption_name . }'
     template='<p>Use this form to assign a translation of a part to the adaption {{#each bindings}} {{adaption_name.value}} {{/each}}</p>'
   >
   </semantic-query>

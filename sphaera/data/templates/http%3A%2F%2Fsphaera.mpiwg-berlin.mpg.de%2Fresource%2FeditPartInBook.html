@@ -11,7 +11,7 @@
 [[#if (urlParam "attributeassignmentiri")]]
   [[#if (urlParam "bookiri")]]
     <semantic-query
-      query='SELECT ?book_name WHERE { ?book ecrm:P3_has_note ?book_name . BIND(<[[urlParam "bookiri"]]> as ?book ) }'
+      query='SELECT ?book_name WHERE { BIND(<[[urlParam "bookiri"]]> as ?book ) . ?book ecrm:P3_has_note ?book_name . }'
       template='<p>Use this form to assign a part fragment to the book {{#each bindings}} {{book_name.value}} {{/each}}</p>'
       >
      </semantic-query>

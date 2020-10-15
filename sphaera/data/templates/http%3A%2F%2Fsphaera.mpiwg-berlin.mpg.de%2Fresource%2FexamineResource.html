@@ -54,10 +54,10 @@
 <semantic-table
   query="SELECT ?property ?subject ?g WHERE
     {
+      BIND(<[[urlParam "resiri"]]> as ?resource)
       GRAPH ?g {
         ?subject ?property ?resource .
       }
-      BIND(<[[urlParam "resiri"]]> as ?resource)
     } LIMIT 1000"
 
 	column-configuration='[

@@ -25,8 +25,8 @@
     <semantic-query
       query='SELECT ?resource_label WHERE
         {
-          ?resource ecrm:P3_has_note ?resource_label .
           BIND(<[[urlParam "resiri"]]> as ?resource)
+          ?resource ecrm:P3_has_note ?resource_label .
          } LIMIT 1'
       template="<p>{{#each bindings}}Are you sure you want to delete the resource <strong>{{resource_label.value}}</strong>?{{/each}}</p>">
     </semantic-query>
